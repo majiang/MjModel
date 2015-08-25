@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIInterface.cs" />
+    <Compile Include="AiBase.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Kawa.cs" />
     <Compile Include="Player.cs" />

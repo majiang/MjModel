@@ -50,13 +50,13 @@ namespace MjModelProject
 
         //思考する関数群
         //非同期で考える？
-        virtual void ThinkDahai(){}
+        public virtual void ThinkDahai(){}
 
-        virtual void ThinkNaki(){}
+        public virtual void ThinkNaki(){}
 
-        virtual void ThinkReach(){}
+        public virtual void ThinkReach(){}
 
-        virtual void ThinkHora(){}
+        public virtual void ThinkHora(){}
 
     }
 }
