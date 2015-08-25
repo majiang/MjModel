@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    class Kawa
+    public class Kawa
     {
     }
 }
