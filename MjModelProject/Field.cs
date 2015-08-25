@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    class Field
+    public class Field
     {
     }
 }
