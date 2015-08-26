@@ -91,7 +91,7 @@ namespace MjModelProject
 
         public void Ankan(int actor, int target, int pai, List<int> consumed)
         {
-            if (!IsValidNaki(pai, consumed))
+            if (!IsValidAnkan(pai, consumed))
             {
                 Console.Write("invalied naki! @Tehai_Ankan");
                 return;
@@ -145,7 +145,7 @@ namespace MjModelProject
             return true;
         }
 
-        private bool IsValidNaki(int pai, List<int> consumed)
+        private bool IsValidAnkan(int pai, List<int> consumed)
         {
             if (!tehai.Contains(pai))
             {
