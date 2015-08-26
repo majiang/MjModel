@@ -89,22 +89,21 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.daiminkan, target, pai, consumed));
         }
 
-        public void Ankan(int actor, int target, int pai, List<int> consumed)
+        public void Ankan(int actor, List<int> consumed)
         {
-            if (!IsValidAnkan(pai, consumed))
+            if (!IsValidAnkan(consumed))
             {
                 Console.Write("invalied naki! @Tehai_Ankan");
                 return;
             }
-            //remove pai and consumed
-            tehai.Remove(pai);
+            //remove consumed
             foreach (var consumedPai in consumed)
             {
                 tehai.Remove(consumedPai);
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.ankan, target, pai, consumed));
+            furos.Add(new Furo(Furo.Furotype.ankan, consumed));
         }
 
         public void Kakan(int actor, int target, int pai, List<int> consumed)
@@ -145,13 +144,8 @@ namespace MjModelProject
             return true;
         }
 
-        private bool IsValidAnkan(int pai, List<int> consumed)
+        private bool IsValidAnkan(List<int> consumed)
         {
-            if (!tehai.Contains(pai))
-            {
-                return false;
-            }
-
             //check consumed;
             foreach (var consumedPai in consumed)
             {
@@ -207,6 +201,15 @@ namespace MjModelProject
             this.furopai = furopai;
             this.consumed = new List<int>(consumed);
         }
+
+        public Furo(Furotype type, List<int> consumed)
+        {
+            this.ftype = type;
+            this.target = -1;
+            this.furopai = -1;
+            this.consumed = new List<int>(consumed);
+        }
+    
 
     }
 
