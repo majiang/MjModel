@@ -50,8 +50,7 @@ namespace MjModelProject
 
 
 
-        //思考する関数群。AIでオーバーライドする。ｓ
-        //非同期で考える？
+        //思考する関数群。AIでオーバーライドする。
         public virtual int ThinkDahai(Field field, Yama yama, List<Kawa> kawa, Tehai tehai)
         {
             return 0;//stub
