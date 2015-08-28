@@ -44,7 +44,7 @@ namespace MjModelProject
         public int id;
         public List<string> names;
     }
-    public class MJsonMessageStartGame
+    public class MJsonMessageStartKyoku
     {
         public string type = MsgType.START_KYOKU;
         public int id;
@@ -54,6 +54,7 @@ namespace MjModelProject
 
     public static class MsgType
     {
+        public const string JOIN = "join";
         public const string START_GAME = "start_game";
         public const string START_KYOKU = "start_kyoku";
         public const string TSUMO = "tsumo";

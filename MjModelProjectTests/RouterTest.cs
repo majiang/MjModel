@@ -11,12 +11,12 @@ namespace MjModelProjectTests
         [TestMethod]
         public void ルーターテスト()
         {
-            Router router = new Router();
-            MjsonMessage msg = new MjsonMessage();
+            ClientRouter router = new ClientRouter();
+            MjsonMessageAll msg = new MjsonMessageAll();
             msg.type = "tsumo";
 
             var jsonstring = "{\"type\":\"tsumo\",\"id\":0}";
-            router.Routeing(jsonstring);
+            router.RouteGetMessage(jsonstring);
 
 
             //var msgJsonString = JsonConvert.SerializeObject(msg);

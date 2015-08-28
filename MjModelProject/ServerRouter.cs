@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,15 +7,31 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    class ServerRouter
+    public class ServerRouter
     {
-               
 
+        Dictionary<string , ServerController> serverController;//部屋ごとにコントローラを作成
+        //クライアントリスト作成？
+        
 
+        public ServerRouter()
+        {
+            serverController = new Dictionary<string, ServerController>();
 
+        }
+
+        public void SetClientRouter(){
+
+        }
+
+        //送信処理
+        public void SendMessage(string msgJsonString){
+            
+        }
+        
 
         //受信処理
-        public void GetMessageRouteingClient(string msgJsonString)
+        public void RouteGetMessage(string msgJsonString)
         {
             var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(msgJsonString);
             Console.WriteLine(msgobj.type);
@@ -23,14 +40,45 @@ namespace MjModelProject
 
             switch (msgobj.type)
             {
-                case MsgType.START_GAME:
-                    StartGame(msgobj.id, msgobj.names);
+                case MsgType.JOIN:
+                    Join(msgobj.name, msgobj.room);
                     break;
 
-                case MsgType.START_KYOKU:
-                    StartKyoku(msgobj.bakaze, msgobj.kyoku);
+                case MsgType.DAHAI:
+                    Dahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
                     break;
-                
+
+                case MsgType.PON:
+                    Pon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
+
+                case MsgType.CHI:
+                    Chi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
+
+                case MsgType.KAKAN:
+                    Kakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
+
+                case MsgType.ANKAN:
+                    Ankan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
+
+                case MsgType.DAIMINKAN:
+                    Daiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
+            
+                case MsgType.REACH:
+                    Reach(msgobj.actor);
+                    break;
+
+                case MsgType.HORA:
+                    Hora(msgobj.actor, msgobj.target, msgobj.pai);
+                    break;
+
+                case MsgType.NONE:
+                    None();
+                    break;
             }
 
         }
@@ -40,7 +88,22 @@ namespace MjModelProject
         //CtoS
         void Join(string name, string room)
         {
+            //roomがない場合作成
+            if ( !serverController.ContainsKey(room) )
+            {
+                serverController.Add(room, new ServerController());
+            }
 
+            //roomに参加できるか
+            if (serverController[room].CanJoin(name))
+            {
+                serverController[room].Join(name, room);
+                
+                if(serverController[room].CanStartGame()){
+                   
+                }
+            }
+            
         }
 
         //StoC
@@ -101,5 +164,5 @@ namespace MjModelProject
         void None() { }
 
     }
-    }
+    
 }

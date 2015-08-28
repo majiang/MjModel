@@ -17,7 +17,7 @@ namespace MjModelProject
 
 
         //受信処理
-        public void GetMessageRouteingClient(string msgJsonString)
+        public void RouteGetMessage(string msgJsonString)
         {
             var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(msgJsonString);
             Console.WriteLine(msgobj.type);
@@ -86,9 +86,7 @@ namespace MjModelProject
                     EndKyoku();
                     break;
 
-                case MsgType.NONE:
-                    None();
-                    break;
+
 
             }
 
@@ -100,7 +98,10 @@ namespace MjModelProject
         void Join(string name, string room){        }
 
         //StoC
-        void StartGame(int id, List<string> names){}
+        void StartGame(int id, List<string> names)
+        {
+
+        }
 
         //StoC
         void StartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais) { }

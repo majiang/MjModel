@@ -18,6 +18,7 @@ namespace MjModelProject
 
         //フィールドをいじる関数群
         //全てサーバからのメッセージ
+        /*
         void StartGame(int id, List<string> names){
             
         }
@@ -47,7 +48,7 @@ namespace MjModelProject
         void Hora(int actor, int target, int pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores){}
 
         void Ryukyoku(string reason, List<List<int>> tehais){}
-
+        */
 
 
         //思考する関数群。AIでオーバーライドする。
