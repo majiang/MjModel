@@ -10,14 +10,14 @@ namespace MjModelProject
     public class ServerRouter
     {
 
-        Dictionary<string , ServerController> serverController;//部屋ごとにコントローラを作成
-        //クライアントリスト作成？
-        
+        Dictionary<string , ServerController> serverController;//部屋ごとにコントローラを作成<room, servercontroller>
+        //クライアントリスト作成？<name, room>
+        Dictionary<string, string> clientRoom;
 
         public ServerRouter()
         {
             serverController = new Dictionary<string, ServerController>();
-
+            clientRoom = new Dictionary<string, string>();
         }
 
         public void SetClientRouter(){
@@ -88,6 +88,12 @@ namespace MjModelProject
         //CtoS
         void Join(string name, string room)
         {
+            //nameがない場合参加可能
+            if (!clientRoom.ContainsKey(name))
+            {
+
+            }
+
             //roomがない場合作成
             if ( !serverController.ContainsKey(room) )
             {
@@ -103,9 +109,17 @@ namespace MjModelProject
                    
                 }
             }
+            else
+            {
+               
+            }
             
         }
 
+
+
+
+        //こっからしたは無視。
         //StoC
         void StartGame(int id, List<string> names)
         {
