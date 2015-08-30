@@ -41,7 +41,7 @@ namespace MjModelProject
     public class MJsonMessageStartGame
     {
         public string type = MsgType.START_GAME;
-        public int id;
+        public int id;//プレーヤid
         public List<string> names;
     }
     public class MJsonMessageStartKyoku
