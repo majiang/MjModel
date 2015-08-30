@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace MjModelProject
 {
     class ServerController
     {
+        private ServerRouter serverRouter;
+        private string roomName;
         public Dictionary<string,int> playerId { get; set; }
         public Yama yama { get; set; }
         public List<Kawa> kawas { get; set; }
@@ -16,7 +19,9 @@ namespace MjModelProject
        // public List<>//ipaddresとポートが入る？
 
 
-        public ServerController() {
+        public ServerController(ServerRouter sr, string rn) {
+            serverRouter = sr;
+            roomName = rn;
             playerId = new Dictionary<string, int>();
             yama = new Yama();
             kawas = new List<Kawa> { new Kawa(),  new Kawa(), new Kawa(), new Kawa() };
@@ -24,15 +29,21 @@ namespace MjModelProject
             field = new Field();
         }
 
-        public void Join(string name, string room)
-        {
-            
-            playerId.Add(name, playerId.Count);
 
-        }
-        public bool CanJoin(string name)
+
+        public async void Join(string name)
         {
-            return playerId.Count < 4 && !playerId.ContainsKey(name);//4人まで参加可能＆同じ名前はNG
+            playerId.Add(name, playerId.Count);
+            if (CanStartGame())
+            {
+                var startMsg = new MJsonMessageStartGame();
+                startMsg.id
+                serverRouter.SendMessage(roomName, JsonConvert.SerializeObject(  ));
+            }
+        }
+        public bool CanJoin()
+        {
+            return playerId.Count < 4;//4人まで参加可能
         }
         public bool CanStartGame()
         {

@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MjModelProject
 {
     public class ServerRouter
     {
 
-        Dictionary<string , ServerController> serverController;//部屋ごとにコントローラを作成<room, servercontroller>
-        //クライアントリスト作成？<name, room>
-        Dictionary<string, string> clientRoom;
+        Dictionary<string , ServerController> roomServerControllers;//部屋ごとにコントローラを作成< room, servercontroller >
+        Dictionary<string, string> clientNameRooms;//クライアントリスト< name, room >
+        Dictionary<string, List<ClientRouter>> roomClientRouters;//部屋ごとのクライアントリスト< room, List<client> >
 
         public ServerRouter()
         {
-            serverController = new Dictionary<string, ServerController>();
-            clientRoom = new Dictionary<string, string>();
+            roomServerControllers = new Dictionary<string, ServerController>();
+            clientNameRooms = new Dictionary<string, string>();
         }
 
         public void SetClientRouter(){
@@ -25,7 +26,7 @@ namespace MjModelProject
         }
 
         //送信処理
-        public void SendMessage(string msgJsonString){
+        public void SendMessage(string roomName, string msgJsonString){
             
         }
         
@@ -41,7 +42,23 @@ namespace MjModelProject
             switch (msgobj.type)
             {
                 case MsgType.JOIN:
-                    Join(msgobj.name, msgobj.room);
+                    //roomがない場合作成
+                    if (!roomServerControllers.ContainsKey(msgobj.room))
+                    {
+                        roomServerControllers.Add(msgobj.room, new ServerController(this, msgobj.room));
+                    }
+                    if (roomServerControllers[msgobj.room].CanJoin())
+                    {
+#if DEBUG
+                        Console.WriteLine("Join at {0}",msgobj.room);
+                        roomServerControllers[msgobj.room].Join(msgobj.name);
+#endif
+                    }
+                    else
+                    {
+                        Console.WriteLine("Can't Join at {0}", msgobj.room);
+                    }
+
                     break;
 
                 case MsgType.DAHAI:
@@ -84,42 +101,20 @@ namespace MjModelProject
         }
 
 
+        //こっからしたは無視。
+
         //フィールドをいじる関数群
         //CtoS
         void Join(string name, string room)
         {
-            //nameがない場合参加可能
-            if (!clientRoom.ContainsKey(name))
-            {
 
-            }
-
-            //roomがない場合作成
-            if ( !serverController.ContainsKey(room) )
-            {
-                serverController.Add(room, new ServerController());
-            }
-
-            //roomに参加できるか
-            if (serverController[room].CanJoin(name))
-            {
-                serverController[room].Join(name, room);
-                
-                if(serverController[room].CanStartGame()){
-                   
-                }
-            }
-            else
-            {
-               
-            }
             
         }
 
 
 
 
-        //こっからしたは無視。
+     
         //StoC
         void StartGame(int id, List<string> names)
         {
