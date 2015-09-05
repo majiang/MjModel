@@ -19,7 +19,7 @@ namespace MjModelProjectTests
             msg.type = "tsumo";
 
             var jsonstring = "{\"type\":\"tsumo\",\"id\":0}";
-            clientRouter.RouteGetMessage(jsonstring);
+            //clientRouter.RouteGetMessage(jsonstring);
 
 
             //var msgJsonString = JsonConvert.SerializeObject(msg);
