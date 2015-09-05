@@ -9,19 +9,36 @@ namespace MjModelProjectTests
     public class RouterTest
     {
         [TestMethod]
-        public void ルーターテスト()
+        public void クライアントルーターテスト()
         {
-            ClientRouter router = new ClientRouter();
+            ClientRouter clientRouter = new ClientRouter();
+            ClientController cc = new ClientController();
+            clientRouter.SetClientController(cc);
+
             MjsonMessageAll msg = new MjsonMessageAll();
             msg.type = "tsumo";
 
             var jsonstring = "{\"type\":\"tsumo\",\"id\":0}";
-            router.RouteGetMessage(jsonstring);
+            clientRouter.RouteGetMessage(jsonstring);
 
 
             //var msgJsonString = JsonConvert.SerializeObject(msg);
             //router.Routeing(msgJsonString);
 
         }
+
+        [TestMethod]
+        public void サーバールーターテスト()
+        {
+            ServerRouter serverRouter = new ServerRouter();
+        }
+
+
+        [TestMethod]
+        public void ルーター間通信テスト()
+        {
+
+        }
+
     }
 }

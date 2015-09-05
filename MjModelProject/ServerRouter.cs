@@ -10,28 +10,47 @@ namespace MjModelProject
 {
     public class ServerRouter
     {
-
-        Dictionary<string , ServerController> roomServerControllers;//部屋ごとにコントローラを作成< room, servercontroller >
+        //ユーザーネームは一意という前提。
+        Dictionary<string, ServerController> roomServerControllers;//部屋ごとにコントローラを作成< room, servercontroller >
         Dictionary<string, string> clientNameRooms;//クライアントリスト< name, room >
-        Dictionary<string, List<ClientRouter>> roomClientRouters;//部屋ごとのクライアントリスト< room, List<client> >
+        Dictionary<string, ClientRouter> roomClientRouters;//プレーヤ名とクライアントのリスト< name, clientRouter > //ソケットに変更予定
+        
+        List<string> getMessageList;
+
+
+ 
+        public void UpDateServer()
+        {
+            if (getMessageList.Count > 0)
+            {
+                foreach (var message in getMessageList)
+                {
+                    RouteGetMessage(message);
+                }
+                getMessageList.Clear();
+            }
+        }
+
+
 
         public ServerRouter()
         {
             roomServerControllers = new Dictionary<string, ServerController>();
             clientNameRooms = new Dictionary<string, string>();
+            roomClientRouters = new Dictionary<string, ClientRouter>();
         }
 
         public void SetClientRouter(){
 
         }
 
-        //送信処理
-        public void SendMessage(string roomName, string msgJsonString){
-            
+        //受信処理
+        public void GetMessage(string msgJsonString){
+            getMessageList.Add(msgJsonString);
         }
         
 
-        //受信処理
+        //受信メッセージルーティング処理
         public void RouteGetMessage(string msgJsonString)
         {
             var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(msgJsonString);
@@ -62,115 +81,110 @@ namespace MjModelProject
                     break;
 
                 case MsgType.DAHAI:
-                    Dahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
+                    roomServerControllers[msgobj.name].Dahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
                     break;
 
                 case MsgType.PON:
-                    Pon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    roomServerControllers[msgobj.name].Pon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.CHI:
-                    Chi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    roomServerControllers[msgobj.name].Chi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.KAKAN:
-                    Kakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    roomServerControllers[msgobj.name].Kakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.ANKAN:
-                    Ankan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    roomServerControllers[msgobj.name].Ankan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.DAIMINKAN:
-                    Daiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    roomServerControllers[msgobj.name].Daiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
             
                 case MsgType.REACH:
-                    Reach(msgobj.actor);
+                    roomServerControllers[msgobj.name].Reach(msgobj.actor);
                     break;
 
                 case MsgType.HORA:
-                    Hora(msgobj.actor, msgobj.target, msgobj.pai);
+                    roomServerControllers[msgobj.name].Hora(msgobj.actor, msgobj.target, msgobj.pai);
                     break;
 
                 case MsgType.NONE:
-                    None();
+                    roomServerControllers[msgobj.name].None();
                     break;
             }
 
         }
 
 
-        //こっからしたは無視。
-
-        //フィールドをいじる関数群
+   
+        //クライアントにメッセージを送る関数群
         //CtoS
-        void Join(string name, string room)
-        {
-
-            
-        }
-
+ //       public void SendJoin(string name , string room){}
+   
 
 
 
      
         //StoC
-        void StartGame(int id, List<string> names)
+        public void SendStartGame(string name, int id, List<string> names)
         {
             
         }
 
         //StoC
-        void StartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMaker, List<List<int>> tehais) { }
+        public void SendStartKyoku(string name, int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMaker, List<List<int>> tehais) { }
 
         //StoC
-        void Tsumo(int actor, int pai) { }
+        public void SendTsumo(string name, int actor, int pai) { }
 
         //Both
-        void Dahai(int actor, int pai, bool tsumogiri) { }
+        public void SendDahai(string name, int actor, int pai, bool tsumogiri) { }
 
         //Both
-        void Pon(int actor, int target, int pai, List<int> consumed) { }
+        public void SendPon(string name, int actor, int target, int pai, List<int> consumed) { }
 
         //Both
-        void Chi(int actor, int target, int pai, List<int> consumed) { }
+        public void SendChi(string name, int actor, int target, int pai, List<int> consumed) { }
 
         //Both
-        void Kakan(int actor, int target, int pai, List<int> consumed) { }
+        public void SendKakan(string name, int actor, int target, int pai, List<int> consumed) { }
 
         //Both
-        void Daiminkan(int actor, int target, int pai, List<int> consumed) { }
+        public void SendDaiminkan(string name, int actor, int target, int pai, List<int> consumed) { }
 
         //Both
-        void Ankan(int actor, int target, int pai, List<int> consumed) { }
+        public void SendAnkan(string name, int actor, int target, int pai, List<int> consumed) { }
 
         //StoC
-        void Dora(int doraMarker) { }
+        public void SendDora(string name, int doraMarker) { }
 
         //Both
-        void Reach(int actor) { }
+        public void SendReach(string name, int actor) { }
 
         //StoC
-        void ReachAccept(int actor, List<int> deltas, List<int> scores) { }
+        public void SendReachAccept(string name, int actor, List<int> deltas, List<int> scores) { }
 
         //CtoS
-        void Hora(int actor, int target, int pai) { }
+        //      public   void Hora(int actor, int target, int pai) { }
 
         //StoC
-        void Hora(int actor, int target, int pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
+        public void SendHora(string name, int actor, int target, int pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
 
         //StoC
-        void Ryukyoku(string reason, List<List<int>> tehais) { }
+        public void SendRyukyoku(string name, string reason, List<List<int>> tehais) { }
 
         //StoC
-        void EndKyoku()
+        public void SendEndKyoku(string name)
         {
 
         }
 
         //CtoS
-        void None() { }
+        //     public   void None() { }
 
     }
     

@@ -47,9 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiBase.cs" />
+    <Compile Include="ClientController.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Kawa.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MjModel.cs" />
     <Compile Include="ServerController.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
