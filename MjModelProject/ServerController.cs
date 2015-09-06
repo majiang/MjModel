@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace MjModelProject
 {
-    class ServerController
+    public class ServerController
     {
         
         private ServerRouter serverRouter;
@@ -22,7 +22,7 @@ namespace MjModelProject
         public Field field { get; set; }
         public List<int> turnds;
        // public List<>//ipaddresとポートが入る？
-        
+       
 
 
         public ServerController(ServerRouter sr, string rn) {
@@ -67,7 +67,7 @@ namespace MjModelProject
             //modelへの指示後にクライアントへモデルの状態を送信。
             for (int i = 0; i < startPositionID.Count; i++)
             {
-                serverRouter.SendStartKyoku(playerNames[i], 0, 0, 0, 0, 0, 0, stubTehais);
+                serverRouter.SendStartKyoku(playerNames[i], 0, 0, 0, 0, 0, 0, stubTehais);//stub
             }
         }
 

@@ -47,8 +47,23 @@ namespace MjModelProject
     public class MJsonMessageStartKyoku
     {
         public string type = MsgType.START_KYOKU;
-        public int id;
-        public List<string> names;
+        int bakaze;
+        int kyoku;
+        int honba;
+        int kyotaku;
+        int oya;
+        int doraMarker;
+        List<List<int>> tehais;
+        public MJsonMessageStartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais)
+        {
+            this.bakaze = bakaze;
+            this.kyoku = kyoku;
+            this.honba = honba;
+            this.kyotaku = kyotaku;
+            this.oya = oya;
+            this.doraMarker = doraMarker;
+            this.tehais = tehais;
+        }
     }
 
 

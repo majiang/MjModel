@@ -4,29 +4,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Net;
 
 namespace MjModelProject
 {
     //client側ね
-    public class ClientRouter
+    public class ClientRouter : RouterInterface
     {
-        private ClientController clientController;
-       //controller
-        public ClientRouter() { }
+
+        
+        public ClientController clientController;
+        public IPAddress clientIpAddress;
+        public static readonly IPAddress SERVER_IP = IPAddress.Parse("10.0.1.1");
+
+        //メッセージ送信用
+        public VirtualInternet virtualInternet;
+
+        //受信メッセージ補完リスト
+        List<Packet> getPacketList;
+
+
+        public ClientRouter()
+        {
+            getPacketList = new List<Packet>();
+        }
+
 
         public void SetClientController(ClientController clientController)
         {
             this.clientController = clientController;
         }
 
+
+
+
+        public void UpDateServer()
+        {
+            if (getPacketList.Count > 0)
+            {
+                foreach (var packet in getPacketList)
+                {
+                    RouteGetMessage(packet);
+                }
+                getPacketList.Clear();
+            }
+        }
+
+       
+        //受信処理
+        public void AddPacket(Packet packet)
+        {
+            getPacketList.Add(packet);
+        }
+
         //サーバからメッセージを受信してクライアントコントローラに命令を出す部分
-        public void RouteGetMessage(string msgJsonString)
+        public void RouteGetMessage(Packet packet)
         {
 
-            var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(msgJsonString);
+            var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(packet.jsonMessage);
             Console.WriteLine(msgobj.type);
-            Console.WriteLine(msgJsonString.ToString());
+            Console.WriteLine(packet.jsonMessage);
             Console.WriteLine(msgobj.doraMarker.ToString());
 
             switch (msgobj.type)
@@ -97,6 +134,11 @@ namespace MjModelProject
 
         }
 
+
+        public void SendMessageToServer(string message)
+        {
+            virtualInternet.RoutePacket(new Packet(clientIpAddress, SERVER_IP, message));
+        }
 
         //サーバにメッセージを送信する命令群
         //CtoS

@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    class MjModel
+    public class MjModel
     {
 
+        public Yama yama { get; set; }
+        public List<Kawa> kawas { get; set; }
+        public List<Tehai> tehais { get; set; }
+        public Field field { get; set; }
+        public List<int> turnds;
 
     }
 }

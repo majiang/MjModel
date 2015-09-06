@@ -8,20 +8,20 @@ namespace MjModelProject
 {
     public class ClientController
     {
-        
 
 
-        internal void StartGame(int p, List<string> list)
+
+        internal void StartGame(int id, List<string> names)
         {
             throw new NotImplementedException();
         }
 
-        internal void StartKyoku(int p1, int p2, int p3, int p4, int p5, int p6, List<List<int>> list)
+        internal void StartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais)
         {
             throw new NotImplementedException();
         }
 
-        internal void Tsumo(int p1, int p2)
+        internal void Tsumo(int actor, int pai) 
         {
             throw new NotImplementedException();
         }

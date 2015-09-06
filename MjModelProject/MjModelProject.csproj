@@ -47,12 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiBase.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="ClientController.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Field.cs" />
+    <Compile Include="Packet.cs" />
+    <Compile Include="RouterInterface.cs" />
     <Compile Include="Kawa.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MjModel.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="ServerController.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -60,6 +64,7 @@
     <Compile Include="ClientRouter.cs" />
     <Compile Include="ServerRouter.cs" />
     <Compile Include="Tehai.cs" />
+    <Compile Include="VirtualInternet.cs" />
     <Compile Include="Yama.cs" />
   </ItemGroup>
   <ItemGroup>
