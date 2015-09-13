@@ -18,13 +18,13 @@ namespace MjModelProject
         public int actor;
         public bool tsumogiri;
         public int target;
-        public int pai;
-        public List<int> consumed;
+        public string pai;
+        public List<string> consumed;
         public int doraMarker;
         public List<int> details;//点数移動
         public List<int> scores;//点数移動結果
         public List<int> uradoraMarkers;
-        public List<int> horaTehais;
+        public List<string> horaTehais;
         public Dictionary<string, int> yakus;
         public int fu;
         public int fan;
@@ -53,8 +53,8 @@ namespace MjModelProject
         int kyotaku;
         int oya;
         int doraMarker;
-        List<List<int>> tehais;
-        public MJsonMessageStartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais)
+        List<List<string>> tehais;
+        public MJsonMessageStartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<string>> tehais)
         {
             this.bakaze = bakaze;
             this.kyoku = kyoku;

@@ -151,25 +151,25 @@ namespace MjModelProject
 //        void SendStartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais) { }
 
         //StoC
-//        void SendTsumo(int actor, int pai) { }
+//        void SendTsumo(int actor, string pai) { }
 
         //Both
-        void SendDahai(int actor, int pai, bool tsumogiri) { }
+        void SendDahai(int actor, string pai, bool tsumogiri) { }
 
         //Both
-        void SendPon(int actor, int target, int pai, List<int> consumed) { }
+        void SendPon(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendChi(int actor, int target, int pai, List<int> consumed) { }
+        void SendChi(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendKakan(int actor, int target, int pai, List<int> consumed) { }
+        void SendKakan(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendDaiminkan(int actor, int target, int pai, List<int> consumed) { }
+        void SendDaiminkan(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendAnkan(int actor, int target, int pai, List<int> consumed) { }
+        void SendAnkan(int actor, int target, string pai, List<int> consumed) { }
 
         //StoC
 //        void Dora(int doraMarker) { }
@@ -181,10 +181,10 @@ namespace MjModelProject
         //void ReachAccepted(int actor, List<int> deltas, List<int> scores) { }
 
         //CtoS
-        void SendHora(int actor, int target, int pai) { }
+        void SendHora(int actor, int target, string pai) { }
 
         //StoC
-        //void Hora(int actor, int target, int pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
+        //void Hora(int actor, int target, string pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
 
         //StoC
         //void Ryukyoku(string reason, List<List<int>> tehais) { }

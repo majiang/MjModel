@@ -12,30 +12,37 @@ namespace MjModelProject
         private int WanpaiLength = 14;
 
         public int restPai;
-        public List<int> doraOmote;
+        public List<Pai> doraOmote;
 
-        private List<int> mYama;
+        private List<Pai> mYama;
         private int yamaPointer;
 
         public Yama() {
             mYama = makeYama();
             restPai = YamaLength - WanpaiLength;
-            doraOmote = new List<int>();
+            doraOmote = new List<Pai>();
             yamaPointer = 0;
         }
-        
-        private List<int> makeYama()
+
+        private List<Pai> makeYama()
         {
-            var ym = new int[YamaLength];
+            var ym = new Pai[YamaLength];
             for (int i = 0; i < YamaLength; i++)
             {
-                ym[i] = i;
+                ym[i] = new Pai(i >> 2);
             }
-            List<int> shuffled = new List<int>(ym.OrderBy(i => Guid.NewGuid()));
+            //赤ドラ設定 
+
+            foreach (var redDora in PaiConverter.RED_DORA_STRING_ID) { 
+                ym[redDora.Value * 4 - 1].isRedDora = true;
+                ym[redDora.Value * 4 - 1].paiString = redDora.Key;
+            }
+
+            List<Pai> shuffled = new List<Pai>(ym.OrderBy(i => Guid.NewGuid()));
             return shuffled;
         }
 
-        public int tsumo()
+        public Pai tsumo()
         {
             return mYama[yamaPointer++];
         }

@@ -52,6 +52,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Packet.cs" />
+    <Compile Include="Pai.cs" />
+    <Compile Include="PaiConverter.cs" />
     <Compile Include="RouterInterface.cs" />
     <Compile Include="Kawa.cs" />
     <Compile Include="Message.cs" />

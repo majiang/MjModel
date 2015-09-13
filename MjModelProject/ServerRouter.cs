@@ -153,31 +153,31 @@ namespace MjModelProject
         }
 
         //StoC
-        public void SendStartKyoku(string name, int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais)
+        public void SendStartKyoku(string name, int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<string>> tehais)
         {
             SendMessageToClient(name, JsonConvert.SerializeObject(new MJsonMessageStartKyoku(bakaze, kyoku, honba, kyotaku, oya, doraMarker, tehais) ));
         }
 
         //StoC
-        public void SendTsumo(string name, int actor, int pai) { }
+        public void SendTsumo(string name, int actor, string pai) { }
 
         //Both
-        public void SendDahai(string name, int actor, int pai, bool tsumogiri) { }
+        public void SendDahai(string name, int actor, string pai, bool tsumogiri) { }
 
         //Both
-        public void SendPon(string name, int actor, int target, int pai, List<int> consumed) { }
+        public void SendPon(string name, int actor, int target, string pai, List<string> consumed) { }
 
         //Both
-        public void SendChi(string name, int actor, int target, int pai, List<int> consumed) { }
+        public void SendChi(string name, int actor, int target, string pai, List<string> consumed) { }
 
         //Both
-        public void SendKakan(string name, int actor, int target, int pai, List<int> consumed) { }
+        public void SendKakan(string name, int actor, int target, string pai, List<string> consumed) { }
 
         //Both
-        public void SendDaiminkan(string name, int actor, int target, int pai, List<int> consumed) { }
+        public void SendDaiminkan(string name, int actor, int target, string pai, List<string> consumed) { }
 
         //Both
-        public void SendAnkan(string name, int actor, int target, int pai, List<int> consumed) { }
+        public void SendAnkan(string name, int actor, int target, string pai, List<string> consumed) { }
 
         //StoC
         public void SendDora(string name, int doraMarker) { }
@@ -189,10 +189,10 @@ namespace MjModelProject
         public void SendReachAccept(string name, int actor, List<int> deltas, List<int> scores) { }
 
         //CtoS
-        //      public   void Hora(int actor, int target, int pai) { }
+        //      public   void Hora(int actor, int target, string pai) { }
 
         //StoC
-        public void SendHora(string name, int actor, int target, int pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
+        public void SendHora(string name, int actor, int target, string pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
 
         //StoC
         public void SendRyukyoku(string name, string reason, List<List<int>> tehais) { }

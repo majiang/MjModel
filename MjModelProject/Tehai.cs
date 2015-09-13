@@ -8,22 +8,22 @@ namespace MjModelProject
 {
     public class Tehai
     {
-        public List<int> tehai { get; set; }
+        public List<string> tehai { get; set; }
         public List<Furo> furos { get; set; }
 
         public Tehai() { }
-        public Tehai(List<int> tehai)
+        public Tehai(List<string> tehai)
         {
-            this.tehai = new List<int>(tehai);
+            this.tehai = new List<string>(tehai);
             this.furos = new List<Furo>();
         }
 
-        public void Tsumo(int tsumopai)
+        public void Tsumo(string tsumopai)
         {
             tehai.Add(tsumopai);
         }
 
-        public void Da(int dapai)
+        public void Da(string dapai)
         {
             if (tehai.Contains(dapai))
             {
@@ -36,7 +36,7 @@ namespace MjModelProject
             }
         }
 
-        public void Chi(int actor, int target, int pai, List<int> consumed)
+        public void Chi(int actor, int target, string pai, List<string> consumed)
         {
             if ( !IsValidNaki(consumed) )
             {
@@ -55,7 +55,7 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.chi, target, pai, consumed));
 
         }
-        public void Pon(int actor, int target, int pai, List<int> consumed)
+        public void Pon(int actor, int target, string pai, List<string> consumed)
         {
             if (!IsValidNaki(consumed))
             {
@@ -72,7 +72,7 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.pon, target, pai, consumed));
         }
 
-        public void Daiminkan(int actor, int target, int pai, List<int> consumed)
+        public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             if (!IsValidNaki(consumed))
             {
@@ -89,7 +89,7 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.daiminkan, target, pai, consumed));
         }
 
-        public void Ankan(int actor, List<int> consumed)
+        public void Ankan(int actor, List<string> consumed)
         {
             if (!IsValidAnkan(consumed))
             {
@@ -103,10 +103,10 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.ankan, consumed));
+            furos.Add(new Furo(Furo.Furotype.ankan, actor, "" , consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
         }
 
-        public void Kakan(int actor, int target, int pai, List<int> consumed)
+        public void Kakan(int actor, int target, string pai, List<string> consumed)
         {
             if (!IsValidKakan(pai, consumed))
             {
@@ -130,7 +130,7 @@ namespace MjModelProject
         }
 
 
-        private bool IsValidNaki(List<int> consumed)
+        private bool IsValidNaki(List<string> consumed)
         {
             //check consumed;
             foreach (var consumedPai in consumed)
@@ -144,7 +144,7 @@ namespace MjModelProject
             return true;
         }
 
-        private bool IsValidAnkan(List<int> consumed)
+        private bool IsValidAnkan(List<string> consumed)
         {
             //check consumed;
             foreach (var consumedPai in consumed)
@@ -158,7 +158,7 @@ namespace MjModelProject
             return true;
         }
 
-        private bool IsValidKakan(int pai, List<int> consumed)
+        private bool IsValidKakan(string pai, List<string> consumed)
         {
             if (!tehai.Contains(pai))
             {
@@ -191,26 +191,16 @@ namespace MjModelProject
 
         public Furotype ftype;
         public int target;
-        public List<int> consumed;
-        public int furopai;
+        public List<string> consumed;
+        public string furopai;
 
-        public Furo(Furotype type, int target, int furopai, List<int> consumed)
+        public Furo(Furotype type, int target, string furopai, List<string> consumed)
         {
             this.ftype = type;
             this.target = target;
             this.furopai = furopai;
-            this.consumed = new List<int>(consumed);
+            this.consumed = new List<string>(consumed);
         }
-
-        public Furo(Furotype type, List<int> consumed)
-        {
-            this.ftype = type;
-            this.target = -1;
-            this.furopai = -1;
-            this.consumed = new List<int>(consumed);
-        }
-    
-
     }
 
 

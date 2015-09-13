@@ -8,5 +8,6 @@ namespace MjModelProject
 {
     public class Kawa
     {
+        
     }
 }

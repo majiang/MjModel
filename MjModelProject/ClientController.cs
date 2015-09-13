@@ -21,7 +21,7 @@ namespace MjModelProject
             throw new NotImplementedException();
         }
 
-        internal void Tsumo(int actor, int pai) 
+        internal void Tsumo(int actor, string pai) 
         {
             throw new NotImplementedException();
         }
