@@ -8,75 +8,77 @@ namespace MjModelProject
 {
     public class ClientController
     {
+        public ClientRouter clientRouter;
+        public ClientMjModel clientMjModel;
 
+       
 
+        public void StartGame(int id, List<string> names)
+        {
+            clientMjModel.StartGame();
+        }
 
-        internal void StartGame(int id, List<string> names)
+        internal void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
+        {
+            clientMjModel.StartKyoku(bakaze, kyoku, honba, kyotaku, oya, doraMarker, tehais);
+        }
+
+        internal void Tsumo(int actor, string pai)
+        {
+            clientMjModel.Tsumo(actor, pai);
+        }
+
+        internal void Dahai(int actor, string pai, bool tsumogiri)
+        {
+            clientMjModel.Dahai(actor, pai, tsumogiri);
+        }
+
+        internal void Pon(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void StartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais)
+        internal void Chi(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Tsumo(int actor, string pai) 
+        internal void Kakan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Dahai(int p1, int p2, bool p3)
+        internal void Ankan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Pon(int p1, int p2, int p3, List<int> list)
+        internal void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Chi(int p1, int p2, int p3, List<int> list)
+        internal void Dora(string pai)
         {
             throw new NotImplementedException();
         }
 
-        internal void Kakan(int p1, int p2, int p3, List<int> list)
+        internal void Reach(int actor)
         {
             throw new NotImplementedException();
         }
 
-        internal void Ankan(int p1, int p2, int p3, List<int> list)
+        internal void ReachAccepted(int actor, List<int> deltas, List<int> scores)
         {
             throw new NotImplementedException();
         }
 
-        internal void Daiminkan(int p1, int p2, int p3, List<int> list)
+        internal void Hora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
         {
             throw new NotImplementedException();
         }
 
-        internal void Dora(int p)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Reach(int p)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void ReachAccepted(int p, List<int> list1, List<int> list2)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Hora(int p1, int p2, int p3, List<int> list1, List<int> list2, Dictionary<string, int> dictionary, int p4, int p5, int p6, List<int> list3, List<int> list4)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Ryukyoku(string p, List<List<int>> list)
+        internal void Ryukyoku(string reason, List<List<string>> tehais)
         {
             throw new NotImplementedException();
         }
@@ -84,6 +86,11 @@ namespace MjModelProject
         internal void EndKyoku()
         {
             throw new NotImplementedException();
+        }
+
+        public void SendNone()
+        {
+            clientRouter.SendNone();
         }
     }
 }

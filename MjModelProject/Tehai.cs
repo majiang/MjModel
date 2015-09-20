@@ -8,26 +8,48 @@ namespace MjModelProject
 {
     public class Tehai
     {
-        public List<string> tehai { get; set; }
+        public List<Pai> tehai { get; set; }
         public List<Furo> furos { get; set; }
+        public static readonly List<Pai> UNKNOWN_TEHAI_PAI = new List<Pai> 
+        {
+            new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"),
+            new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"),
+            new Pai("?"), new Pai("?"), new Pai("?")
+        };
+        public static readonly List<string> UNKNOWN_TEHAI_STRING = new List<string> 
+        {
+           "?","?","?","?","?","?","?","?","?","?","?","?","?"
+        };
 
         public Tehai() { }
-        public Tehai(List<string> tehai)
+        public Tehai(List<Pai> tehai)
         {
-            this.tehai = new List<string>(tehai);
+            this.tehai = new List<Pai>(tehai);//コピーを作成。
             this.furos = new List<Furo>();
         }
 
-        public void Tsumo(string tsumopai)
+        public Tehai(List<string> tehai)
+        {
+            var paiTehai = from hai in tehai select new Pai(hai);
+            this.tehai = new List<Pai>(paiTehai);//コピーを作成。
+            this.furos = new List<Furo>();
+        }
+
+        public List<string> GetTehaiString()
+        {
+            return tehai.Select(e => e.paiString).ToList();
+        }
+
+        public void Tsumo(Pai tsumopai)
         {
             tehai.Add(tsumopai);
         }
 
-        public void Da(string dapai)
+        public void Da(Pai dapai)
         {
-            if (tehai.Contains(dapai))
+            if (tehai.Any( e => e == dapai))
             {
-                tehai.Remove(dapai);
+                tehai.RemoveAt(tehai.FindIndex(e => e == dapai));
             }
             else
             {
@@ -36,7 +58,7 @@ namespace MjModelProject
             }
         }
 
-        public void Chi(int actor, int target, string pai, List<string> consumed)
+        public void Chi(int actor, int target, Pai pai, List<Pai> consumed)
         {
             if ( !IsValidNaki(consumed) )
             {
@@ -55,7 +77,7 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.chi, target, pai, consumed));
 
         }
-        public void Pon(int actor, int target, string pai, List<string> consumed)
+        public void Pon(int actor, int target, Pai pai, List<Pai> consumed)
         {
             if (!IsValidNaki(consumed))
             {
@@ -72,7 +94,7 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.pon, target, pai, consumed));
         }
 
-        public void Daiminkan(int actor, int target, string pai, List<string> consumed)
+        public void Daiminkan(int actor, int target, Pai pai, List<Pai> consumed)
         {
             if (!IsValidNaki(consumed))
             {
@@ -89,7 +111,7 @@ namespace MjModelProject
             furos.Add(new Furo(Furo.Furotype.daiminkan, target, pai, consumed));
         }
 
-        public void Ankan(int actor, List<string> consumed)
+        public void Ankan(int actor, List<Pai> consumed)
         {
             if (!IsValidAnkan(consumed))
             {
@@ -103,10 +125,10 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.ankan, actor, "" , consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
+            furos.Add(new Furo(Furo.Furotype.ankan, actor, new Pai() , consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
         }
 
-        public void Kakan(int actor, int target, string pai, List<string> consumed)
+        public void Kakan(int actor, int target, Pai pai, List<Pai> consumed)
         {
             if (!IsValidKakan(pai, consumed))
             {
@@ -130,7 +152,7 @@ namespace MjModelProject
         }
 
 
-        private bool IsValidNaki(List<string> consumed)
+        private bool IsValidNaki(List<Pai> consumed)
         {
             //check consumed;
             foreach (var consumedPai in consumed)
@@ -144,7 +166,7 @@ namespace MjModelProject
             return true;
         }
 
-        private bool IsValidAnkan(List<string> consumed)
+        private bool IsValidAnkan(List<Pai> consumed)
         {
             //check consumed;
             foreach (var consumedPai in consumed)
@@ -158,7 +180,7 @@ namespace MjModelProject
             return true;
         }
 
-        private bool IsValidKakan(string pai, List<string> consumed)
+        private bool IsValidKakan(Pai pai, List<Pai> consumed)
         {
             if (!tehai.Contains(pai))
             {
@@ -191,15 +213,15 @@ namespace MjModelProject
 
         public Furotype ftype;
         public int target;
-        public List<string> consumed;
-        public string furopai;
+        public List<Pai> consumed;
+        public Pai furopai;
 
-        public Furo(Furotype type, int target, string furopai, List<string> consumed)
+        public Furo(Furotype type, int target, Pai furopai, List<Pai> consumed)
         {
             this.ftype = type;
             this.target = target;
             this.furopai = furopai;
-            this.consumed = new List<string>(consumed);
+            this.consumed = new List<Pai>(consumed);
         }
     }
 

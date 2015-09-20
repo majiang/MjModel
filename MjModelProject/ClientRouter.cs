@@ -13,7 +13,7 @@ namespace MjModelProject
     {
 
         
-        public ClientController clientController;
+        public Client client;
         public IPAddress clientIpAddress;
         public static readonly IPAddress SERVER_IP = IPAddress.Parse("10.0.1.1");
 
@@ -30,9 +30,9 @@ namespace MjModelProject
         }
 
 
-        public void SetClientController(ClientController clientController)
+        public void SetClientController(Client client)
         {
-            this.clientController = clientController;
+            this.client = client;
         }
 
 
@@ -69,63 +69,63 @@ namespace MjModelProject
             switch (msgobj.type)
             {
                 case MsgType.START_GAME:
-                    clientController.StartGame(msgobj.id, msgobj.names);
+                    client.GetStartGame(msgobj.id, msgobj.names);
                     break;
 
                 case MsgType.START_KYOKU:
-                    clientController.StartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.doraMarker, msgobj.tehais);
+                    client.GetStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.doraMarker, msgobj.tehais);
                     break;
 
                 case MsgType.TSUMO:
-                    clientController.Tsumo(msgobj.actor, msgobj.pai);
+                    client.GetTsumo(msgobj.actor, msgobj.pai);
                     break;
                 
                 case MsgType.DAHAI:
-                    clientController.Dahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
+                    client.GetDahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
                     break;
 
                 case MsgType.PON:
-                    clientController.Pon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.GetPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.CHI:
-                    clientController.Chi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.GetChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.KAKAN:
-                    clientController.Kakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.GetKakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.ANKAN:
-                    clientController.Ankan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.GetAnkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.DAIMINKAN:
-                    clientController.Daiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.GetDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.DORA:
-                    clientController.Dora(msgobj.doraMarker);
+                    client.GetDora(msgobj.doraMarker);
                     break;
 
                 case MsgType.REACH:
-                    clientController.Reach(msgobj.actor);
+                    client.GetReach(msgobj.actor);
                     break;
 
                 case MsgType.REACH_ACCEPTED:
-                    clientController.ReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
+                    client.GetReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
                     break;
 
                 case MsgType.HORA:
-                    clientController.Hora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradoraMarkers, msgobj.horaTehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.horaPoints, msgobj.deltas, msgobj.scores);
+                    client.GetHora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradoraMarkers, msgobj.horaTehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.horaPoints, msgobj.deltas, msgobj.scores);
                     break;
 
                 case MsgType.RYUKYOKU:
-                    clientController.Ryukyoku(msgobj.reason, msgobj.tehais);
+                    client.GetRyukyoku(msgobj.reason, msgobj.tehais);
                     break;
 
                 case MsgType.END_KYOKU:
-                    clientController.EndKyoku();
+                    client.GetEndKyoku();
                     break;
 
 
@@ -142,7 +142,7 @@ namespace MjModelProject
 
         //サーバにメッセージを送信する命令群
         //CtoS
-        void SendJoin(string name, string room){        }
+        public void SendJoin(string name, string room){        }
 
         //StoC
  //       void SendStartGame(int id, List<string> names)
@@ -154,34 +154,36 @@ namespace MjModelProject
 //        void SendTsumo(int actor, string pai) { }
 
         //Both
-        void SendDahai(int actor, string pai, bool tsumogiri) { }
+        public void SendDahai(int actor, string pai, bool tsumogiri) {
+            SendMessageToServer(JsonConvert.SerializeObject(new MJsonMessageDahai(actor, pai, tsumogiri)));
+        }
 
         //Both
-        void SendPon(int actor, int target, string pai, List<int> consumed) { }
+        public void SendPon(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendChi(int actor, int target, string pai, List<int> consumed) { }
+        public void SendChi(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendKakan(int actor, int target, string pai, List<int> consumed) { }
+        public void SendKakan(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendDaiminkan(int actor, int target, string pai, List<int> consumed) { }
+        public void SendDaiminkan(int actor, int target, string pai, List<int> consumed) { }
 
         //Both
-        void SendAnkan(int actor, int target, string pai, List<int> consumed) { }
+        public void SendAnkan(int actor, int target, string pai, List<int> consumed) { }
 
         //StoC
 //        void Dora(int doraMarker) { }
 
         //Both
-        void SendReach(int actor) { }
+        public void SendReach(int actor) { }
 
         //StoC
         //void ReachAccepted(int actor, List<int> deltas, List<int> scores) { }
 
         //CtoS
-        void SendHora(int actor, int target, string pai) { }
+        public void SendHora(int actor, int target, string pai) { }
 
         //StoC
         //void Hora(int actor, int target, string pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
@@ -194,7 +196,9 @@ namespace MjModelProject
 
 
         //CtoS
-        void SendNone() { }
+        public void SendNone() {
+            SendMessageToServer(JsonConvert.SerializeObject(new MJsonMessageNone()));
+        }
 
     }
 

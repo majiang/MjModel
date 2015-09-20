@@ -59,6 +59,8 @@ namespace MjModelProject
             { "P",  31},
             { "F",  32},
             { "C",  33},
+
+            {"?", -1}
         };
         public static readonly Dictionary<int, string> ID_TO_STRING = new Dictionary<int, string>()
         {
@@ -98,7 +100,9 @@ namespace MjModelProject
             { 30,"N"},
             { 31,"P"},
             { 32,"F"},
-            { 33,"C"}
+            { 33,"C"},
+
+            { -1,"?"}
         };
 
     }

@@ -15,24 +15,24 @@ namespace MjModelProject
         public VirtualInternet virtualInternet;
         //ユーザーネームは一意という前提。
 
-        //メッセージ受信時にクライアントの名前を見てルーム名を取得後にコントローラを取得
-        public Dictionary<string, ServerController> roomServerControllers;//部屋ごとにコントローラを作成< room, servercontroller >
-        public Dictionary<string, string> clientNameRooms;//クライアントリスト< name, room >
+        //メッセージ受信時にクライアントの名前を見てルーム名を取得。後にコントローラを取得
+        public Dictionary<string, ServerContext> roomNameServerDictionary;//部屋ごとにコントローラを作成< room, servercontroller >
+        public Dictionary<string, string> clientNameRoomDictionary;//クライアントリスト< name, room >
         
         //メッセージ送信時にクライアントの名前が渡されるので名前でクライアントルータを取得して送信。
-        public Dictionary<string, IPAddress> clientNameIPs;//プレーヤ名とクライアントIPのリスト< name, clientIP > //ソケットに変更予定
+        public Dictionary<string, IPAddress> clientNameIpDictionary;//プレーヤ名とクライアントIPのリスト< name, clientIP > //ソケットに変更予定
         
 
         //受信メッセージ保管リスト
         public List<Packet> getPacketList;
-
+        
 
 
         public ServerRouter()
         {
-            roomServerControllers = new Dictionary<string, ServerController>();
-            clientNameRooms = new Dictionary<string, string>();
-            clientNameIPs = new Dictionary<string, IPAddress>();
+            roomNameServerDictionary = new Dictionary<string, ServerContext>();
+            clientNameRoomDictionary = new Dictionary<string, string>();
+            clientNameIpDictionary = new Dictionary<string, IPAddress>();
             getPacketList = new List<Packet>();
         }
 
@@ -74,60 +74,31 @@ namespace MjModelProject
 
             switch (msgobj.type)
             {
+                
                 case MsgType.JOIN:
-                    //roomがない場合作成
-                    if (!roomServerControllers.ContainsKey(msgobj.room))
+                    //roomがない場合room作成
+                    if (!roomNameServerDictionary.ContainsKey(msgobj.room))
                     {
-                        roomServerControllers.Add(msgobj.room, new ServerController(this, msgobj.room));
+                        roomNameServerDictionary.Add(msgobj.room, new ServerContext(this, msgobj.room));
                     }
-                    if (roomServerControllers[msgobj.room].CanJoin())
+                    //参加人数が上限に達していないかチェック
+                    if (roomNameServerDictionary[msgobj.room].CanJoin())
                     {
                         Console.WriteLine("{0} Join at {1}",msgobj.name,msgobj.room);
-                        clientNameRooms.Add(msgobj.name, msgobj.room);
-                        clientNameIPs.Add(msgobj.name, packet.fromIpAddress);
-                        //Join実行中にクライアント名をキーにしてIPを探索するのでIPの登録は実行した後にJoinを実行する
-                        roomServerControllers[msgobj.room].Join(msgobj.name);
-                    }
-                    else
+                        clientNameRoomDictionary.Add(msgobj.name, msgobj.room);
+                        clientNameIpDictionary.Add(msgobj.name, packet.fromIpAddress);
+                        //Join実行中にクライアント名をキーにしてIPを探索するので、
+                        //Join実行前にclientNameIpDictionaryを登録する必要あり。
+                        roomNameServerDictionary[msgobj.room].GetJoin(msgobj);
+                    }else
                     {
                         Console.WriteLine("Can't Join at {0}", msgobj.room);
                     }
                     break;
 
-                case MsgType.DAHAI:
-                    roomServerControllers[msgobj.name].Dahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
-                    break;
-
-                case MsgType.PON:
-                    roomServerControllers[msgobj.name].Pon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
-
-                case MsgType.CHI:
-                    roomServerControllers[msgobj.name].Chi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
-
-                case MsgType.KAKAN:
-                    roomServerControllers[msgobj.name].Kakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
-
-                case MsgType.ANKAN:
-                    roomServerControllers[msgobj.name].Ankan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
-
-                case MsgType.DAIMINKAN:
-                    roomServerControllers[msgobj.name].Daiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
-            
-                case MsgType.REACH:
-                    roomServerControllers[msgobj.name].Reach(msgobj.actor);
-                    break;
-
-                case MsgType.HORA:
-                    roomServerControllers[msgobj.name].Hora(msgobj.actor, msgobj.target, msgobj.pai);
-                    break;
-
-                case MsgType.NONE:
-                    roomServerControllers[msgobj.name].None();
+                default:
+                    roomNameServerDictionary[clientNameRoomDictionary[msgobj.name]].GetMessage(msgobj);
+                    roomNameServerDictionary[clientNameRoomDictionary[msgobj.name]].Execute();
                     break;
             }
 
@@ -139,7 +110,7 @@ namespace MjModelProject
         //クライアントにメッセージを送る関数群
         public void SendMessageToClient(string name, string message)
         {
-            virtualInternet.RoutePacket( new Packet(Constants.SERVER_IP, clientNameIPs[name], message) );
+            virtualInternet.RoutePacket( new Packet(Constants.SERVER_IP, clientNameIpDictionary[name], message) );
         }
 
 
@@ -153,20 +124,30 @@ namespace MjModelProject
         }
 
         //StoC
-        public void SendStartKyoku(string name, int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<string>> tehais)
+        public void SendStartKyoku(string roomName, MJsonMessageStartKyoku msgobj)
         {
-            SendMessageToClient(name, JsonConvert.SerializeObject(new MJsonMessageStartKyoku(bakaze, kyoku, honba, kyotaku, oya, doraMarker, tehais) ));
+            foreach( var playerName in clientNameRoomDictionary[roomName]){
+                SendMessageToClient(roomName, JsonConvert.SerializeObject(msgobj));
+            }
         }
 
         //StoC
-        public void SendTsumo(string name, int actor, string pai) { }
+        public void SendTsumo(string name, MJsonMessageTsumo msgobj) 
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //Both
-        public void SendDahai(string name, int actor, string pai, bool tsumogiri) { }
+        public void SendDahai(string name, MJsonMessageDahai msgobj) 
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //Both
-        public void SendPon(string name, int actor, int target, string pai, List<string> consumed) { }
-
+        public void SendPon(string name, MJsonMessagePon msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
         //Both
         public void SendChi(string name, int actor, int target, string pai, List<string> consumed) { }
 

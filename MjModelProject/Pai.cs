@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-   public  class Pai
+   public class Pai
     {
         public int paiNumber;
         public string paiString;
@@ -25,5 +25,7 @@ namespace MjModelProject
             paiString = paiStr;
             isRedDora = PaiConverter.RED_DORA_STRING_ID.ContainsKey(paiStr);
         }
+
+        public Pai() { }
     }
 }
