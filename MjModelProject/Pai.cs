@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-   public class Pai
+    public class Pai : IComparable
     {
         public int paiNumber;
         public string paiString;
@@ -27,5 +27,44 @@ namespace MjModelProject
         }
 
         public Pai() { }
+
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            Pai other = obj as Pai;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.paiString.Equals(other.paiString);
+
+        }
+
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException();
+            }
+            Pai other = obj as Pai;
+            if (other == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return this.paiString.CompareTo(other.paiString);
+            
+        }
+
+        public override int GetHashCode()
+        {
+            return this.paiString.GetHashCode();
+        }
     }
 }

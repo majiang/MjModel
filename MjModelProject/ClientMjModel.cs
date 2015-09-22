@@ -22,8 +22,10 @@ namespace MjModelProject
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-            turns = new List<int> { 0, 1, 2, 3 };
+            var turn = new List<int> { 0, 1, 2, 3 };
+            turns = new List<int>(turn.OrderBy(i => Guid.NewGuid()));
             currentActor = 0;
+            //初期座席配置作成
         }
 
         public void StartGame()

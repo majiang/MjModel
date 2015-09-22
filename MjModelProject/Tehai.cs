@@ -47,9 +47,9 @@ namespace MjModelProject
 
         public void Da(Pai dapai)
         {
-            if (tehai.Any( e => e == dapai))
+            if (tehai.Any( e => e.paiString == dapai.paiString))
             {
-                tehai.RemoveAt(tehai.FindIndex(e => e == dapai));
+                tehai.RemoveAt(tehai.FindIndex(e => e.paiString == dapai.paiString));
             }
             else
             {
@@ -109,6 +109,10 @@ namespace MjModelProject
 
             //add furo
             furos.Add(new Furo(Furo.Furotype.daiminkan, target, pai, consumed));
+        }
+        public void Daiminkan(int actor, int target, Pai pai, List<string> consumed)
+        {
+            Daiminkan(actor, target, pai, ConsumedStringToConsumedPai(consumed));
         }
 
         public void Ankan(int actor, List<Pai> consumed)
@@ -197,6 +201,17 @@ namespace MjModelProject
 
             return false;
         }
+
+
+        private List<Pai> ConsumedStringToConsumedPai(List<string> consumed)
+        {
+            var consumedPai = new List<Pai>();
+            foreach (var e in consumed)
+            {
+                consumedPai.Add(new Pai(e));
+            }
+            return consumedPai;
+        }
     }
 
     public class Furo
@@ -225,6 +240,6 @@ namespace MjModelProject
         }
     }
 
-
+    
  
 }

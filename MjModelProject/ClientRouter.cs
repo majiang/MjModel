@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.Diagnostics;
 
 namespace MjModelProject
 {
@@ -24,16 +25,13 @@ namespace MjModelProject
         List<Packet> getPacketList;
 
 
-        public ClientRouter()
+        public ClientRouter(VirtualInternet vi)
         {
+            virtualInternet = vi;
             getPacketList = new List<Packet>();
         }
 
 
-        public void SetClientController(Client client)
-        {
-            this.client = client;
-        }
 
 
 
@@ -60,11 +58,9 @@ namespace MjModelProject
         //サーバからメッセージを受信してクライアントコントローラに命令を出す部分
         public void RouteGetMessage(Packet packet)
         {
-
+            
             var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(packet.jsonMessage);
-            Console.WriteLine(msgobj.type);
-            Console.WriteLine(packet.jsonMessage);
-            Console.WriteLine(msgobj.doraMarker.ToString());
+
 
             switch (msgobj.type)
             {
@@ -135,6 +131,8 @@ namespace MjModelProject
         }
 
 
+
+
         public void SendMessageToServer(string message)
         {
             virtualInternet.RoutePacket(new Packet(clientIpAddress, SERVER_IP, message));
@@ -142,7 +140,9 @@ namespace MjModelProject
 
         //サーバにメッセージを送信する命令群
         //CtoS
-        public void SendJoin(string name, string room){        }
+        public void SendJoin(MJsonMessageJoin msg){
+            SendMessageToServer(JsonConvert.SerializeObject(msg));
+        }
 
         //StoC
  //       void SendStartGame(int id, List<string> names)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 
 namespace MjModelProject
@@ -35,110 +36,229 @@ namespace MjModelProject
 
         public void Join(string name)
         {
+            
             playerNames.Add(name);
         }
 
-        public bool CanStart()
+        public bool CanStartGame()
         {
             return playerNames.Count == Constants.PLAYER_NUM;
         }
 
+
+        //ここからモデルをいじって、クライアントへ送信するメッセージを作成する関数群
         public void StartGame()
         {
-            StartGame();
+            
+            serverMjModel.StartGame();
+            SendStartGame();
+
         }
 
         public void StartKyoku()
         {
-            //初期座席配置作成
-            var turn = new List<int> { 0, 1, 2, 3 };
-            startPositionID = new List<int>(turn.OrderBy(i => Guid.NewGuid()));
-
-            
             //modelへ指示
-            serverMjModel = new ServerMjModel();//resetにするかも
-            serverMjModel.StartGame();
+            var msgobj = serverMjModel.StartKyoku();
+            SendStartKyoku(msgobj);
+        }
 
 
-            
+
+        public void Tsumo()
+        {
+            var msgobj = serverMjModel.Tsumo();
+            SendTsumo(msgobj);
         }
 
         //ここからメッセージを受け取った際の関数
         //モデルの操作後にビューを変更する。
-        public void Tsumo()
-        {
-             serverMjModel.Tsumo();
-        }
 
         public void Dahai(int actor, string pai, bool tsumogiri)
         {
-            throw new NotImplementedException();
+            var msgobj = serverMjModel.Dahai(actor, pai, tsumogiri);
+            SendDahai(msgobj);
+            serverMjModel.GoNextActor();
         }
 
-        public void Pon(int actor, int target, string pai, List<string> list)
+        public void Pon(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Chi(int actor, int target, string pai, List<string> list)
+        public void Chi(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Kakan(int actor, int target, string pai, List<string> list)
+        public void Kakan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Ankan(int actor, int target, string pai, List<string> list)
+        public void Ankan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Daiminkan(int actor, int target, string pai, List<string> list)
+        public void Daiminkan(int actor, int target, string pai, List<string> consumed)
+        {
+            var msg = serverMjModel.Daiminkan(actor, target, pai, consumed);
+            SendDaiminkan(msg);
+            serverMjModel.SetCurrentActor(actor);
+        }
+
+        public void Rinshan()
+        {
+            var msg = serverMjModel.Rinshan();
+            SendRinshan(msg);
+        }
+
+        public void OpenDora()
+        {
+            var msg = serverMjModel.OpenDora();
+            SendDora(msg);
+        }
+
+        public void Reach(int actor)
         {
             throw new NotImplementedException();
         }
 
-        internal void Reach(int actor)
+        public void Hora(int actor, int target, string pai)
         {
             throw new NotImplementedException();
         }
 
-        internal void Hora(int actor, int target, string pai)
+        public MJsonMessageRyukyoku Ryukyoku()
         {
-            throw new NotImplementedException();
+            return new MJsonMessageRyukyoku("fanpai",
+                new List<List<string>>() { 
+                    serverMjModel.tehais[0].GetTehaiString(),
+                    serverMjModel.tehais[1].GetTehaiString(),
+                    serverMjModel.tehais[2].GetTehaiString(),
+                    serverMjModel.tehais[3].GetTehaiString()
+                },
+                new List<bool>() { false, false, false, false },
+                new List<int>() { 0, 0, 0, 0 },
+                new List<int>() { 25000, 25000, 25000, 25000 });
         }
-
 
 
         //ここからメッセージを送信するための関数
         //モデル操作完了後に呼び出される。
-        public void SendTsumo(int actor, string pai)
+
+        public void SendStartGame()
         {
-            foreach(var name in playerNames){
-                if (name == playerNames[actor])
-                {
-                    serverRouter.SendTsumo( playerNames[actor] , new MJsonMessageTsumo(actor, pai) );
-                }
-                else
-                {
-                    serverRouter.SendTsumo( playerNames[actor] , new MJsonMessageTsumo(actor, "?"));
-                }
+            for (int i = 0; i < playerNames.Count; i++)
+            {
+                serverRouter.SendStartGame(playerNames[i], new MJsonMessageStartGame(serverMjModel.turns[i], playerNames));
+                DebugUtil.ServerDebug(JsonConvert.SerializeObject(new MJsonMessageStartGame(serverMjModel.turns[i], playerNames)));
             }
         }
 
-        public void SendStartKyoku()
+        public void SendStartKyoku(MJsonMessageStartKyoku msgobj)
         {
-            //modelへの指示後にクライアントへモデルの状態を送信。
-            //自身の手配しか見えない状態に加工して送信
-            var tehais = serverMjModel.tehais;
+            //自身の手配しか見えない状態に加工してクライアントへメッセージ送信
+            var knownTehais = msgobj.tehais;
+
             for (int i = 0; i < playerNames.Count; i++)
             {
                 var unknownTehais = new List<List<string>> { Tehai.UNKNOWN_TEHAI_STRING, Tehai.UNKNOWN_TEHAI_STRING, Tehai.UNKNOWN_TEHAI_STRING, Tehai.UNKNOWN_TEHAI_STRING };
-                unknownTehais[i] = serverMjModel.tehais[i].GetTehaiString();
-                serverRouter.SendStartKyoku(playerNames[i], new MJsonMessageStartKyoku(0, 0, 0, 0, 0, 0, unknownTehais));
+                unknownTehais[i] = knownTehais[i];
+
+                serverRouter.SendStartKyoku(playerNames[i], new MJsonMessageStartKyoku(
+                    msgobj.bakaze,
+                    msgobj.kyoku,
+                    msgobj.honba,
+                    msgobj.kyotaku,
+                    msgobj.oya,
+                    msgobj.doraMarker,
+                    unknownTehais));
             }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendTsumo(MJsonMessageTsumo msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                if (name == playerNames[msgobj.actor])
+                {
+                    serverRouter.SendTsumo(name, msgobj);
+                }
+                else
+                {
+                    serverRouter.SendTsumo(name, new MJsonMessageTsumo(msgobj.actor, "?"));
+                }
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+
+
+        public void SendDahai(MJsonMessageDahai msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+               serverRouter.SendDahai(name, msgobj);  
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendDaiminkan(MJsonMessageDaiminkan msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendDaiminkan(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendRinshan(MJsonMessageTsumo msgobj)
+        {           
+            serverRouter.SendTsumo(playerNames[msgobj.actor], msgobj);
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendDora(MJsonMessageDora msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendDora(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+
+        public bool CanFinishKyoku()
+        {
+            return serverMjModel.CanFinishKyoku();  
+        }
+
+        public void SendRyukyoku(MJsonMessageRyukyoku msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendRyukyoku(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendEndkyoku()
+        {
+            var msgobj = new MJsonMessageEndkyoku();
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendEndkyoku(name,msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
 
     }

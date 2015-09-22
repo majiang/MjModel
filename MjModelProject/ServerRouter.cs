@@ -28,8 +28,9 @@ namespace MjModelProject
         
 
 
-        public ServerRouter()
+        public ServerRouter(VirtualInternet vi)
         {
+            virtualInternet = vi;
             roomNameServerDictionary = new Dictionary<string, ServerContext>();
             clientNameRoomDictionary = new Dictionary<string, string>();
             clientNameIpDictionary = new Dictionary<string, IPAddress>();
@@ -68,9 +69,6 @@ namespace MjModelProject
         public void RouteGetMessage(Packet packet)
         {
             var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(packet.jsonMessage);
-            Console.WriteLine(msgobj.type);
-            Console.WriteLine(packet.jsonMessage.ToString());
-            Console.WriteLine(msgobj.doraMarker.ToString());
 
             switch (msgobj.type)
             {
@@ -97,8 +95,10 @@ namespace MjModelProject
                     break;
 
                 default:
-                    roomNameServerDictionary[clientNameRoomDictionary[msgobj.name]].GetMessage(msgobj);
-                    roomNameServerDictionary[clientNameRoomDictionary[msgobj.name]].Execute();
+                    var clientName = clientNameIpDictionary.FirstOrDefault(e => e.Value == packet.fromIpAddress).Key;
+                    var roomName = clientNameRoomDictionary[clientName];
+                    roomNameServerDictionary[roomName].GetMessage(msgobj);
+                    roomNameServerDictionary[roomName].Execute();
                     break;
             }
 
@@ -112,24 +112,20 @@ namespace MjModelProject
         {
             virtualInternet.RoutePacket( new Packet(Constants.SERVER_IP, clientNameIpDictionary[name], message) );
         }
-
-
         //CtoS
  //       public void SendJoin(string name , string room){}
      
         //StoC
-        public void SendStartGame(string name, int id, List<string> names)
+        public void SendStartGame(string roomName, MJsonMessageStartGame msgobj)
         {
-            
+            SendMessageToClient(roomName, JsonConvert.SerializeObject(msgobj));
         }
 
         //StoC
         public void SendStartKyoku(string roomName, MJsonMessageStartKyoku msgobj)
         {
-            foreach( var playerName in clientNameRoomDictionary[roomName]){
-                SendMessageToClient(roomName, JsonConvert.SerializeObject(msgobj));
-            }
-        }
+            SendMessageToClient(roomName, JsonConvert.SerializeObject(msgobj));
+         }
 
         //StoC
         public void SendTsumo(string name, MJsonMessageTsumo msgobj) 
@@ -149,39 +145,64 @@ namespace MjModelProject
             SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
         }
         //Both
-        public void SendChi(string name, int actor, int target, string pai, List<string> consumed) { }
+        public void SendChi(string name, MJsonMessageChi msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //Both
-        public void SendKakan(string name, int actor, int target, string pai, List<string> consumed) { }
+        public void SendKakan(string name, MJsonMessageKakan msgobj) 
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //Both
-        public void SendDaiminkan(string name, int actor, int target, string pai, List<string> consumed) { }
+        public void SendDaiminkan(string name, MJsonMessageDaiminkan msgobj) 
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //Both
-        public void SendAnkan(string name, int actor, int target, string pai, List<string> consumed) { }
+        public void SendAnkan(string name, MJsonMessageAnkan msgobj) 
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //StoC
-        public void SendDora(string name, int doraMarker) { }
+        public void SendDora(string name, MJsonMessageDora msgobj) 
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //Both
-        public void SendReach(string name, int actor) { }
+        public void SendReach(string name, MJsonMessageReach msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //StoC
-        public void SendReachAccept(string name, int actor, List<int> deltas, List<int> scores) { }
+        public void SendReachAccept(string name, MJsonMessageReachAccept msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
 
         //CtoS
         //      public   void Hora(int actor, int target, string pai) { }
 
         //StoC
-        public void SendHora(string name, int actor, int target, string pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
-
-        //StoC
-        public void SendRyukyoku(string name, string reason, List<List<int>> tehais) { }
-
-        //StoC
-        public void SendEndKyoku(string name)
+        public void SendHora(string name, MJsonMessageReachAccept msgobj)
         {
-
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
+        //StoC
+        public void SendRyukyoku(string name, MJsonMessageRyukyoku msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+        }
+        //StoC
+        public void SendEndkyoku(string name, MJsonMessageEndkyoku msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
         }
 
         //CtoS

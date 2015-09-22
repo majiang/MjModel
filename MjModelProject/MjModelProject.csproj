@@ -50,6 +50,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientController.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DebugUtil.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Pai.cs" />

@@ -14,6 +14,9 @@ namespace MjModelProject
         public int positionId;
         public List<string> playerNames;//入室した順番でプレイヤー名が入っている
 
+        public bool IsKyokuEnd;//for Debug
+
+
         public Client(ClientRouter cr)
         {
             clientRouter = cr;
@@ -23,6 +26,15 @@ namespace MjModelProject
             clientController.clientMjModel = clientMjModel;
             clientController.clientRouter = cr;
         }
+
+        public void kickGame(string name, string room)
+        {
+            var msgobj = new MJsonMessageJoin(name, room);
+            
+            clientRouter.SendJoin(msgobj);
+            
+        }
+
 
         public void GetStartGame(int id, List<string> names)
         {
@@ -58,7 +70,7 @@ namespace MjModelProject
 
         internal void GetDahai(int actor, string pai, bool tsumogiri)
         {
-            clientController.Dahai(actor, pai, tsumogiri);
+            //clientController.Dahai(actor, pai, tsumogiri);
             //thinkNaki();
             var doNaki = false;
 
@@ -124,6 +136,7 @@ namespace MjModelProject
 
         internal void GetEndKyoku()
         {
+            IsKyokuEnd = true;
             clientRouter.SendNone();
         }
     }

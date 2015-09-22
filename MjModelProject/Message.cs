@@ -58,7 +58,17 @@ namespace MjModelProject
         public List<int> deltas;
 
     }
-
+    public class MJsonMessageJoin
+    {
+        public string type = MsgType.JOIN;
+        public string name;
+        public string room;
+        public MJsonMessageJoin(string name, string room)
+        {
+            this.name = name;
+            this.room = room;
+        }
+    }
     public class MJsonMessageStartGame
     {
         public string type = MsgType.START_GAME;
@@ -73,14 +83,14 @@ namespace MjModelProject
     public class MJsonMessageStartKyoku
     {
         public string type = MsgType.START_KYOKU;
-        int bakaze;
-        int kyoku;
-        int honba;
-        int kyotaku;
-        int oya;
-        int doraMarker;
-        List<List<string>> tehais;
-        public MJsonMessageStartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<string>> tehais)
+        public string bakaze;
+        public int kyoku;
+        public int honba;
+        public int kyotaku;
+        public int oya;
+        public string doraMarker;
+        public List<List<string>> tehais;
+        public MJsonMessageStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             this.bakaze = bakaze;
             this.kyoku = kyoku;
@@ -95,8 +105,8 @@ namespace MjModelProject
     public class MJsonMessageTsumo
     {
         public string type = MsgType.TSUMO;
-        int actor;
-        string pai;
+        public int actor;
+        public string pai;
         public MJsonMessageTsumo(int actor, string pai)
         {
             this.actor = actor;
@@ -108,9 +118,9 @@ namespace MjModelProject
     public class MJsonMessageDahai
     {
         public string type = MsgType.DAHAI;
-        int actor;
-        string pai;
-        bool tsumogiri;
+        public int actor;
+        public string pai;
+        public bool tsumogiri;
         public MJsonMessageDahai(int actor, string pai,bool tsumogiri)
         {
             this.actor = actor;
@@ -123,10 +133,10 @@ namespace MjModelProject
     public class MJsonMessagePon
     {
         public string type = MsgType.PON;
-        int actor;
-        int target;
-        string pai;
-        List<string> list;
+        public int actor;
+        public int target;
+        public string pai;
+        public List<string> list;
         public MJsonMessagePon(int actor, int target, string pai, List<string> list)
         {
             this.actor = actor;
@@ -135,12 +145,156 @@ namespace MjModelProject
             this.list = list;
         }
     }
+    public class MJsonMessageChi
+    {
+        public string type = MsgType.CHI;
+        public int actor;
+        public int target;
+        public string pai;
+        public List<string> list;
+        public MJsonMessageChi(int actor, int target, string pai, List<string> list)
+        {
+            this.actor = actor;
+            this.target = target;
+            this.pai = pai;
+            this.list = list;
+        }
+    }
+    public class MJsonMessageKakan
+    {
+        public string type = MsgType.KAKAN;
+        public int actor;
+        public int target;
+        public string pai;
+        public List<string> list;
+        public MJsonMessageKakan(int actor, int target, string pai, List<string> list)
+        {
+            this.actor = actor;
+            this.target = target;
+            this.pai = pai;
+            this.list = list;
+        }
+    }
+    public class MJsonMessageAnkan
+    {
+        public string type = MsgType.ANKAN;
+        public int actor;
+        public int target;
+        public string pai;
+        public List<string> list;
+        public MJsonMessageAnkan(int actor, int target, string pai, List<string> list)
+        {
+            this.actor = actor;
+            this.target = target;
+            this.pai = pai;
+            this.list = list;
+        }
+    }
+    public class MJsonMessageDaiminkan
+    {
+        public string type = MsgType.DAIMINKAN;
+        public int actor;
+        public int target;
+        public string pai;
+        public List<string> list;
+        public MJsonMessageDaiminkan(int actor, int target, string pai, List<string> list)
+        {
+            this.actor = actor;
+            this.target = target;
+            this.pai = pai;
+            this.list = list;
+        }
+    }
 
+    public class MJsonMessageReach
+    {
+        public string type = MsgType.REACH;
+        public int actor;
 
+        public MJsonMessageReach(int actor)
+        {
+            this.actor = actor;
+        }
+    }
+    public class MJsonMessageReachAccept
+    {
+        public string type = MsgType.REACH_ACCEPTED;
+        public int actor;
+        public List<int> deltas;
+        public List<int> scores;
 
+        public MJsonMessageReachAccept(int actor,List<int> deltas,List<int> scores)
+        {
+            this.actor = actor;
+            this.deltas = deltas;
+            this.scores = scores;
+        }
+    }
+
+    public class MJsonMessageHora
+    {
+        public string type = MsgType.HORA;
+        public int actor;
+        public int target;
+        public string pai;
+        public List<string> uradoraMarkers;
+        public List<string> horaTehais;
+        public Dictionary<string, int> yakus;
+        public int fu;
+        public int fan;
+        public List<int> deltas;
+        public List<int> scores;
+
+        public MJsonMessageHora(int actor,int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
+        {
+            this.actor = actor;
+            this.target = target;
+            this.pai = pai;
+            this.uradoraMarkers = uradoraMarkers;
+            this.horaTehais = horaTehais;
+            this.yakus = yakus;
+            this.fu = fu;
+            this.fan = fan;
+            this.deltas = deltas;
+            this.scores = scores;
+        }
+    }
+
+    public class MJsonMessageRyukyoku
+    {
+        public string type = MsgType.RYUKYOKU;
+        public string reason;
+        public List<List<string>> tehais;
+        public List<bool> tenpais;
+        public List<int> deltas;
+        public List<int> scores;
+
+        public MJsonMessageRyukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
+        {
+            this.reason = reason;
+            this.tehais = tehais;
+            this.tenpais = tenpais;
+            this.deltas = deltas;
+            this.scores = scores;
+        }
+    }
+    public class MJsonMessageDora
+    {
+        public string type = MsgType.DORA;
+        public string doraMarker;
+        public MJsonMessageDora(string doraMarker)
+        {
+            this.doraMarker = doraMarker;
+        }
+    }
 
     public class MJsonMessageNone
     {
         public string type = MsgType.NONE;
+    }
+
+    public class MJsonMessageEndkyoku
+    {
+        public string type = MsgType.END_KYOKU;
     }
 }
