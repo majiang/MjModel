@@ -23,6 +23,7 @@ namespace MjModelProject
         public Dictionary<string, IPAddress> clientNameIpDictionary;//プレーヤ名とクライアントIPのリスト< name, clientIP > //ソケットに変更予定
         
 
+
         //受信メッセージ保管リスト
         public List<Packet> getPacketList;
         
