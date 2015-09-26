@@ -12,30 +12,30 @@ namespace MjModelProject.Tests
     public class TehaiTests
     {
         [TestMethod()]
-        public void ツモテスト()
+        public void 手配ツモテスト()
         {
-            Tehai testTehai = new Tehai(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
-            testTehai.Tsumo(13);
-            Assert.AreEqual(testTehai.tehai.Last(), 13);
-
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("5s")));
+            testTehai.Tsumo(new Pai("5s"));
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("5s")));
         }
 
         [TestMethod()]
-        public void チーテスト()
+        public void 手配チーテスト()
         {
-            Tehai testTehai = new Tehai(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
-            testTehai.Tsumo(13);
-            Assert.AreEqual(testTehai.tehai.Last(), 13);
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
+            testTehai.Tsumo(new Pai("5s"));
+
 
             //chi
             var actor = 0;
             var target = 3;
-            var furopai = 14;
-            var consumed = new List<int> { 4, 8 };
+            var furopai = new Pai("6s");
+            var consumed = new List<Pai> { new Pai("4s"), new Pai("5s") };
             consumed.Sort();
 
-            Assert.IsTrue(testTehai.tehai.Contains(4));
-            Assert.IsTrue(testTehai.tehai.Contains(8));
+            Assert.IsTrue( testTehai.tehai.Contains( new Pai("4s") ) );
+            Assert.IsTrue( testTehai.tehai.Contains( new Pai("5s") ));
 
             //実施
             testTehai.Chi(actor, target, furopai, consumed);
@@ -46,27 +46,27 @@ namespace MjModelProject.Tests
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
-            Assert.IsFalse(testTehai.tehai.Contains(4));
-            Assert.IsFalse(testTehai.tehai.Contains(8));
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("4s")));
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("5s")));
 
         }
 
         [TestMethod()]
-        public void ポンテスト()
+        public void 手配ポンテスト()
         {
-            Tehai testTehai = new Tehai(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
-            testTehai.Tsumo(13);
-            Assert.AreEqual(testTehai.tehai.Last(), 13);
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
+            testTehai.Tsumo(new Pai("1m"));
 
-            //pon
+
+            //chi
             var actor = 0;
             var target = 3;
-            var furopai = 14;
-            var consumed = new List<int> { 12, 13 };
+            var furopai = new Pai("1m");
+            var consumed = new List<Pai> { new Pai("1m"), new Pai("1m") };
             consumed.Sort();
 
-            Assert.IsTrue(testTehai.tehai.Contains(12));
-            Assert.IsTrue(testTehai.tehai.Contains(13));
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("1m")));
+            
 
             //実施
             testTehai.Pon(actor, target, furopai, consumed);
@@ -77,26 +77,25 @@ namespace MjModelProject.Tests
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
-            Assert.IsFalse(testTehai.tehai.Contains(12));
-            Assert.IsFalse(testTehai.tehai.Contains(13));
+            Assert.IsFalse(testTehai.tehai.Contains( new Pai("1m")));
 
         }
 
         [TestMethod()]
-        public void 大明槓テスト()
+        public void 手配大明槓テスト()
         {
-            Tehai testTehai = new Tehai(new List<int> { 0, 1, 2 });
-            
-            //daiminkan
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "1m" });
+            testTehai.Tsumo(new Pai("1m"));
+
+
+            //chi
             var actor = 0;
-            var target = 2;
-            var furopai = 3;
-            var consumed = new List<int> { 0, 1, 2  };
+            var target = 3;
+            var furopai = new Pai("1m");
+            var consumed = new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") };
             consumed.Sort();
 
-            Assert.IsTrue(testTehai.tehai.Contains(0));
-            Assert.IsTrue(testTehai.tehai.Contains(1));
-            Assert.IsTrue(testTehai.tehai.Contains(2));
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("1m")));
 
             //実施
             testTehai.Daiminkan(actor, target, furopai, consumed);
@@ -107,26 +106,21 @@ namespace MjModelProject.Tests
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
-            Assert.IsFalse(testTehai.tehai.Contains(0));
-            Assert.IsFalse(testTehai.tehai.Contains(1));
-            Assert.IsFalse(testTehai.tehai.Contains(2));
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("1m")));
 
         }
 
         [TestMethod()]
-        public void 暗槓テスト()
+        public void 手配暗槓テスト()
         {
-            Tehai testTehai = new Tehai(new List<int> { 0, 1, 2, 3});
+            Tehai testTehai = new Tehai( new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") });
 
             //ankan
             var actor = 0;
-            var consumed = new List<int> { 0, 1, 2, 3 };
+            var consumed = new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m"), new Pai("1m") };
             consumed.Sort();
 
-            Assert.IsTrue(testTehai.tehai.Contains(0));
-            Assert.IsTrue(testTehai.tehai.Contains(1));
-            Assert.IsTrue(testTehai.tehai.Contains(2));
-            Assert.IsTrue(testTehai.tehai.Contains(3));
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("1m")));
 
             //実施
             testTehai.Ankan(actor, consumed);
@@ -136,21 +130,10 @@ namespace MjModelProject.Tests
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
-            Assert.IsFalse(testTehai.tehai.Contains(0));
-            Assert.IsFalse(testTehai.tehai.Contains(1));
-            Assert.IsFalse(testTehai.tehai.Contains(2));
-            Assert.IsFalse(testTehai.tehai.Contains(3));
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("1m")));
 
         }
-        //正常系しかないよね
-        //どこかで異常な入力を弾く仕組みが必要だが...
-        //サーバー対戦の場合はサーバー側で検証するから問題なし。
 
-        //ローカル対戦でも使うから...
-        //コントローラで弾く？
-        //いやいやいやロジック層でやるべき
-        //なき牌選択の部分でやろう。
-        //なき候補牌を返す関数をつくろう。
 
 
     }
