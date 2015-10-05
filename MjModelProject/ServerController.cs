@@ -82,12 +82,16 @@ namespace MjModelProject
 
         public void Pon(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            var msg = serverMjModel.Pon(actor, target, pai, consumed);
+            SendPon(msg);
+            serverMjModel.SetCurrentActor(actor);
         }
 
         public void Chi(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            var msg = serverMjModel.Chi(actor, target, pai, consumed);
+            SendChi(msg);
+            serverMjModel.SetCurrentActor(actor);
         }
 
         public void Kakan(int actor, int target, string pai, List<string> consumed)
@@ -129,9 +133,9 @@ namespace MjModelProject
             throw new NotImplementedException();
         }
 
-        public MJsonMessageRyukyoku Ryukyoku()
+        public void Ryukyoku()
         {
-            return new MJsonMessageRyukyoku("fanpai",
+            var ryukyokuMsgobj = new MJsonMessageRyukyoku("fanpai",
                 new List<List<string>>() { 
                     serverMjModel.tehais[0].GetTehaiString(),
                     serverMjModel.tehais[1].GetTehaiString(),
@@ -141,6 +145,8 @@ namespace MjModelProject
                 new List<bool>() { false, false, false, false },
                 new List<int>() { 0, 0, 0, 0 },
                 new List<int>() { 25000, 25000, 25000, 25000 });
+            
+            SendRyukyoku(ryukyokuMsgobj);
         }
 
 
@@ -223,6 +229,27 @@ namespace MjModelProject
             serverRouter.SendTsumo(playerNames[msgobj.actor], msgobj);
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
+
+        public void SendPon(MJsonMessagePon msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendPon(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendChi(MJsonMessageChi msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendChi(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
 
         public void SendDora(MJsonMessageDora msgobj)
         {

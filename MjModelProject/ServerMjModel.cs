@@ -106,27 +106,31 @@ namespace MjModelProject
             return new MJsonMessageDahai(actor, pai, tsumogiri);
         }
 
-        public void Pon(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessagePon Pon(int actor, int target, string pai, List<string> consumed)
+        {
+            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            tehais[actor].Pon(actor, target, new Pai(pai), consumed);
+            return new MJsonMessagePon(actor, target, pai, consumed);
+        }
+
+        public MJsonMessageChi Chi(int actor, int target, string pai, List<string> consumed)
+        {
+            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            tehais[actor].Chi(actor, target, pai, consumed);
+            return new MJsonMessageChi(actor, target, pai, consumed);
+        }
+
+        public void Kakan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Chi(int actor, int target, string pai, List<string> consumed)
+        public void Ankan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void Kakan(int actor, int target, string pai, List<string> consumed)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Ankan(int actor, int target, string pai, List<string> consumed)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Daiminkan(actor, target, new Pai(pai), consumed);

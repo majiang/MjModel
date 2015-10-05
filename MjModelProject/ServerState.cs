@@ -204,8 +204,7 @@ namespace MjModelProject
                         //終局判定
                         if (serverController.CanFinishKyoku())
                         {
-                            var ryukyokuMsgobj = serverController.Ryukyoku();
-                            serverController.SendRyukyoku(ryukyokuMsgobj);
+                            serverController.Ryukyoku();
                             getMsgList.Clear();
                             return new AfterRyukyokuState(this);
                         }
@@ -216,6 +215,8 @@ namespace MjModelProject
                             return new AfterTsumoState(this);
                         }
                     }
+                    //以下実装予定
+                    //hora
                     else if (getMsgList.Count(e => e.type == MsgType.DAIMINKAN) == 1)
                     {
                         var daiminkanObj = getMsgList.First(e => e.type == MsgType.DAIMINKAN);
@@ -225,13 +226,19 @@ namespace MjModelProject
                     }
                     else if (getMsgList.Count(e => e.type == MsgType.PON) == 1)
                     {
-                        var daiminkanObj = getMsgList.First(e => e.type == MsgType.DAIMINKAN);
-                        serverController.Daiminkan(daiminkanObj.actor, daiminkanObj.target, daiminkanObj.pai, daiminkanObj.consumed);
+                        var ponObj = getMsgList.First(e => e.type == MsgType.DAIMINKAN);
+                        serverController.Pon(ponObj.actor, ponObj.target, ponObj.pai, ponObj.consumed);
                         getMsgList.Clear();
-                        return new AfterDaiminkanState(this);
+                        return new AfterTsumoState(this);
                     }
-                    //以下実装予定
-                    //ポンカンチーhora
+                    else if (getMsgList.Count(e => e.type == MsgType.CHI) == 1)
+                    {
+                        var chiObj = getMsgList.First(e => e.type == MsgType.CHI);
+                        serverController.Chi(chiObj.actor, chiObj.target, chiObj.pai, chiObj.consumed);
+                        getMsgList.Clear();
+                        return new AfterTsumoState(this);
+                    }
+
                 }
             }
             else

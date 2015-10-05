@@ -52,6 +52,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DebugUtil.cs" />
     <Compile Include="Field.cs" />
+    <Compile Include="MyException.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Pai.cs" />
     <Compile Include="PaiConverter.cs" />

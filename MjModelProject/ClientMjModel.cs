@@ -15,6 +15,9 @@ namespace MjModelProject
         public Field field { get; set; }
         public List<int> turns;
         public int currentActor;
+        private int myPositionId;
+        //private Strategy mjai;
+        
 
         public void Init()
         {
@@ -28,9 +31,10 @@ namespace MjModelProject
             //初期座席配置作成
         }
 
-        public void StartGame()
+        public void StartGame(int id)
         {
             Init();
+            myPositionId = id;
         }
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
@@ -47,12 +51,15 @@ namespace MjModelProject
 
         public void Tsumo(int actor, string pai)
         {
-            tehais[actor].Tsumo(new Pai(pai));
+            tehais[actor].Tsumo(pai);
         }
 
         public void Dahai(int actor, string pai, bool tsumogiri)
         {
-            tehais[actor].Da(new Pai(pai));
+            if (actor == myPositionId)
+            {
+                tehais[actor].Da(pai);
+            }
             kawas[actor].Sutehai(new Pai(pai),false,tsumogiri);
         }
 
@@ -61,9 +68,14 @@ namespace MjModelProject
             throw new NotImplementedException();
         }
 
-        public void Chi(int p1, int p2, int p3, List<int> list)
+        public void Chi(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            if (actor == myPositionId)
+            {
+                tehais[actor].Chi(actor, target, pai, consumed);
+            }
+            kawas[target].discards.Last().isFuroTargeted = true;
+
         }
 
         public void Kakan(int p1, int p2, int p3, List<int> list)
@@ -94,6 +106,18 @@ namespace MjModelProject
         public void None()
         {
             throw new NotImplementedException();
+        }
+
+
+
+        public bool CanChi(int playerId, string pai)
+        {
+            return tehais[playerId].CanChi(pai);
+        }
+
+        public MJsonMessageChi GetChiMessage(int playerId, int targetId, string pai)
+        {
+            return tehais[playerId].GetChiMessage(playerId, targetId, pai);
         }
     }
 }

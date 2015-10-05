@@ -65,63 +65,63 @@ namespace MjModelProject
             switch (msgobj.type)
             {
                 case MsgType.START_GAME:
-                    client.GetStartGame(msgobj.id, msgobj.names);
+                    client.OnStartGame(msgobj.id, msgobj.names);
                     break;
 
                 case MsgType.START_KYOKU:
-                    client.GetStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.doraMarker, msgobj.tehais);
+                    client.OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.doraMarker, msgobj.tehais);
                     break;
 
                 case MsgType.TSUMO:
-                    client.GetTsumo(msgobj.actor, msgobj.pai);
+                    client.OnTsumo(msgobj.actor, msgobj.pai);
                     break;
                 
                 case MsgType.DAHAI:
-                    client.GetDahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
+                    client.OnDahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
                     break;
 
                 case MsgType.PON:
-                    client.GetPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.CHI:
-                    client.GetChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.KAKAN:
-                    client.GetKakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.OnKakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.ANKAN:
-                    client.GetAnkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.OnAnkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.DAIMINKAN:
-                    client.GetDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    client.OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                     break;
 
                 case MsgType.DORA:
-                    client.GetDora(msgobj.doraMarker);
+                    client.OnDora(msgobj.doraMarker);
                     break;
 
                 case MsgType.REACH:
-                    client.GetReach(msgobj.actor);
+                    client.OnReach(msgobj.actor);
                     break;
 
                 case MsgType.REACH_ACCEPTED:
-                    client.GetReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
+                    client.OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
                     break;
 
                 case MsgType.HORA:
-                    client.GetHora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradoraMarkers, msgobj.horaTehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.horaPoints, msgobj.deltas, msgobj.scores);
+                    client.OnHora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradoraMarkers, msgobj.horaTehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.horaPoints, msgobj.deltas, msgobj.scores);
                     break;
 
                 case MsgType.RYUKYOKU:
-                    client.GetRyukyoku(msgobj.reason, msgobj.tehais);
+                    client.OnRyukyoku(msgobj.reason, msgobj.tehais);
                     break;
 
                 case MsgType.END_KYOKU:
-                    client.GetEndKyoku();
+                    client.OnEndKyoku();
                     break;
 
 
@@ -154,16 +154,19 @@ namespace MjModelProject
 //        void SendTsumo(int actor, string pai) { }
 
         //Both
-        public void SendDahai(int actor, string pai, bool tsumogiri) {
-            SendMessageToServer(JsonConvert.SerializeObject(new MJsonMessageDahai(actor, pai, tsumogiri)));
+        public void SendDahai(MJsonMessageDahai msg){
+            SendMessageToServer(JsonConvert.SerializeObject(msg));
         }
 
         //Both
-        public void SendPon(int actor, int target, string pai, List<int> consumed) { }
-
+        public void SendPon(MJsonMessagePon msg){
+            SendMessageToServer(JsonConvert.SerializeObject(msg));
+        }
         //Both
-        public void SendChi(int actor, int target, string pai, List<int> consumed) { }
-
+        public void SendChi(MJsonMessageChi msg)
+        {
+            SendMessageToServer(JsonConvert.SerializeObject(msg));
+        }
         //Both
         public void SendKakan(int actor, int target, string pai, List<int> consumed) { }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace MjModelProject
 {
@@ -26,6 +27,7 @@ namespace MjModelProject
         public const string RYUKYOKU = "ryukyoku";
         public const string NONE = "none";
     }
+
 
     public class MjsonMessageAll
     {
@@ -136,13 +138,13 @@ namespace MjModelProject
         public int actor;
         public int target;
         public string pai;
-        public List<string> list;
-        public MJsonMessagePon(int actor, int target, string pai, List<string> list)
+        public List<string> consumed;
+        public MJsonMessagePon(int actor, int target, string pai, List<string> consumed)
         {
             this.actor = actor;
             this.target = target;
             this.pai = pai;
-            this.list = list;
+            this.consumed = consumed;
         }
     }
     public class MJsonMessageChi
@@ -151,13 +153,13 @@ namespace MjModelProject
         public int actor;
         public int target;
         public string pai;
-        public List<string> list;
-        public MJsonMessageChi(int actor, int target, string pai, List<string> list)
+        public List<string> consumed;
+        public MJsonMessageChi(int actor, int target, string pai, List<string> consumed)
         {
             this.actor = actor;
             this.target = target;
             this.pai = pai;
-            this.list = list;
+            this.consumed = consumed;
         }
     }
     public class MJsonMessageKakan
@@ -166,13 +168,13 @@ namespace MjModelProject
         public int actor;
         public int target;
         public string pai;
-        public List<string> list;
-        public MJsonMessageKakan(int actor, int target, string pai, List<string> list)
+        public List<string> consumed;
+        public MJsonMessageKakan(int actor, int target, string pai, List<string> consumed)
         {
             this.actor = actor;
             this.target = target;
             this.pai = pai;
-            this.list = list;
+            this.consumed = consumed;
         }
     }
     public class MJsonMessageAnkan
@@ -181,13 +183,13 @@ namespace MjModelProject
         public int actor;
         public int target;
         public string pai;
-        public List<string> list;
-        public MJsonMessageAnkan(int actor, int target, string pai, List<string> list)
+        public List<string> consumed;
+        public MJsonMessageAnkan(int actor, int target, string pai, List<string> consumed)
         {
             this.actor = actor;
             this.target = target;
             this.pai = pai;
-            this.list = list;
+            this.consumed = consumed;
         }
     }
     public class MJsonMessageDaiminkan
@@ -196,13 +198,13 @@ namespace MjModelProject
         public int actor;
         public int target;
         public string pai;
-        public List<string> list;
-        public MJsonMessageDaiminkan(int actor, int target, string pai, List<string> list)
+        public List<string> consumed;
+        public MJsonMessageDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
             this.actor = actor;
             this.target = target;
             this.pai = pai;
-            this.list = list;
+            this.consumed = consumed;
         }
     }
 

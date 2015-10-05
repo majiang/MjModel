@@ -15,7 +15,7 @@ namespace MjModelProject
 
         public void StartGame(int id, List<string> names)
         {
-            clientMjModel.StartGame();
+            clientMjModel.StartGame(id);
         }
 
         internal void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
@@ -40,7 +40,7 @@ namespace MjModelProject
 
         internal void Chi(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            clientMjModel.Chi(actor, target, pai, consumed);
         }
 
         internal void Kakan(int actor, int target, string pai, List<string> consumed)

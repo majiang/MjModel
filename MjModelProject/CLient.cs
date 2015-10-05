@@ -11,7 +11,7 @@ namespace MjModelProject
         public ClientRouter clientRouter;
         public ClientMjModel clientMjModel;
         public ClientController clientController;
-        public int positionId;
+        public int myPositionId;
         public List<string> playerNames;//入室した順番でプレイヤー名が入っている
 
         public bool IsKyokuEnd;//for Debug
@@ -36,15 +36,15 @@ namespace MjModelProject
         }
 
 
-        public void GetStartGame(int id, List<string> names)
+        public void OnStartGame(int id, List<string> names)
         {
-            positionId = id;
+            myPositionId = id;
             playerNames = names;
             clientController.StartGame(id, names);
             clientRouter.SendNone();
         }
 
-        internal void GetStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
+        internal void OnStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             clientController.StartKyoku(bakaze, kyoku, honba, kyotaku, oya, doraMarker, tehais);
             clientRouter.SendNone();
@@ -52,14 +52,15 @@ namespace MjModelProject
 
 
 
-        internal void GetTsumo(int actor, string pai)
+        internal void OnTsumo(int actor, string pai)
         {
             clientController.Tsumo(actor, pai);
-            if (actor == positionId)
+            if (actor == myPositionId)
             {
+
                 //thinkDahai();
                 var tsumogiri = true;
-                clientRouter.SendDahai(actor, pai, tsumogiri);
+                clientRouter.SendDahai(new MJsonMessageDahai(actor, pai, tsumogiri));
             }
             else
             {
@@ -68,13 +69,31 @@ namespace MjModelProject
 
         }
 
-        internal void GetDahai(int actor, string pai, bool tsumogiri)
+        internal void OnDahai(int actor, string pai, bool tsumogiri)
         {
-            //clientController.Dahai(actor, pai, tsumogiri);
+            clientController.Dahai(actor, pai, tsumogiri);
             //thinkNaki();
-            var doNaki = false;
+            //CHI
+            if ( ((actor+1)%4 == myPositionId) && clientMjModel.CanChi(myPositionId, pai))
+            {
+                //var thinked = thinkNaki();
+                var thinked = true;
+                if (thinked)
+                {
+                    var msgobj = clientMjModel.GetChiMessage(myPositionId, actor, pai);
+                    clientRouter.SendChi(msgobj);
+                    return;
+                }
+                else
+                {
+                    clientRouter.SendNone();
+                    return;
+                }
+            }
 
-            if (doNaki)
+
+            var ponflg = false;
+            if (ponflg)
             {
 //                clientRouter.SendPon();
             }
@@ -84,60 +103,73 @@ namespace MjModelProject
             }
         }
 
-        internal void GetPon(int actor, int target, string pai, List<string> consumed)
+        internal void OnPon(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetChi(int actor, int target, string pai, List<string> consumed)
+        internal void OnChi(int actor, int target, string pai, List<string> consumed)
+        {
+            clientController.Chi(actor, target, pai, consumed);
+            if (actor == myPositionId)
+            {
+                var tsumogiri = false;
+                var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count-1];
+                //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
+                clientRouter.SendDahai(new MJsonMessageDahai(actor, lastPai.paiString, tsumogiri));
+            }
+            else
+            {
+                clientRouter.SendNone();
+            }
+        }
+
+        internal void OnKakan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetKakan(int actor, int target, string pai, List<string> consumed)
+        internal void OnAnkan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetAnkan(int actor, int target, string pai, List<string> consumed)
+        internal void OnDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetDaiminkan(int actor, int target, string pai, List<string> consumed)
+        internal void OnDora(string pai)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetDora(string pai)
+        internal void OnReach(int actor)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetReach(int actor)
+        internal void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetReachAccepted(int actor, List<int> deltas, List<int> scores)
+        internal void OnHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
         {
             throw new NotImplementedException();
         }
 
-        internal void GetHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void GetRyukyoku(string reason, List<List<string>> tehais)
+        internal void OnRyukyoku(string reason, List<List<string>> tehais)
         {
             clientRouter.SendNone();
         }
 
-        internal void GetEndKyoku()
+        internal void OnEndKyoku()
         {
             IsKyokuEnd = true;
             clientRouter.SendNone();
         }
+
+
     }
 }
