@@ -52,13 +52,13 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Debug\DebugUtil.cs" />
     <Compile Include="Model\Field.cs" />
-    <Compile Include="Util\MJUtil.cs" />
+    <Compile Include="Result\SplitedTehai.cs" />
     <Compile Include="Result\TehaiAnalizer.cs" />
+    <Compile Include="Util\MJUtil.cs" />
     <Compile Include="MyException.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Model\Pai.cs" />
     <Compile Include="Model\PaiConverter.cs" />
-    <Compile Include="Result\SplitedTehai.cs" />
     <Compile Include="Result\ShantenCalclator.cs" />
     <Compile Include="Result\YakuCalclator.cs" />
     <Compile Include="RouterInterface.cs" />

@@ -58,11 +58,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShantenCalclatorTest.cs" />
+    <Compile Include="TehaiAnalizerTest.cs" />
     <Compile Include="TehaiTests.cs" />
     <Compile Include="RouterTest.cs" />
     <Compile Include="IntegrationTest.cs" />
-    <Compile Include="ShantenCalclatorTest.cs" />
-    <Compile Include="TehaiAnalizerTest.cs" />
     <Compile Include="YamaTest.cs" />
   </ItemGroup>
   <ItemGroup>
