@@ -50,7 +50,7 @@
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\ClientController.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Debug\DebugUtil.cs" />
+    <Compile Include="Util\DebugUtil.cs" />
     <Compile Include="Model\Field.cs" />
     <Compile Include="Result\SplitedTehai.cs" />
     <Compile Include="Result\TehaiAnalizer.cs" />
