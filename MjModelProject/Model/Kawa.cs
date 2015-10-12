@@ -21,7 +21,7 @@ namespace MjModelProject
 
         public bool hasPai(string pai)
         {
-            return discards.Any(e => e.paiString == pai);
+            return discards.Any(e => e.PaiString == pai);
         }
 
     }
@@ -30,13 +30,11 @@ namespace MjModelProject
     {
         public bool isFuroTargeted;
         public bool isReached;
-        
-        public KawaPai(Pai pai, bool isFuroTargeted, bool isReached){
+
+        public KawaPai(Pai pai, bool isFuroTargeted, bool isReached) : base(pai.PaiString)
+        {
             this.isFuroTargeted = isFuroTargeted;
             this.isReached = isReached;
-            this.paiNumber = pai.paiNumber;
-            this.paiString = pai.paiString;
-            this.isRedDora = pai.isRedDora;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MjModelProject;
+using MjModelProject.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace MjModelProject.Tests
             testTehai.Chi(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, Furo.Furotype.chi);
+            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.Minsyun);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
@@ -72,7 +73,7 @@ namespace MjModelProject.Tests
             testTehai.Pon(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, Furo.Furotype.pon);
+            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.Minko);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
@@ -101,7 +102,7 @@ namespace MjModelProject.Tests
             testTehai.Daiminkan(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, Furo.Furotype.daiminkan);
+            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.MinKantsu);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
@@ -126,7 +127,7 @@ namespace MjModelProject.Tests
             testTehai.Ankan(actor, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, Furo.Furotype.ankan);
+            Assert.AreEqual(testTehai.furos[0].ftype,  MJUtil.TartsuType.Ankantsu);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか

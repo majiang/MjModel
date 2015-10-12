@@ -55,7 +55,7 @@ namespace MjModelProject
             serverState = serverState.Execute();
         }
 
-        public bool CanFinishTest()//テスト用
+        public bool CanFinishTest()//テスト用function
         {
             return serverState.GetType() == typeof(END_STATE);
         }

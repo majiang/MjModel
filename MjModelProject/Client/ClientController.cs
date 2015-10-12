@@ -35,7 +35,7 @@ namespace MjModelProject
 
         internal void Pon(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            clientMjModel.Pon(actor, target, pai, consumed);
         }
 
         internal void Chi(int actor, int target, string pai, List<string> consumed)

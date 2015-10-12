@@ -162,7 +162,7 @@ namespace MjModelProject
             {
                 if (getMsgList.Count == Constants.PLAYER_NUM)
                 {
-                    //受信メッセージ検証
+                    
                     if (getMsgList.Count(e => e.type == MsgType.DAHAI) == 1 &&
                         getMsgList.Count(e => e.type == MsgType.NONE) == Constants.PLAYER_NUM - 1)
                     {
@@ -217,6 +217,14 @@ namespace MjModelProject
                     }
                     //以下実装予定
                     //hora
+
+                    else if (getMsgList.Count(e => e.type == MsgType.HORA) >= 1)
+                    {
+                        var horaObj = getMsgList.First(e => e.type == MsgType.HORA);
+                        serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
+                        getMsgList.Clear();
+                        return new AfterDaiminkanState(this);
+                    }
                     else if (getMsgList.Count(e => e.type == MsgType.DAIMINKAN) == 1)
                     {
                         var daiminkanObj = getMsgList.First(e => e.type == MsgType.DAIMINKAN);
@@ -226,7 +234,7 @@ namespace MjModelProject
                     }
                     else if (getMsgList.Count(e => e.type == MsgType.PON) == 1)
                     {
-                        var ponObj = getMsgList.First(e => e.type == MsgType.DAIMINKAN);
+                        var ponObj = getMsgList.First(e => e.type == MsgType.PON);
                         serverController.Pon(ponObj.actor, ponObj.target, ponObj.pai, ponObj.consumed);
                         getMsgList.Clear();
                         return new AfterTsumoState(this);

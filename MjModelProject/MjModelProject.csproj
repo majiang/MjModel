@@ -47,37 +47,43 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiBase.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="ClientController.cs" />
+    <Compile Include="Client\Client.cs" />
+    <Compile Include="Client\ClientController.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="DebugUtil.cs" />
-    <Compile Include="Field.cs" />
+    <Compile Include="Debug\DebugUtil.cs" />
+    <Compile Include="Model\Field.cs" />
+    <Compile Include="Util\MJUtil.cs" />
+    <Compile Include="Result\TehaiAnalizer.cs" />
     <Compile Include="MyException.cs" />
     <Compile Include="Packet.cs" />
-    <Compile Include="Pai.cs" />
-    <Compile Include="PaiConverter.cs" />
+    <Compile Include="Model\Pai.cs" />
+    <Compile Include="Model\PaiConverter.cs" />
+    <Compile Include="Result\SplitedTehai.cs" />
+    <Compile Include="Result\ShantenCalclator.cs" />
+    <Compile Include="Result\YakuCalclator.cs" />
     <Compile Include="RouterInterface.cs" />
-    <Compile Include="Kawa.cs" />
+    <Compile Include="Model\Kawa.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="ClientMjModel.cs" />
-    <Compile Include="ServerContext.cs" />
-    <Compile Include="ServerController.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Client\ClientMjModel.cs" />
+    <Compile Include="Server\ServerContext.cs" />
+    <Compile Include="Server\ServerController.cs" />
+    <Compile Include="Model\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ClientRouter.cs" />
-    <Compile Include="ServerMjModel.cs" />
-    <Compile Include="ServerRouter.cs" />
-    <Compile Include="ServerState.cs" />
-    <Compile Include="Tehai.cs" />
+    <Compile Include="Client\ClientRouter.cs" />
+    <Compile Include="Server\ServerMjModel.cs" />
+    <Compile Include="Server\ServerRouter.cs" />
+    <Compile Include="Server\ServerState.cs" />
+    <Compile Include="Model\Tehai.cs" />
     <Compile Include="VirtualInternet.cs" />
-    <Compile Include="Yama.cs" />
+    <Compile Include="Model\Yama.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

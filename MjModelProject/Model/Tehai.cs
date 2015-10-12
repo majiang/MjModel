@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MjModelProject.Util;
 
 namespace MjModelProject
 {
@@ -37,7 +38,7 @@ namespace MjModelProject
 
         public List<string> GetTehaiString()
         {
-            return tehai.Select(e => e.paiString).ToList();
+            return tehai.Select(e => e.PaiString).ToList();
         }
 
         public void Tsumo(Pai tsumopai)
@@ -51,9 +52,9 @@ namespace MjModelProject
 
         public void Da(Pai dapai)
         {
-            if (tehai.Any( e => e.paiString == dapai.paiString))
+            if (tehai.Any( e => e.PaiString == dapai.PaiString))
             {
-                tehai.RemoveAt(tehai.FindIndex(e => e.paiString == dapai.paiString));
+                tehai.RemoveAt(tehai.FindIndex(e => e.PaiString == dapai.PaiString));
             }
             else
             {
@@ -81,7 +82,7 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.chi, target, pai, consumed));
+            furos.Add(new Furo(MJUtil.TartsuType.Minsyun, target, pai, consumed));
 
         }
         public void Chi(int actor, int target, string pai, List<string> consumed)
@@ -105,11 +106,11 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.pon, target, pai, consumed));
+            furos.Add(new Furo(MJUtil.TartsuType.Minko, target, pai, consumed));
         }
-        public void Pon(int actor, int target, Pai pai, List<string> consumed)
+        public void Pon(int actor, int target, string pai, List<string> consumed)
         {
-            Pon(actor, target, pai, ConsumedStringToConsumedPai(consumed));
+            Pon(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
 
 
@@ -127,11 +128,11 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.daiminkan, target, pai, consumed));
+            furos.Add(new Furo(MJUtil.TartsuType.MinKantsu, target, pai, consumed));
         }
-        public void Daiminkan(int actor, int target, Pai pai, List<string> consumed)
+        public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            Daiminkan(actor, target, pai, ConsumedStringToConsumedPai(consumed));
+            Daiminkan(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
 
 
@@ -149,7 +150,7 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(Furo.Furotype.ankan, actor, new Pai() , consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
+            furos.Add(new Furo(MJUtil.TartsuType.Ankantsu, actor, new Pai(), consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
         }
 
         public void Kakan(int actor, int target, Pai pai, List<Pai> consumed)
@@ -165,9 +166,9 @@ namespace MjModelProject
             //change pon to kakan
             foreach (var furo in furos)
             {
-                if (furo.ftype == Furo.Furotype.pon && furo.consumed.SequenceEqual(consumed))
+                if (furo.ftype == MJUtil.TartsuType.Minko && furo.consumed.SequenceEqual(consumed))
                 {
-                    furo.ftype = Furo.Furotype.kakan;
+                    furo.ftype = MJUtil.TartsuType.MinKantsu;
                     furo.consumed.Add(pai);
                     furo.consumed.Sort();
                     break;
@@ -213,7 +214,7 @@ namespace MjModelProject
 
             foreach(var furo in furos)
             {
-                if( furo.ftype == Furo.Furotype.pon && furo.consumed.SequenceEqual(consumed))
+                if (furo.ftype == MJUtil.TartsuType.Minko && furo.consumed.SequenceEqual(consumed))
                 {
                    return true;
                 }
@@ -238,52 +239,59 @@ namespace MjModelProject
             }
             else if (paiId % 9 == 0)
             {
-                return tehai.Any(e => e.paiNumber == paiId + 1) &&
-                       tehai.Any(e => e.paiNumber == paiId + 2);
+                return tehai.Any(e => e.PaiNumber == paiId + 1) &&
+                       tehai.Any(e => e.PaiNumber == paiId + 2);
             }
             else if (paiId % 9 == 1)
             {
-                return tehai.Any(e => e.paiNumber == paiId + 1) &&
-                       tehai.Any(e => e.paiNumber == paiId + 2) ||
+                return tehai.Any(e => e.PaiNumber == paiId + 1) &&
+                       tehai.Any(e => e.PaiNumber == paiId + 2) ||
                        
-                       tehai.Any(e => e.paiNumber == paiId - 1) && 
-                       tehai.Any(e => e.paiNumber == paiId + 1);
+                       tehai.Any(e => e.PaiNumber == paiId - 1) && 
+                       tehai.Any(e => e.PaiNumber == paiId + 1);
 
             }
             else if (paiId % 9 == 7)
             {
-                return tehai.Any(e => e.paiNumber == paiId - 2) &&
-                       tehai.Any(e => e.paiNumber == paiId - 1) ||
+                return tehai.Any(e => e.PaiNumber == paiId - 2) &&
+                       tehai.Any(e => e.PaiNumber == paiId - 1) ||
 
-                       tehai.Any(e => e.paiNumber == paiId - 1) &&
-                       tehai.Any(e => e.paiNumber == paiId + 1);
+                       tehai.Any(e => e.PaiNumber == paiId - 1) &&
+                       tehai.Any(e => e.PaiNumber == paiId + 1);
 
             }
             else if (paiId % 9 == 8)
             {
-                return tehai.Any(e => e.paiNumber == paiId - 2) &&
-                       tehai.Any(e => e.paiNumber == paiId - 1);
+                return tehai.Any(e => e.PaiNumber == paiId - 2) &&
+                       tehai.Any(e => e.PaiNumber == paiId - 1);
             }
             else 
             {
-                return tehai.Any(e => e.paiNumber == paiId - 2) &&
-                       tehai.Any(e => e.paiNumber == paiId - 1) ||
+                return tehai.Any(e => e.PaiNumber == paiId - 2) &&
+                       tehai.Any(e => e.PaiNumber == paiId - 1) ||
 
-                       tehai.Any(e => e.paiNumber == paiId - 1) &&
-                       tehai.Any(e => e.paiNumber == paiId + 1) ||
+                       tehai.Any(e => e.PaiNumber == paiId - 1) &&
+                       tehai.Any(e => e.PaiNumber == paiId + 1) ||
 
-                       tehai.Any(e => e.paiNumber == paiId + 1) &&
-                       tehai.Any(e => e.paiNumber == paiId + 2);
+                       tehai.Any(e => e.PaiNumber == paiId + 1) &&
+                       tehai.Any(e => e.PaiNumber == paiId + 2);
 
             }
         }
+
+        internal bool CanPon(string pai)
+        {
+            var paiId = PaiConverter.STRING_TO_ID[pai];
+            return tehai.Where(e => e.PaiNumber == paiId).Count() >= 2;
+        }
+
 
         internal MJsonMessageChi GetChiMessage(int playerId, int targetId, string pai)
         {
             var paiId = PaiConverter.STRING_TO_ID[pai];
             if (paiId > 27)
             {
-                throw new InvalidNakiException("unexpected target pai");
+                throw new InvalidNakiException("target pai shoud be number pai");
             }
             
             
@@ -293,8 +301,8 @@ namespace MjModelProject
             }
             else if (paiId % 9 == 1)
             {
-                if( tehai.Any(e => e.paiNumber == paiId - 1) &&
-                    tehai.Any(e => e.paiNumber == paiId + 1))
+                if( tehai.Any(e => e.PaiNumber == paiId - 1) &&
+                    tehai.Any(e => e.PaiNumber == paiId + 1))
                 {
                     return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 1], PaiConverter.ID_TO_STRING[paiId + 1] });
                 }
@@ -306,8 +314,8 @@ namespace MjModelProject
             }
             else if (paiId % 9 == 7)
             {
-                if (tehai.Any(e => e.paiNumber == paiId - 2) &&
-                    tehai.Any(e => e.paiNumber == paiId - 1))
+                if (tehai.Any(e => e.PaiNumber == paiId - 2) &&
+                    tehai.Any(e => e.PaiNumber == paiId - 1))
                 {
                     return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 2], PaiConverter.ID_TO_STRING[paiId - 1] });
                 }
@@ -322,13 +330,13 @@ namespace MjModelProject
             }
             else
             {
-                if (tehai.Any(e => e.paiNumber == paiId - 2) &&
-                    tehai.Any(e => e.paiNumber == paiId - 1))
+                if (tehai.Any(e => e.PaiNumber == paiId - 2) &&
+                    tehai.Any(e => e.PaiNumber == paiId - 1))
                 {
                     return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 2], PaiConverter.ID_TO_STRING[paiId - 1] });
                 }
-                else if (tehai.Any(e => e.paiNumber == paiId - 1) &&
-                         tehai.Any(e => e.paiNumber == paiId + 1))
+                else if (tehai.Any(e => e.PaiNumber == paiId - 1) &&
+                         tehai.Any(e => e.PaiNumber == paiId + 1))
                 {
                     return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 1], PaiConverter.ID_TO_STRING[paiId + 1] });
                 }
@@ -341,7 +349,12 @@ namespace MjModelProject
                 }
             }
         }
-
+        internal MJsonMessagePon GetPonMessage(int playerId, int targetId, string pai)
+        {
+            var paiId = PaiConverter.STRING_TO_ID[pai];
+            var consumedCandidates = tehai.Where(e => e.PaiNumber == paiId).ToList();
+            return new MJsonMessagePon(playerId, targetId, pai, new List<string> { consumedCandidates[0].PaiString, consumedCandidates[1].PaiString });
+        }
 
 
 
@@ -359,27 +372,28 @@ namespace MjModelProject
     public class Furo
     {
 
-        public enum Furotype
-        {
-            pon,
-            chi,
-            daiminkan,
-            ankan,
-            kakan
-        }
 
-        public Furotype ftype;
+        public MJUtil.TartsuType ftype;
         public int target;
         public List<Pai> consumed;
         public Pai furopai;
+        public int minPaiSyu = Int32.MaxValue;
 
-        public Furo(Furotype type, int target, Pai furopai, List<Pai> consumed)
+        public Furo(MJUtil.TartsuType type, int target, Pai furopai, List<Pai> consumed)
         {
             this.ftype = type;
             this.target = target;
             this.furopai = furopai;
             this.consumed = new List<Pai>(consumed);
+            this.minPaiSyu = GetMin(furopai, consumed);
+
         }
+
+        private int GetMin(Pai furopai, List<Pai> consumed){
+            consumed.Sort();
+            return Math.Min(furopai.PaiNumber, consumed[0].PaiNumber);
+        }
+
     }
 
     

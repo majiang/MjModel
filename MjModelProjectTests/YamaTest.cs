@@ -16,16 +16,16 @@ namespace MjModelProjectTests
             Yama testYama = new Yama();
 
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
-            foreach (var omote in testYama.GetDoraOmote())
+            foreach (var omote in testYama.GetDoraMarkers())
             {
-                Debug.WriteLine("Dora = "+omote.paiString);
+                Debug.WriteLine("Dora = "+omote.PaiString);
             }
 
 
 
             while( testYama.GetRestYamaNum() > 0 )
             {
-                Debug.WriteLine(testYama.DoTsumo().paiString);
+                Debug.WriteLine(testYama.DoTsumo().PaiString);
             }
         }
 
@@ -37,17 +37,17 @@ namespace MjModelProjectTests
 
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
             
-            Debug.WriteLine(testYama.DoRinshan().paiString);
+            Debug.WriteLine(testYama.DoRinshan().PaiString);
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH - 1);
             Assert.IsTrue(testYama.CanKan());
             
-            Debug.WriteLine(testYama.DoRinshan().paiString);
+            Debug.WriteLine(testYama.DoRinshan().PaiString);
             Assert.IsTrue(testYama.CanKan());
             
-            Debug.WriteLine(testYama.DoRinshan().paiString);
+            Debug.WriteLine(testYama.DoRinshan().PaiString);
             Assert.IsTrue(testYama.CanKan());
             
-            Debug.WriteLine(testYama.DoRinshan().paiString);
+            Debug.WriteLine(testYama.DoRinshan().PaiString);
             Assert.IsFalse(testYama.CanKan());
 
         }

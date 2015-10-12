@@ -73,12 +73,13 @@ namespace MjModelProject
         {
             clientController.Dahai(actor, pai, tsumogiri);
             //thinkNaki();
+            
             //CHI
-            if ( ((actor+1)%4 == myPositionId) && clientMjModel.CanChi(myPositionId, pai))
+            if (clientMjModel.CanChi(actor, myPositionId, pai))
             {
                 //var thinked = thinkNaki();
-                var thinked = true;
-                if (thinked)
+                var doaction = true;
+                if (doaction)
                 {
                     var msgobj = clientMjModel.GetChiMessage(myPositionId, actor, pai);
                     clientRouter.SendChi(msgobj);
@@ -91,21 +92,42 @@ namespace MjModelProject
                 }
             }
 
-
-            var ponflg = false;
-            if (ponflg)
+            //PON
+            if (clientMjModel.CanPon(actor, myPositionId, pai))
             {
-//                clientRouter.SendPon();
+                //var thinked = thinkNaki();
+                var doaction = true;
+                if (doaction)
+                {
+                    var msgobj = clientMjModel.GetPonMessage(myPositionId, actor, pai);
+                    clientRouter.SendPon(msgobj);
+                    return;
+                }
+                else
+                {
+                    clientRouter.SendNone();
+                    return;
+                }
+            }
+
+            // do nothing
+             clientRouter.SendNone();
+        }
+
+        internal void OnPon(int actor, int target, string pai, List<string> consumed)
+        {
+            clientController.Pon(actor, target, pai, consumed);
+            if (actor == myPositionId)
+            {
+                var tsumogiri = false;
+                var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count - 1];
+                //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
+                clientRouter.SendDahai(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
             else
             {
                 clientRouter.SendNone();
             }
-        }
-
-        internal void OnPon(int actor, int target, string pai, List<string> consumed)
-        {
-            throw new NotImplementedException();
         }
 
         internal void OnChi(int actor, int target, string pai, List<string> consumed)
@@ -116,7 +138,7 @@ namespace MjModelProject
                 var tsumogiri = false;
                 var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count-1];
                 //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
-                clientRouter.SendDahai(new MJsonMessageDahai(actor, lastPai.paiString, tsumogiri));
+                clientRouter.SendDahai(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
             else
             {

@@ -130,7 +130,8 @@ namespace MjModelProject
 
         public void Hora(int actor, int target, string pai)
         {
-            throw new NotImplementedException();
+          //  var msg = serverMjModel.Hora(actor,target,pai);
+
         }
 
         public void Ryukyoku()

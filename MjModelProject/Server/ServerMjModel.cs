@@ -45,17 +45,17 @@ namespace MjModelProject
             field.honba = 0;
             field.kyotaku = 0;
             field.oya = 0;
-            field.doramarker = yama.doraOmote;
+            field.doramarker = yama.doraMarkers;
 
             var haipais = yama.MakeHaipai();
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
             return new MJsonMessageStartKyoku(
-                        field.bakaze.paiString,
+                        field.bakaze.PaiString,
                         field.kyoku,
                         field.honba,
                         field.kyotaku,
                         field.oya,
-                        field.doramarker[0].paiString,
+                        field.doramarker[0].PaiString,
                         new List<List<string>> { 
                             tehais[0].GetTehaiString(),
                             tehais[1].GetTehaiString(),
@@ -82,7 +82,7 @@ namespace MjModelProject
 
             return new MJsonMessageTsumo(
                 currentActor,
-                tsumoPai.paiString
+                tsumoPai.PaiString
                 );
         }
 
@@ -93,7 +93,7 @@ namespace MjModelProject
 
             return new MJsonMessageTsumo(
                 currentActor,
-                tsumoPai.paiString
+                tsumoPai.PaiString
                 );
         }
 
@@ -109,7 +109,7 @@ namespace MjModelProject
         public MJsonMessagePon Pon(int actor, int target, string pai, List<string> consumed)
         {
             kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
-            tehais[actor].Pon(actor, target, new Pai(pai), consumed);
+            tehais[actor].Pon(actor, target, pai, consumed);
             return new MJsonMessagePon(actor, target, pai, consumed);
         }
 
@@ -133,14 +133,14 @@ namespace MjModelProject
         public MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
-            tehais[actor].Daiminkan(actor, target, new Pai(pai), consumed);
+            tehais[actor].Daiminkan(actor, target, pai, consumed);
             return new MJsonMessageDaiminkan(actor, target, pai, consumed);
         }
 
         public MJsonMessageDora OpenDora()
         {
             var openedPai = yama.OpenDoraOmote();
-            return new MJsonMessageDora(openedPai.paiString);
+            return new MJsonMessageDora(openedPai.PaiString);
         }
 
         public void Reach(int p)
@@ -148,9 +148,12 @@ namespace MjModelProject
             throw new NotImplementedException();
         }
 
-        public void Hora(int p1, int p2, int p3)
+        public void Hora(int actor, int target, string pai)
         {
-            throw new NotImplementedException();
+// (int actor,int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
+           // var uradoraMarkers = yama.GetUradoraMarker();
+            
+           // return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiString(), );
         }
 
         public void None()
@@ -159,6 +162,21 @@ namespace MjModelProject
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //以下Validater
         public bool CanFinishKyoku()
         {
             return (yama != null) && (yama.GetRestYamaNum() == 0);

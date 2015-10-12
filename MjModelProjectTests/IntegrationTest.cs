@@ -65,5 +65,8 @@ namespace MjModelProjectTests
                 sr.UpDateServer();//受信したメッセージを処理  
             }
         }
+
+
+
     }
 }

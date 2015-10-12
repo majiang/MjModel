@@ -17,6 +17,7 @@ namespace MjModelProject
         public int currentActor;
         private int myPositionId;
         //private Strategy mjai;
+        private MjsonMessageAll sendMessage;
         
 
         public void Init()
@@ -63,9 +64,14 @@ namespace MjModelProject
             kawas[actor].Sutehai(new Pai(pai),false,tsumogiri);
         }
 
-        public void Pon(int p1, int p2, int p3, List<int> list)
+        public void Pon(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            if (actor == myPositionId)
+            {
+                tehais[actor].Pon(actor, target, pai, consumed);
+            }
+            kawas[target].discards.Last().isFuroTargeted = true;
+
         }
 
         public void Chi(int actor, int target, string pai, List<string> consumed)
@@ -110,14 +116,22 @@ namespace MjModelProject
 
 
 
-        public bool CanChi(int playerId, string pai)
+        public bool CanChi(int actor, int playerId, string pai)
         {
-            return tehais[playerId].CanChi(pai);
+            return ( actor != myPositionId ) && ((actor + 1) % 4 == myPositionId) && tehais[playerId].CanChi(pai);
+        }
+        public bool CanPon(int actor, int playerId, string pai)
+        {
+            return ( actor != myPositionId ) && tehais[playerId].CanPon(pai);
         }
 
         public MJsonMessageChi GetChiMessage(int playerId, int targetId, string pai)
         {
             return tehais[playerId].GetChiMessage(playerId, targetId, pai);
+        }
+        public MJsonMessagePon GetPonMessage(int playerId, int targetId, string pai)
+        {
+            return tehais[playerId].GetPonMessage(playerId, targetId, pai);
         }
     }
 }

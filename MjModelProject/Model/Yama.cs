@@ -16,7 +16,8 @@ namespace MjModelProject
         private int HAIPAI_LENGTH = 13;
 
         public int restPai;
-        public List<Pai> doraOmote;
+        public List<Pai> doraMarkers;
+         
 
         private List<Pai> mYama;
         private int yamaPointer;
@@ -31,7 +32,7 @@ namespace MjModelProject
         {
             mYama = MakeYama();
             restPai = YAMA_LENGTH - WANPAI_LENGTH;
-            doraOmote = new List<Pai>();
+            doraMarkers = new List<Pai>();
             yamaPointer = 0;
             rinshanPointer = 0;
             doraPointer = 0;
@@ -52,8 +53,8 @@ namespace MjModelProject
 
             //赤ドラ設定 
             foreach (var redDora in PaiConverter.RED_DORA_STRING_ID) { 
-                ym[redDora.Value * 4 - 1].isRedDora = true;
-                ym[redDora.Value * 4 - 1].paiString = redDora.Key;
+                ym[redDora.Value * 4 - 1].IsRedDora = true;
+                ym[redDora.Value * 4 - 1].PaiString = redDora.Key;
             }
 
             List<Pai> shuffled = new List<Pai>(ym.OrderBy(i => Guid.NewGuid()));
@@ -65,9 +66,9 @@ namespace MjModelProject
             return mYama[yamaPointer++];
         }
 
-        public List<Pai> GetDoraOmote()
+        public List<Pai> GetDoraMarkers()
         {
-            return doraOmote;
+            return doraMarkers;
         }
 
         public int GetRestYamaNum()
@@ -90,7 +91,7 @@ namespace MjModelProject
         public Pai OpenDoraOmote()
         {
             var opened = mYama[DORA_START_POS + doraPointer++];
-            doraOmote.Add(opened);
+            doraMarkers.Add(opened);
             return opened;
         }
 
@@ -108,5 +109,16 @@ namespace MjModelProject
             return haipais;
         }
 
+        public List<string> GetUradoraMarker()
+        {
+            var uradoraMarkers = new List<string>();
+
+            for (int i = 0; i < doraPointer; i++)
+            {
+                uradoraMarkers.Add( mYama[DORA_START_POS + doraPointer + i].ToString() );
+            }
+
+            return uradoraMarkers;
+        }
     }
 }
