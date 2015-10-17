@@ -93,13 +93,13 @@ public class MJUtil {
 
     public enum TartsuType
     {
-        Head,
-        Ansyun,
-        Minsyun,
-        Anko,
+        HEAD,
+        ANSYUN,
+        MINSYUN,
+        ANKO,
         Minko,
-        Ankantsu,
-        MinKantsu
+        ANKANTSU,
+        MINKANTSU
     };
 	
 	public static readonly String[] YAKU_STRING = {

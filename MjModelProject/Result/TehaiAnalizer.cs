@@ -49,13 +49,13 @@ namespace MjModelProject.Model
     public class Tartsu
     {
 
-        MJUtil.TartsuType tartsuType;
-        int tartsuStartPaiSyu;
+        public MJUtil.TartsuType TartsuType { get; private set; }
+        public int TartsuStartPaiSyu { get; private set; }
 
         public Tartsu(MJUtil.TartsuType tt, int tartsuStartPaiSyu)
         {
-            this.tartsuType = tt;
-            this.tartsuStartPaiSyu = tartsuStartPaiSyu;
+            this.TartsuType = tt;
+            this.TartsuStartPaiSyu = tartsuStartPaiSyu;
         }
 
     }
@@ -108,7 +108,7 @@ namespace MjModelProject.Model
                 if (syu[i] >= 2)
                 {
                     syu[i] -= 2;
-                    Tartsu ts = new Tartsu(MJUtil.TartsuType.Head, i);
+                    Tartsu ts = new Tartsu(MJUtil.TartsuType.HEAD, i);
                     work.Add(ts);
                     reSplit(start, syu, ref work, ref resultList);
                     work.Remove(ts);
@@ -138,7 +138,7 @@ namespace MjModelProject.Model
                 if (syu[i] >= 3)
                 {
                     syu[i] -= 3;
-                    Tartsu ts = new Tartsu(MJUtil.TartsuType.Anko, i);
+                    Tartsu ts = new Tartsu(MJUtil.TartsuType.ANKO, i);
                     work.Add(ts);
                     reSplit(i, syu, ref work, ref resultList);
                     work.Remove(ts);
@@ -149,7 +149,7 @@ namespace MjModelProject.Model
                     syu[i]--;
                     syu[i + 1]--;
                     syu[i + 2]--;
-                    Tartsu ts = new Tartsu(MJUtil.TartsuType.Ansyun, i);
+                    Tartsu ts = new Tartsu(MJUtil.TartsuType.ANSYUN, i);
                     work.Add(ts);
                     reSplit(i, syu, ref work, ref resultList);
                     work.Remove(ts);

@@ -82,7 +82,7 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(MJUtil.TartsuType.Minsyun, target, pai, consumed));
+            furos.Add(new Furo(MJUtil.TartsuType.MINSYUN, target, pai, consumed));
 
         }
         public void Chi(int actor, int target, string pai, List<string> consumed)
@@ -128,7 +128,7 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(MJUtil.TartsuType.MinKantsu, target, pai, consumed));
+            furos.Add(new Furo(MJUtil.TartsuType.MINKANTSU, target, pai, consumed));
         }
         public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
@@ -150,7 +150,7 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(MJUtil.TartsuType.Ankantsu, actor, new Pai(), consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
+            furos.Add(new Furo(MJUtil.TartsuType.ANKANTSU, actor, new Pai(), consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
         }
 
         public void Kakan(int actor, int target, Pai pai, List<Pai> consumed)
@@ -168,7 +168,7 @@ namespace MjModelProject
             {
                 if (furo.ftype == MJUtil.TartsuType.Minko && furo.consumed.SequenceEqual(consumed))
                 {
-                    furo.ftype = MJUtil.TartsuType.MinKantsu;
+                    furo.ftype = MJUtil.TartsuType.MINKANTSU;
                     furo.consumed.Add(pai);
                     furo.consumed.Sort();
                     break;
