@@ -12,7 +12,7 @@ namespace MjModelProjectTests
     public class ShantenCalclatorTest
     {
         [TestMethod]
-        public void 単体シャンテン数計算テスト()
+        public void シャンテン数計算テスト()
         {
             var ss = new ShantenCalclator();
 

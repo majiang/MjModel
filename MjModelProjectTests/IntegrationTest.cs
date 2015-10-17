@@ -10,7 +10,7 @@ namespace MjModelProjectTests
     public class IntegrationTest
     {
         [TestMethod]
-        public void 統合ツモ切りクライアントテスト()
+        public void ツモ切りクライアントテスト()
         {
             //サーバールータテストセットアップ
             VirtualInternet vi = new VirtualInternet();
