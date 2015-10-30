@@ -78,10 +78,10 @@ namespace MjModelProject
             if (clientMjModel.CanChi(actor, myPositionId, pai))
             {
                 //var thinked = thinkNaki();
-                var doaction = true;
-                if (doaction)
+                var doAction = true;
+                if (doAction)
                 {
-                    var msgobj = clientMjModel.GetChiMessage(myPositionId, actor, pai);
+                    var msgobj = clientMjModel.GetChiMessage();
                     clientRouter.SendChi(msgobj);
                     return;
                 }
@@ -96,10 +96,10 @@ namespace MjModelProject
             if (clientMjModel.CanPon(actor, myPositionId, pai))
             {
                 //var thinked = thinkNaki();
-                var doaction = true;
-                if (doaction)
+                var doAction = true;
+                if (doAction)
                 {
-                    var msgobj = clientMjModel.GetPonMessage(myPositionId, actor, pai);
+                    var msgobj = clientMjModel.GetPonMessage();
                     clientRouter.SendPon(msgobj);
                     return;
                 }
@@ -148,37 +148,37 @@ namespace MjModelProject
 
         internal void OnKakan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnAnkan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnDora(string pai)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnReach(int actor)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
         {
-            throw new NotImplementedException();
+            clientRouter.SendNone();
         }
 
         internal void OnRyukyoku(string reason, List<List<string>> tehais)

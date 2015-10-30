@@ -108,14 +108,14 @@ namespace MjModelProject
 
         public MJsonMessagePon Pon(int actor, int target, string pai, List<string> consumed)
         {
-            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            //kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Pon(actor, target, pai, consumed);
             return new MJsonMessagePon(actor, target, pai, consumed);
         }
 
         public MJsonMessageChi Chi(int actor, int target, string pai, List<string> consumed)
         {
-            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            //kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Chi(actor, target, pai, consumed);
             return new MJsonMessageChi(actor, target, pai, consumed);
         }
@@ -132,7 +132,7 @@ namespace MjModelProject
 
         public MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            //kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Daiminkan(actor, target, pai, consumed);
             return new MJsonMessageDaiminkan(actor, target, pai, consumed);
         }

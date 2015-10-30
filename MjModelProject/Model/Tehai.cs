@@ -11,6 +11,7 @@ namespace MjModelProject
     {
         public List<Pai> tehai { get; set; }
         public List<Furo> furos { get; set; }
+        public NakiAnalizer nakiAnalizer = new NakiAnalizer();
         public static readonly List<Pai> UNKNOWN_TEHAI_PAI = new List<Pai> 
         {
             new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"),
@@ -225,139 +226,6 @@ namespace MjModelProject
 
 
 
-
-
-
-
-
-        internal bool CanChi(string pai)
-        {
-            var paiId = PaiConverter.STRING_TO_ID[pai];
-            if (paiId > 27)
-            {
-                return false;
-            }
-            else if (paiId % 9 == 0)
-            {
-                return tehai.Any(e => e.PaiNumber == paiId + 1) &&
-                       tehai.Any(e => e.PaiNumber == paiId + 2);
-            }
-            else if (paiId % 9 == 1)
-            {
-                return tehai.Any(e => e.PaiNumber == paiId + 1) &&
-                       tehai.Any(e => e.PaiNumber == paiId + 2) ||
-                       
-                       tehai.Any(e => e.PaiNumber == paiId - 1) && 
-                       tehai.Any(e => e.PaiNumber == paiId + 1);
-
-            }
-            else if (paiId % 9 == 7)
-            {
-                return tehai.Any(e => e.PaiNumber == paiId - 2) &&
-                       tehai.Any(e => e.PaiNumber == paiId - 1) ||
-
-                       tehai.Any(e => e.PaiNumber == paiId - 1) &&
-                       tehai.Any(e => e.PaiNumber == paiId + 1);
-
-            }
-            else if (paiId % 9 == 8)
-            {
-                return tehai.Any(e => e.PaiNumber == paiId - 2) &&
-                       tehai.Any(e => e.PaiNumber == paiId - 1);
-            }
-            else 
-            {
-                return tehai.Any(e => e.PaiNumber == paiId - 2) &&
-                       tehai.Any(e => e.PaiNumber == paiId - 1) ||
-
-                       tehai.Any(e => e.PaiNumber == paiId - 1) &&
-                       tehai.Any(e => e.PaiNumber == paiId + 1) ||
-
-                       tehai.Any(e => e.PaiNumber == paiId + 1) &&
-                       tehai.Any(e => e.PaiNumber == paiId + 2);
-
-            }
-        }
-
-        internal bool CanPon(string pai)
-        {
-            var paiId = PaiConverter.STRING_TO_ID[pai];
-            return tehai.Where(e => e.PaiNumber == paiId).Count() >= 2;
-        }
-
-
-        internal MJsonMessageChi GetChiMessage(int playerId, int targetId, string pai)
-        {
-            var paiId = PaiConverter.STRING_TO_ID[pai];
-            if (paiId > 27)
-            {
-                throw new InvalidNakiException("target pai shoud be number pai");
-            }
-            
-            
-            if (paiId % 9 == 0)
-            {
-                return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId + 1],  PaiConverter.ID_TO_STRING[paiId + 2] });
-            }
-            else if (paiId % 9 == 1)
-            {
-                if( tehai.Any(e => e.PaiNumber == paiId - 1) &&
-                    tehai.Any(e => e.PaiNumber == paiId + 1))
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 1], PaiConverter.ID_TO_STRING[paiId + 1] });
-                }
-                else 
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId + 1],  PaiConverter.ID_TO_STRING[paiId + 2] });
-                }
-                
-            }
-            else if (paiId % 9 == 7)
-            {
-                if (tehai.Any(e => e.PaiNumber == paiId - 2) &&
-                    tehai.Any(e => e.PaiNumber == paiId - 1))
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 2], PaiConverter.ID_TO_STRING[paiId - 1] });
-                }
-                else 
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 1], PaiConverter.ID_TO_STRING[paiId + 1] });
-                }
-            }
-            else if (paiId % 9 == 8)
-            {
-                return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 2], PaiConverter.ID_TO_STRING[paiId - 1] });
-            }
-            else
-            {
-                if (tehai.Any(e => e.PaiNumber == paiId - 2) &&
-                    tehai.Any(e => e.PaiNumber == paiId - 1))
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 2], PaiConverter.ID_TO_STRING[paiId - 1] });
-                }
-                else if (tehai.Any(e => e.PaiNumber == paiId - 1) &&
-                         tehai.Any(e => e.PaiNumber == paiId + 1))
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId - 1], PaiConverter.ID_TO_STRING[paiId + 1] });
-                }
-                else
-                    //以下の条件が成り立っている
-                    //if (tehai.Any(e => e.paiNumber == paiId + 1) &&
-                    // tehai.Any(e => e.paiNumber == paiId + 2))
-                {
-                    return new MJsonMessageChi(playerId, targetId, pai, new List<string> { PaiConverter.ID_TO_STRING[paiId + 1], PaiConverter.ID_TO_STRING[paiId + 2] });
-                }
-            }
-        }
-        internal MJsonMessagePon GetPonMessage(int playerId, int targetId, string pai)
-        {
-            var paiId = PaiConverter.STRING_TO_ID[pai];
-            var consumedCandidates = tehai.Where(e => e.PaiNumber == paiId).ToList();
-            return new MJsonMessagePon(playerId, targetId, pai, new List<string> { consumedCandidates[0].PaiString, consumedCandidates[1].PaiString });
-        }
-
-
-
         private List<Pai> ConsumedStringToConsumedPai(List<string> consumed)
         {
             var consumedPai = new List<Pai>();
@@ -367,6 +235,27 @@ namespace MjModelProject
             }
             return consumedPai;
         }
+
+        public bool CanChi(int actor, int playerId, string pai)
+        {
+            return nakiAnalizer.CanChi(actor, playerId, tehai, pai);
+        }
+
+        public bool CanPon(int actor, int playerId, string pai)
+        {
+            return nakiAnalizer.CanPon(actor, playerId, tehai, pai);
+        }
+
+        public MJsonMessageChi GetChiMessage()
+        {
+            return nakiAnalizer.GetChiMessage();
+        }
+        public MJsonMessagePon GetPonMessage()
+        {
+            return nakiAnalizer.GetPonMessage();
+        }
+
+
     }
 
     public class Furo

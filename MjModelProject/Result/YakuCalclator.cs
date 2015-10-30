@@ -9,29 +9,25 @@ using MjModelProject.Model;
 
 namespace MjModelProject.Result
 {
-    public class YakuResult
+    public class YakuDetail
     {
+
         /*
-        public Dictionary<string,int> yakus = new Dictionary<string,int>();
-        private bool[] mYakus = new bool[MJUtil.LENGTH_YAKU];
+        public Dictionary<string,int> yakus = new Dictionary<string,int>();1
         private int mHan = 0;
         private int mFu = 0;
         private int mDoraNum = 0;
         private int mYakuhaiNum = 0;
-        private InfoForPointCalc mIfpc = new InfoForPointCalc(); 
-        private final int TYPE = MJUtil.HORAMENTSU_TYPE;
-        private final int SYU = MJUtil.HORAMENTSU_SYU;
+        private InfoForPointCalc mIfpc = new InfoForPointCalc();
 	
 	
 
         public void init(){
             yakus.Clear();
-            //java.util.Arrays.fill(mYakus, false);
             mHan = 0;
             mFu = 0;
             mDoraNum = 0;
             mYakuhaiNum = 0;
-
         }
 	
 
@@ -1200,7 +1196,7 @@ namespace MjModelProject.Result
 	
     }
 
-
         */
+        
     }
 }

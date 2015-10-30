@@ -51,5 +51,7 @@ namespace MjModelProjectTests
             Assert.IsFalse(testYama.CanKan());
 
         }
+
+
     }
 }

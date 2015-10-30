@@ -116,22 +116,31 @@ namespace MjModelProject
 
 
 
-        public bool CanChi(int actor, int playerId, string pai)
+        public bool CanChi(int dapaiActor, int playerId, string pai)
         {
-            return ( actor != myPositionId ) && ((actor + 1) % 4 == myPositionId) && tehais[playerId].CanChi(pai);
+            if ( (dapaiActor != myPositionId) && ( (dapaiActor + 1) % 4 == myPositionId) )
+            {
+                return tehais[myPositionId].CanChi(dapaiActor, playerId, pai);
+            }
+            return false;
+            
         }
-        public bool CanPon(int actor, int playerId, string pai)
+        public bool CanPon(int dapaiActor, int playerId, string pai)
         {
-            return ( actor != myPositionId ) && tehais[playerId].CanPon(pai);
+            if (dapaiActor != myPositionId)
+            {
+                return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
+            }
+            return false;
         }
 
-        public MJsonMessageChi GetChiMessage(int playerId, int targetId, string pai)
+        public MJsonMessageChi GetChiMessage()
         {
-            return tehais[playerId].GetChiMessage(playerId, targetId, pai);
+            return tehais[myPositionId].GetChiMessage();
         }
-        public MJsonMessagePon GetPonMessage(int playerId, int targetId, string pai)
+        public MJsonMessagePon GetPonMessage()
         {
-            return tehais[playerId].GetPonMessage(playerId, targetId, pai);
+            return tehais[myPositionId].GetPonMessage();
         }
     }
 }
