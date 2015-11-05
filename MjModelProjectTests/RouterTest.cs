@@ -10,14 +10,14 @@ namespace MjModelProjectTests
     public class RouterTest
     {
         [TestMethod]
-        public void クライアントルーター単体テスト()
+        public void クライアントルーターテスト()
         {
 
 
         }
 
         [TestMethod]
-        public void サーバールーター単体テスト()
+        public void サーバールーターテスト()
         {
             VirtualInternet vi = new VirtualInternet();
             ServerRouter sr = new ServerRouter(vi);
@@ -26,7 +26,7 @@ namespace MjModelProjectTests
 
         
         [TestMethod]
-        public void ルーター間通信結合テスト()
+        public void ルーター間通信テスト()
         {
             //サーバールータテストセットアップ
             VirtualInternet vi = new VirtualInternet();

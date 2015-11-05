@@ -8,16 +8,10 @@ using MjModelProject.Util;
 
 namespace MjModelProject.Model
 {
-    public class TehaiAnalizer
+    public static class TehaiAnalizer
     {
-        Tehai tehai;
 
-        public TehaiAnalizer(Tehai th)
-        {
-            tehai = th;
-        }
-
-        public SplitedTehai AnalizePattern()
+        public static SplitedTehai AnalizePattern(Tehai tehai)
         {
             int[] syu = new int[MJUtil.LENGTH_SYU];
             foreach (var pai in tehai.tehai)
@@ -26,7 +20,28 @@ namespace MjModelProject.Model
             }
             TehaiSpliter ts = new TehaiSpliter();
 
-            return ts.SplitTehai(syu, tehai.furos);
+           
+            var splited = ts.SplitTehai(syu, tehai.furos);
+
+            foreach (var furopai in tehai.furos)
+            {
+                switch (furopai.ftype)
+                {
+                    case MJUtil.TartsuType.MINSYUN:
+                        splited.Syu[furopai.minPaiSyu]++;
+                        splited.Syu[furopai.minPaiSyu + 1]++;
+                        splited.Syu[furopai.minPaiSyu + 2]++;
+                        break;
+                    case MJUtil.TartsuType.MINKO:
+                        splited.Syu[furopai.minPaiSyu] += 3;
+                        break;
+                    case MJUtil.TartsuType.MINKANTSU:
+                        splited.Syu[furopai.minPaiSyu] += 4;
+                        break;
+                }
+            }
+
+            return splited;
         }
 
 
@@ -36,15 +51,36 @@ namespace MjModelProject.Model
 
     public class SplitedTehai
     {
-        public List<List<Tartsu>> AllPatternTartsuList { get; set; }
+        public List<HoraPattern> AllHoraPatternList { get; set; }
         public int[] Syu { get; set; }
         public SplitedTehai()
         {
-            AllPatternTartsuList = new List<List<Tartsu>>();
+            AllHoraPatternList = new List<HoraPattern>();
             Syu = new int[MJUtil.LENGTH_SYU];
         }
     }
 
+
+    public class HoraPattern
+    {
+        public List<Tartsu> TartsuList;
+        public List<Tartsu> WithoutHeadTartsuList;
+        public Tartsu Head;
+
+        public HoraPattern(List<Tartsu> horaPatternTartsuList)
+        {
+            TartsuList = new List<Tartsu>(horaPatternTartsuList);
+            WithoutHeadTartsuList = TartsuList.Where(e => e.TartsuType != MJUtil.TartsuType.HEAD).ToList();
+            Head = TartsuList.First(e => e.TartsuType == MJUtil.TartsuType.HEAD);
+        }
+
+        public void AddFuro(List<Tartsu> furoTartsuList)
+        {
+            TartsuList.AddRange(furoTartsuList);
+            WithoutHeadTartsuList.AddRange(furoTartsuList);
+        }
+
+    }
 
     public class Tartsu
     {
@@ -74,7 +110,7 @@ namespace MjModelProject.Model
         public SplitedTehai SplitTehai(int[] syu, List<Furo> furos)
         {
             //全通りの上がり構成を算出
-            List<List<Tartsu>> horaMentsuList = split(syu);
+            List<HoraPattern> horaMentsuList = split(syu);
 
             //Make Furo Tartsu
             List<Tartsu> furoTartsu = new List<Tartsu>();
@@ -85,12 +121,12 @@ namespace MjModelProject.Model
             //Add Furo
             foreach (var horaMentsu in horaMentsuList)
             {
-                horaMentsu.AddRange(furoTartsu);
+                horaMentsu.AddFuro(furoTartsu);
             }
 
             //メンツ構造と種類枚数を持つオブジェクトを生成
             SplitedTehai horaMentsuData = new SplitedTehai();
-            horaMentsuData.AllPatternTartsuList = horaMentsuList;
+            horaMentsuData.AllHoraPatternList = horaMentsuList;
             horaMentsuData.Syu = syu;
 
             return horaMentsuData;
@@ -98,10 +134,10 @@ namespace MjModelProject.Model
 
 
 
-        private static List<List<Tartsu>> split(int[] syu)
+        private static List<HoraPattern> split(int[] syu)
         {
             List<Tartsu> work = new List<Tartsu>();
-            List<List<Tartsu>> resultList = new List<List<Tartsu>>();
+            List<HoraPattern> resultList = new List<HoraPattern>();
             int start = 0;
             for (int i = 0; i < MJUtil.LENGTH_SYU; i++)
             {
@@ -118,16 +154,12 @@ namespace MjModelProject.Model
             return resultList;
         }
 
-        private static void reSplit(int start, int[] syu, ref List<Tartsu> work, ref List<List<Tartsu>> resultList)
+        private static void reSplit(int start, int[] syu, ref List<Tartsu> work, ref List<HoraPattern> resultList)
         {
 
             if (syuIsZero(syu))
             {
-                List<Tartsu> result = new List<Tartsu>();
-                foreach (var horaTartsu in work)
-                {
-                    result.Add(horaTartsu);
-                }
+                HoraPattern result = new HoraPattern(work);
                 resultList.Add(result);
                 return;
             }

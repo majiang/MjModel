@@ -73,7 +73,7 @@ namespace MjModelProject.Tests
             testTehai.Pon(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.Minko);
+            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.MINKO);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 

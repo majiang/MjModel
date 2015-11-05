@@ -52,10 +52,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Network\TCPClient.cs" />
     <Compile Include="Network\TCPServer.cs" />
+    <Compile Include="Result\InfoForResult.cs" />
+    <Compile Include="Result\HoraResultCalclator.cs" />
+    <Compile Include="Result\PointAnalizer.cs" />
     <Compile Include="Util\NakiAnalizer.cs" />
     <Compile Include="Util\DebugUtil.cs" />
     <Compile Include="Model\Field.cs" />
-    <Compile Include="Result\SplitedTehai.cs" />
     <Compile Include="Result\TehaiAnalizer.cs" />
     <Compile Include="Util\MJUtil.cs" />
     <Compile Include="MyException.cs" />
@@ -63,7 +65,7 @@
     <Compile Include="Model\Pai.cs" />
     <Compile Include="Model\PaiConverter.cs" />
     <Compile Include="Result\ShantenCalclator.cs" />
-    <Compile Include="Result\YakuCalclator.cs" />
+    <Compile Include="Result\YakuAnalizer.cs" />
     <Compile Include="RouterInterface.cs" />
     <Compile Include="Model\Kawa.cs" />
     <Compile Include="Message.cs" />

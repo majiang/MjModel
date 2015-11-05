@@ -107,7 +107,7 @@ namespace MjModelProject
             }
 
             //add furo
-            furos.Add(new Furo(MJUtil.TartsuType.Minko, target, pai, consumed));
+            furos.Add(new Furo(MJUtil.TartsuType.MINKO, target, pai, consumed));
         }
         public void Pon(int actor, int target, string pai, List<string> consumed)
         {
@@ -167,7 +167,7 @@ namespace MjModelProject
             //change pon to kakan
             foreach (var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.Minko && furo.consumed.SequenceEqual(consumed))
+                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.consumed.SequenceEqual(consumed))
                 {
                     furo.ftype = MJUtil.TartsuType.MINKANTSU;
                     furo.consumed.Add(pai);
@@ -215,7 +215,7 @@ namespace MjModelProject
 
             foreach(var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.Minko && furo.consumed.SequenceEqual(consumed))
+                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.consumed.SequenceEqual(consumed))
                 {
                    return true;
                 }
@@ -260,7 +260,6 @@ namespace MjModelProject
 
     public class Furo
     {
-
 
         public MJUtil.TartsuType ftype;
         public int target;
