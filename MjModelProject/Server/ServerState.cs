@@ -289,7 +289,7 @@ namespace MjModelProject
                 serverController.SendEndkyoku();
                 getMsgList.Clear();
 
-                return new END_STATE(this);
+                return new EndState(this);
             }
             else
             {
@@ -428,10 +428,10 @@ namespace MjModelProject
 
 
 
-    public class END_STATE : ServerState
+    public class EndState : ServerState
     {
-        public END_STATE() { }
-        public END_STATE(ServerState ss)
+        public EndState() { }
+        public EndState(ServerState ss)
         {
             this.serverController = ss.serverController;
         }

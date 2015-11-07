@@ -81,11 +81,11 @@ public class MJUtil {
 	 
 	public static readonly int LENGTH_YAKU = 43;
     */
-	public static readonly int YAKUMANSTART = (int)yaku.SUUANKO;
+	public static readonly int YAKUMANSTART = (int)Yaku.SUUANKO;
 
         
 
-    public enum yaku{
+    public enum Yaku{
         REACH, 
         TSUMO, 
         IPPATSU, 
@@ -95,7 +95,7 @@ public class MJUtil {
         YAKUHAI, 
         HOUTEI, 
         HAITEI, 
-        RINSYAN, 
+        RINSHAN, 
         CHANKAN, 
         
         DOUBLEREACH,
@@ -339,7 +339,21 @@ public class MJUtil {
 		13,//"人和", 
 		13,//"十三不塔",
 	};
-	
+
+    public static int GetDoraOmote(int syu)
+    {
+        return DORA_OMOTE[syu];
+    }
+
+    private static readonly int[] DORA_OMOTE = new int[]
+    {
+         8,  0,  1,  2,  3,  4,  5,  6,  7,//m
+        17,  9, 10, 11, 12, 13, 14, 15, 16,//p
+        26, 18, 19, 20, 21, 22, 23, 24, 25,//s
+        30, 27, 28, 29,//wind
+        33, 31, 32 //dragon
+    };
+
 	
 	private MJUtil (){} 
 	

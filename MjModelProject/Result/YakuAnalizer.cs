@@ -20,9 +20,9 @@ namespace MjModelProject.Result
         public Dictionary<string, int> yakus = new Dictionary<string, int>();
         public int Han = 0;
         public int Fu = 0;
-        public int DoraNum = 0;
-        public int YakuhaiNum = 0;
-
+        public bool IsYakuman;
+        public bool IsTsumo;
+        public bool IsOya;
     }
 
 
@@ -31,335 +31,429 @@ namespace MjModelProject.Result
     public static class YakuAnalizer
     {
 
-
-
         public static YakuResult AnalyzeYaku(HoraPattern horaMentsu, InfoForResult ifr, int[] horaSyu)
         {
-            return new YakuResult();
-        }
-        
-            public static YakuResult calcYaku(HoraPattern horaMentsu, InfoForResult ifr,int[] horaSyu){
-                YakuResult result = new YakuResult();
+            YakuResult result = new YakuResult();
             
-                result.Fu = calcFu( horaMentsu, ifr );
+            result.Fu = CalcFu( horaMentsu, ifr );
+            result.IsTsumo = ifr.IsTsumo;
+            result.IsOya = ifr.IsOya;
 
-                //役の文字列取得
-                var yakuString = MJUtil.YAKU_STRING;
-                //飜数の辞書選択
-                var yakuHanNum = ifr.IsMenzen ? MJUtil.YAKU_HAN_MENZEN : MJUtil.YAKU_HAN_FUROED; 
 
+            //役の文字列取得
+            var yakuString = MJUtil.YAKU_STRING;
+            //飜数の辞書選択
+            var yakuHanNum = ifr.IsMenzen ? MJUtil.YAKU_HAN_MENZEN : MJUtil.YAKU_HAN_FUROED; 
 
             
-                if( ifr.IsReach && ifr.IsDoubleReach == false )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.REACH], yakuHanNum[(int)MJUtil.yaku.REACH]);
-                }
-                if( ifr.IsDoubleReach )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.yaku.DOUBLEREACH]);
-                }
-                if( ifr.IsTsumo && ifr.IsMenzen )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.TSUMO], yakuHanNum[(int)MJUtil.yaku.TSUMO]);
-                }
-                if( ifr.IsIppatsu )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.IPPATSU], yakuHanNum[(int)MJUtil.yaku.IPPATSU]);
-                }
-                if( IsPinfu(horaMentsu, ifr) )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.PINFU], yakuHanNum[(int)MJUtil.yaku.PINFU]);
-                } 
-                if( IsTannyao(horaMentsu) )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.TANNYAO], yakuHanNum[(int)MJUtil.yaku.TANNYAO]);
-                } 
-                if( IsRyanpeiko(horaMentsu, ifr) )
-                {
-                     result.yakus.Add( yakuString[(int)MJUtil.yaku.RYANPEIKO], yakuHanNum[(int)MJUtil.yaku.RYANPEIKO]);
-                }
-                if( IsIipeiko(horaMentsu, ifr) && IsRyanpeiko(horaMentsu, ifr) )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.IIPEIKOU], yakuHanNum[(int)MJUtil.yaku.IIPEIKOU]);
-                }
-                if( IsYakuhai(horaMentsu, ifr) )
-                {
-                    result.yakus.Add( yakuString[(int)MJUtil.yaku.YAKUHAI], CalcYakuhaiNum(horaMentsu,ifr));
-                }
-                /*
-
-		
-                setYAKUHAI( calcYakuhai(horaMentsu, ifr) );
-        //		setHOUTEI();
-                setHAITEI( ifr.getRestTurn() == 0 );
-                setRINSYAN( ifr.isRinshan() );
-        //		setCHANKAN();
-                setDORA( calcDora(horaMentsu,ifr) );
-         
-                setSANSYOKUDOJUN( calcSansyokuDoujun(horaMentsu) );
-                setITTSUU( calcIttsuu( horaMentsu) );
-		
-                //kokokara not test yet
-                setSANANKO( calcSananko(horaMentsu) );
-                setTOITOI( calcToitoi( horaMentsu) );
-                setSHOSANGEN( calcShosangen( horaMentsu, ifr ) );
-		
-		
-                setHONROTO( calcHonroto(horaMentsu, ifr) );
-                if(getHONROTO() == false){
-                    setJUNCHANTA( calcJunchanta(horaMentsu) );
-                    setCHANTA( calcChanta( horaMentsu) );
-                }
-		
-                setSANSYOKUDOKO( calcSansyokudoko(horaMentsu) ); 
-                setSANKANTSU( calcSankantsu(horaMentsu) );
-                setHONNITSU( calcHonnitsu(horaMentsu) );
-		
-		
-                setCHINNITSU( calcChinnitsu(horaMentsu) );
-		
-		
-                setSUUANKO( calcSuuanko(horaMentsu) );
-                setDAISANGEN( calcDaisangen(horaMentsu) );
-                setSHOSUSI( calcShosushi(horaMentsu));
-                setDAISUSI( calcDaisushi(horaMentsu));
-                setTSUISO( calcTsuiso(horaMentsu));
-                setRYUISO( calcRyuiso(horaMentsu));
-                setCHINROTO( calcChinroto(horaMentsu));
-                setCHURENPOTO( calcChurenpoto(ifr, horaSyu));
-                setSUKANTSU( calcSukantsu(horaMentsu) );
-                setTENHO( ifr.getPassedTurn() == 1 && ifr.isNotFuroed());
-        //		setCHIHO();
-        //		setRENHO();
-        //		setSHISANPUTA();
-                checkYakuman();
-		
-		
-                setPinfu20fu();
-                 * */
-
-                return result;
+            if( ifr.IsReach && ifr.IsDoubleReach == false )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.REACH], yakuHanNum[(int)MJUtil.Yaku.REACH]);
             }
+            if( ifr.IsDoubleReach )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.Yaku.DOUBLEREACH]);
+            }
+            if( ifr.IsTsumo && ifr.IsMenzen )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.TSUMO], yakuHanNum[(int)MJUtil.Yaku.TSUMO]);
+            }
+            if( ifr.IsIppatsu )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.IPPATSU], yakuHanNum[(int)MJUtil.Yaku.IPPATSU]);
+            }
+            if( IsPinfu(horaMentsu, ifr) )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.PINFU], yakuHanNum[(int)MJUtil.Yaku.PINFU]);
+            } 
+            if( IsTannyao(horaMentsu) )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.TANNYAO], yakuHanNum[(int)MJUtil.Yaku.TANNYAO]);
+            } 
+            if( IsRyanpeiko(horaMentsu, ifr) )
+            {
+                    result.yakus.Add( yakuString[(int)MJUtil.Yaku.RYANPEIKO], yakuHanNum[(int)MJUtil.Yaku.RYANPEIKO]);
+            }
+            if( IsIipeiko(horaMentsu, ifr) && ( IsRyanpeiko(horaMentsu, ifr) == false ) )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.IIPEIKOU], yakuHanNum[(int)MJUtil.Yaku.IIPEIKOU]);
+            }
+            if( IsYakuhai(horaMentsu, ifr) )
+            {
+                result.yakus.Add( yakuString[(int)MJUtil.Yaku.YAKUHAI], CalcYakuhaiNum(horaMentsu,ifr));
+            }
+            if( ifr.IsHoutei )
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HOUTEI], yakuHanNum[(int)MJUtil.Yaku.HOUTEI]);
+            }
+            if ( ifr.IsHaitei)
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HAITEI], yakuHanNum[(int)MJUtil.Yaku.HAITEI]);
+            }
+            if ( ifr.IsRinshan )
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.RINSHAN], yakuHanNum[(int)MJUtil.Yaku.RINSHAN]);
+            }
+            if ( ifr.IsChankan )
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHANKAN], yakuHanNum[(int)MJUtil.Yaku.CHANKAN]);
+            }
+            if( IsDora(horaMentsu,ifr) )
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DORA], CalcDoraNum(horaMentsu, ifr));
+            }
+                     
+            /*
+          
+         
+            setSANSYOKUDOJUN( calcSansyokuDoujun(horaMentsu) );
+            setITTSUU( calcIttsuu( horaMentsu) );
+		
+            //kokokara not test yet
+            setSANANKO( calcSananko(horaMentsu) );
+            setTOITOI( calcToitoi( horaMentsu) );
+            setSHOSANGEN( calcShosangen( horaMentsu, ifr ) );
+		
+		
+            setHONROTO( calcHonroto(horaMentsu, ifr) );
+            if(getHONROTO() == false){
+                setJUNCHANTA( calcJunchanta(horaMentsu) );
+                setCHANTA( calcChanta( horaMentsu) );
+            }
+		
+            setSANSYOKUDOKO( calcSansyokudoko(horaMentsu) ); 
+            setSANKANTSU( calcSankantsu(horaMentsu) );
+            setHONNITSU( calcHonnitsu(horaMentsu) );
+		
+		
+            setCHINNITSU( calcChinnitsu(horaMentsu) );
+		
+		
+            setSUUANKO( calcSuuanko(horaMentsu) );
+            setDAISANGEN( calcDaisangen(horaMentsu) );
+            setSHOSUSI( calcShosushi(horaMentsu));
+            setDAISUSI( calcDaisushi(horaMentsu));
+            setTSUISO( calcTsuiso(horaMentsu));
+            setRYUISO( calcRyuiso(horaMentsu));
+            setCHINROTO( calcChinroto(horaMentsu));
+            setCHURENPOTO( calcChurenpoto(ifr, horaSyu));
+            setSUKANTSU( calcSukantsu(horaMentsu) );
+            setTENHO( ifr.getPassedTurn() == 1 && ifr.isNotFuroed());
+    //		setCHIHO();
+    //		setRENHO();
+    //		setSHISANPUTA();
+            checkYakuman();
+		
+		
+            setPinfu20fu();
+                * */
+
+
+            //飜数計算
+            result.Han = CalcHanSum(result);
+            return result;
+        }
 	
-            private static int calcFu(HoraPattern horaMentsu, InfoForResult ifpc) {
-                int fuSum = 0;
-                int futei = 20;
-                fuSum += futei;
+        private static int CalcFu(HoraPattern horaMentsu, InfoForResult ifpc) {
+            int fuSum = 0;
+            int futei = 20;
+            fuSum += futei;
 		
-                if( ifpc.IsMenzen &&( ! ifpc.IsTsumo ) ){
-                    fuSum += 10;
-                }
-		
-		
-                int head = horaMentsu.TartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.HEAD).First().TartsuStartPaiSyu;
-                if( ifpc.IsJifuu(head) ){
-                    fuSum += 2;
-                }
-                if( ifpc.IsJifuu(head) ){
-                    fuSum += 2;
-                }
-                if( MJUtil.IsDragon(head) ){
-                    fuSum += 2;
-                }
-		
-                if( ifpc.IsTsumo ){
-                    fuSum += 2;
-                }
+            if( ifpc.IsMenzen &&( ! ifpc.IsTsumo ) ){
+                fuSum += 10;
+            }
 		
 		
-                int multiple;
-                for(int i=1;i<horaMentsu.TartsuList.Count;i++){
-                    if( MJUtil.IsYaochu(horaMentsu.TartsuList[i].TartsuStartPaiSyu) ){
-                        multiple = 2;
-                    }else{
-                        multiple = 1;
-                    }
-			
-                    switch ( horaMentsu.TartsuList[i].TartsuType ){
-                        case MJUtil.TartsuType.MINKO:
-                            fuSum += 2 * multiple;
-                            continue;
-                        case MJUtil.TartsuType.ANKO:
-                            fuSum += 4 * multiple;
-                            continue;
-                        case MJUtil.TartsuType.MINKANTSU:
-                            fuSum += 8 * multiple;
-                            continue;
-                        case MJUtil.TartsuType.ANKANTSU:
-                            fuSum += 16 * multiple;
-                            continue;
-                    }
-                }
+            int head = horaMentsu.TartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.HEAD).First().TartsuStartPaiSyu;
+            if( ifpc.IsJifuu(head) ){
+                fuSum += 2;
+            }
+            if( ifpc.IsJifuu(head) ){
+                fuSum += 2;
+            }
+            if( MJUtil.IsDragon(head) ){
+                fuSum += 2;
+            }
+		
+            if( ifpc.IsTsumo ){
+                fuSum += 2;
+            }
 		
 		
-                int lastAddedSyu = ifpc.LastAddedSyu;
+            int multiple;
 
-
-                //単騎待ちの場合＋２符
-                if( lastAddedSyu == horaMentsu.TartsuList[0].TartsuStartPaiSyu )
+            foreach (var tartsu in horaMentsu.TartsuList)
+            {
+                if (MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu))
                 {
-                    fuSum += 2;
+                    multiple = 2;
                 }
                 else
                 {
-                    //カンチャンorペンチャンの場合＋２符
-                    for(int i=1;i<horaMentsu.TartsuList.Count;i++){
-                        if ((horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.ANSYUN) && (horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.MINSYUN))
-                        {
-                            continue;
-                        }
-                        //順子前提
-                        if( lastAddedSyu == horaMentsu.TartsuList[i].TartsuStartPaiSyu+1 ){//カンチャン
-                            fuSum += 2;
-                            break;
-                        }else if( (lastAddedSyu == horaMentsu.TartsuList[i].TartsuStartPaiSyu)&&(lastAddedSyu % 9 == 6) ){//7待ちの89ペンチャン
-                            fuSum += 2;
-                            break;
-                        }else if( (lastAddedSyu == horaMentsu.TartsuList[i].TartsuStartPaiSyu+2 )&&(lastAddedSyu % 9 == 2) ){//3待ちの12ペンチャン
-                            fuSum += 2;
-                            break;
-                        }
-                    }
+                    multiple = 1;
                 }
-		
-		
-                //喰いタンのみ平和系の場合２０符であるが、２符足して３０符に切り上げる必要あり
-                if( (fuSum == 20) && (ifpc.IsMenzen == false) ){
-                    fuSum += 2;
+
+                switch (tartsu.TartsuType)
+                {
+                    case MJUtil.TartsuType.MINKO:
+                        fuSum += 2 * multiple;
+                        continue;
+                    case MJUtil.TartsuType.ANKO:
+                        fuSum += 4 * multiple;
+                        continue;
+                    case MJUtil.TartsuType.MINKANTSU:
+                        fuSum += 8 * multiple;
+                        continue;
+                    case MJUtil.TartsuType.ANKANTSU:
+                        fuSum += 16 * multiple;
+                        continue;
                 }
-		
-                return (int) ( Math.Ceiling( fuSum/10.0 )*10 );
+              
             }
+		
+            int lastAddedSyu = ifpc.LastAddedSyu;
 
-            private static bool IsPinfu(HoraPattern hp, InfoForResult ifr){
-                int headSyu = hp.Head.TartsuStartPaiSyu;
 
-                //頭が役牌でないか判定
-                if( ifr.IsBafuu(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragon(headSyu) )
-                {
-                    return false;
-                }
-
-                //頭もしくは門前順子であるか判定
-                foreach(var tartsu in hp.TartsuList){
-                    if ( ( tartsu.TartsuType != MJUtil.TartsuType.ANSYUN ) && ( tartsu.TartsuType != MJUtil.TartsuType.HEAD ) ){
-                        return false;
+            //単騎待ちの場合＋２符
+            if( lastAddedSyu == horaMentsu.TartsuList[0].TartsuStartPaiSyu )
+            {
+                fuSum += 2;
+            }
+            else
+            {
+                //カンチャンorペンチャンの場合＋２符
+                for(int i=1;i<horaMentsu.TartsuList.Count;i++){
+                    if ((horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.ANSYUN) && (horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.MINSYUN))
+                    {
+                        continue;
+                    }
+                    //順子前提
+                    if( lastAddedSyu == horaMentsu.TartsuList[i].TartsuStartPaiSyu+1 ){//カンチャン
+                        fuSum += 2;
+                        break;
+                    }else if( (lastAddedSyu == horaMentsu.TartsuList[i].TartsuStartPaiSyu)&&(lastAddedSyu % 9 == 6) ){//7待ちの89ペンチャン
+                        fuSum += 2;
+                        break;
+                    }else if( (lastAddedSyu == horaMentsu.TartsuList[i].TartsuStartPaiSyu+2 )&&(lastAddedSyu % 9 == 2) ){//3待ちの12ペンチャン
+                        fuSum += 2;
+                        break;
                     }
                 }
+            }
+		
+		
+            //喰いタンのみ平和系の場合２０符であるが、２符足して３０符に切り上げる必要あり
+            if( (fuSum == 20) && (ifpc.IsMenzen == false) ){
+                fuSum += 2;
+            }
+		
+            return (int) ( Math.Ceiling( fuSum/10.0 )*10 );
+        }
 
-                //リャンメン待ちか判定
-                int lastAddedSyu = ifr.LastAddedSyu; 
-                foreach(var tartsu in hp.WithoutHeadTartsuList)
-                {
-                    if(   ( tartsu.TartsuStartPaiSyu == lastAddedSyu) && ( lastAddedSyu % 9 != 6 )    
-                        ||( tartsu.TartsuStartPaiSyu == lastAddedSyu - 2) && ( lastAddedSyu % 9 != 2 ) )
-                    {
-                        return true;
-                    }   
-                }
+        private static bool IsPinfu(HoraPattern hp, InfoForResult ifr){
+            int headSyu = hp.Head.TartsuStartPaiSyu;
+
+            //頭が役牌でないか判定
+            if( ifr.IsBafuu(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragon(headSyu) )
+            {
                 return false;
             }
 
-            private static bool IsTannyao(HoraPattern hp)
-            {
-                foreach(var tartsu in hp.TartsuList)
-                {
-                    switch (tartsu.TartsuType)
-                    {
-                        case MJUtil.TartsuType.ANSYUN:
-                            if(  ( tartsu.TartsuStartPaiSyu % 9 ) == 0  || ( tartsu.TartsuStartPaiSyu % 9 ) == 6 ) 
-                            {
-                                return false;
-                            }
-                            break;
-                        case MJUtil.TartsuType.MINSYUN:
-                            if(  ( tartsu.TartsuStartPaiSyu % 9 ) == 0  || ( tartsu.TartsuStartPaiSyu % 9 ) == 6 ) 
-                            {
-                                return false;
-                            }
-                            break;
-                        default:
-                            if( tartsu.TartsuStartPaiSyu >= 27 || ( tartsu.TartsuStartPaiSyu % 9 ) == 0 || ( tartsu.TartsuStartPaiSyu % 9 ) == 8 )
-                            {
-                                return false;
-                            }
-                            break;
-                    }
+            //頭もしくは門前順子であるか判定
+            foreach(var tartsu in hp.TartsuList){
+                if ( ( tartsu.TartsuType != MJUtil.TartsuType.ANSYUN ) && ( tartsu.TartsuType != MJUtil.TartsuType.HEAD ) ){
+                    return false;
                 }
-                 return true;
             }
 
-            private static bool IsRyanpeiko(HoraPattern hp, InfoForResult ifr)
+            //リャンメン待ちか判定
+            int lastAddedSyu = ifr.LastAddedSyu; 
+            foreach(var tartsu in hp.WithoutHeadTartsuList)
             {
-                //門前でない場合は終了
-                if( ifr.IsMenzen == false )
+                if(   ( tartsu.TartsuStartPaiSyu == lastAddedSyu) && ( lastAddedSyu % 9 != 6 )    
+                    ||( tartsu.TartsuStartPaiSyu == lastAddedSyu - 2) && ( lastAddedSyu % 9 != 2 ) )
                 {
-                    return false;
-                }
+                    return true;
+                }   
+            }
+            return false;
+        }
 
-                //4ターツ全てが門前順子でない場合は終了
-                if( hp.TartsuList.Select( e => e.TartsuType == MJUtil.TartsuType.ANSYUN ).Count() != 4 )
+        private static bool IsTannyao(HoraPattern hp)
+        {
+            foreach(var tartsu in hp.TartsuList)
+            {
+                switch (tartsu.TartsuType)
                 {
-                    return false;
+                    case MJUtil.TartsuType.ANSYUN:
+                        if(  ( tartsu.TartsuStartPaiSyu % 9 ) == 0  || ( tartsu.TartsuStartPaiSyu % 9 ) == 6 ) 
+                        {
+                            return false;
+                        }
+                        break;
+                    case MJUtil.TartsuType.MINSYUN:
+                        if(  ( tartsu.TartsuStartPaiSyu % 9 ) == 0  || ( tartsu.TartsuStartPaiSyu % 9 ) == 6 ) 
+                        {
+                            return false;
+                        }
+                        break;
+                    default:
+                        if( tartsu.TartsuStartPaiSyu >= 27 || ( tartsu.TartsuStartPaiSyu % 9 ) == 0 || ( tartsu.TartsuStartPaiSyu % 9 ) == 8 )
+                        {
+                            return false;
+                        }
+                        break;
                 }
+            }
+                return true;
+        }
+
+        private static bool IsRyanpeiko(HoraPattern hp, InfoForResult ifr)
+        {
+            //門前でない場合は終了
+            if( ifr.IsMenzen == false )
+            {
+                return false;
+            }
+
+            //4ターツ全てが門前順子でない場合は終了
+            if( hp.TartsuList.Select( e => e.TartsuType == MJUtil.TartsuType.ANSYUN ).Count() != 4 )
+            {
+                return false;
+            }
 
                 
-                var sorted = hp.WithoutHeadTartsuList.OrderBy( e => e.TartsuStartPaiSyu ).ToList();
+            var sorted = hp.WithoutHeadTartsuList.OrderBy( e => e.TartsuStartPaiSyu ).ToList();
 
-                if( sorted[0].TartsuStartPaiSyu == sorted[1].TartsuStartPaiSyu && sorted[2].TartsuStartPaiSyu == sorted[3].TartsuStartPaiSyu )
+            if( sorted[0].TartsuStartPaiSyu == sorted[1].TartsuStartPaiSyu && sorted[2].TartsuStartPaiSyu == sorted[3].TartsuStartPaiSyu )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsIipeiko(HoraPattern hp, InfoForResult ifr)
+        {
+            //門前でない場合は終了
+            if( ifr.IsMenzen == false)
+            {
+                return false;
+            }
+
+            //一盃口対象である門前順子のみ抜き出し
+            var ansyuns = hp.WithoutHeadTartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.ANSYUN)
+                                                  .OrderBy( e => e.TartsuStartPaiSyu );
+            var prevStartPaisyu = -1;
+            foreach( var ansyun in ansyuns )
+            {
+                if( ansyun.TartsuStartPaiSyu == prevStartPaisyu )
                 {
                     return true;
                 }
-
-                return false;
+                prevStartPaisyu = ansyun.TartsuStartPaiSyu;
             }
+            return false;
+        } 
 
-            private static bool IsIipeiko(HoraPattern hp, InfoForResult ifr)
+        private static bool IsYakuhai(HoraPattern hp, InfoForResult ifr)
+        {
+            foreach( var tartsu in hp.TartsuList )
             {
-                //門前でない場合は終了
-                if( ifr.IsMenzen == false)
+                if(ifr.jifuuList.Contains(tartsu.TartsuStartPaiSyu))
                 {
-                    return false;
+                    return true;
                 }
-
-
-                var ansyuns = hp.WithoutHeadTartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.ANSYUN)
-                                                      .OrderBy( e => e.TartsuStartPaiSyu );
-                var prevStartPaisyu = -1;
-                foreach( var ansyun in ansyuns )
+            }
+            return false;
+        }
+        private static int CalcYakuhaiNum(HoraPattern hp, InfoForResult ifr)
+        {
+            int yakuhaiNum = 0;
+            //TODO
+            foreach (var tartsu in hp.TartsuList)
+            {
+                //ダブ東、ダブ南の場合があるので自風と場風は独立に判定する
+                if ( ifr.jifuuList.Contains(tartsu.TartsuStartPaiSyu))
                 {
-                    if( ansyun.TartsuStartPaiSyu == prevStartPaisyu )
+                    yakuhaiNum++;
+                }
+                if (ifr.bafuuList.Contains(tartsu.TartsuStartPaiSyu))
+                {
+                    yakuhaiNum++;
+                }
+                if (MJUtil.IsDragon(tartsu.TartsuStartPaiSyu))
+                {
+                    yakuhaiNum++;
+                }
+            }
+            return yakuhaiNum;
+        }
+
+
+        private static bool IsDora(HoraPattern hp, InfoForResult ifr)
+        {
+            foreach (var tartsu in hp.TartsuList)
+            {
+                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                {
+                    if ( ifr.IsDora(tartsu.TartsuStartPaiSyu    ) ||
+                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
+                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 2) )
                     {
                         return true;
                     }
-                    prevStartPaisyu = ansyun.TartsuStartPaiSyu;
                 }
-                return false;
-            } 
-
-            private static bool IsYakuhai(HoraPattern hp, InfoForResult ifr)
-            {
-                foreach( var tartsu in hp.TartsuList )
+                else
                 {
-                    if(ifr.jifuuList.Contains(tartsu.TartsuStartPaiSyu))
+                    if ( ifr.IsDora(tartsu.TartsuStartPaiSyu) )
                     {
                         return true;
                     }
                 }
-                return false;
             }
-            private static int CalcYakuhaiNum(HoraPattern hp, InfoForResult ifr)
+            return false;  
+        }
+
+        private static int CalcDoraNum(HoraPattern hp, InfoForResult ifr)
+        {
+            //赤ドラはカウントしない
+            var doraNum = 0;
+            foreach (var tartsu in hp.TartsuList)
             {
-                //TODO
-                foreach (var tartsu in hp.TartsuList)
+                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
                 {
-                    if (ifr.jifuuList.Contains(tartsu.TartsuStartPaiSyu))
+                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
+                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
+                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
                     {
+                        doraNum++;
                     }
                 }
-                return 0;
+                else if (tartsu.TartsuType == MJUtil.TartsuType.ANKO || tartsu.TartsuType == MJUtil.TartsuType.MINKO)
+                {
+                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+                    {
+                        doraNum += 3;
+                    }
+                }
+                else if (tartsu.TartsuType == MJUtil.TartsuType.HEAD)
+                {
+                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+                    {
+                        doraNum += 2;
+                    }
+                }
+                else if (tartsu.TartsuType == MJUtil.TartsuType.ANKANTSU || tartsu.TartsuType == MJUtil.TartsuType.MINKANTSU)
+                {
+                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+                    {
+                        doraNum += 4;
+                    }
+                }
             }
-
+            return doraNum;  
+        }
 
         /*
 
@@ -950,9 +1044,17 @@ namespace MjModelProject.Result
 
 	
 	*/
-	
-	
 
+
+        private static int CalcHanSum(YakuResult result)
+        {
+            var hanSum = 0;
+            foreach( var yaku in result.yakus)
+            {
+                hanSum += yaku.Value;
+            }
+            return hanSum;
+        }
         
     }
 }
