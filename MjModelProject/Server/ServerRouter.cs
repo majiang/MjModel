@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Net;
+using System.Net.Sockets;
 
 namespace MjModelProject
 {
@@ -18,7 +16,9 @@ namespace MjModelProject
         //メッセージ受信時にクライアントの名前を見てルーム名を取得。後にコントローラを取得
         public Dictionary<string, ServerContext> roomNameServerDictionary;//部屋ごとにコントローラを作成< room, servercontroller >
         public Dictionary<string, string> clientNameRoomDictionary;//クライアントリスト< name, room >
-        
+
+        public Dictionary<string, TcpClient> clientNameClientDictionary;
+
         //メッセージ送信時にクライアントの名前が渡されるので名前でクライアントルータを取得して送信。
         public Dictionary<string, IPAddress> clientNameIpDictionary;//プレーヤ名とクライアントIPのリスト< name, clientIP > //ソケットに変更予定
         
@@ -117,15 +117,15 @@ namespace MjModelProject
  //       public void SendJoin(string name , string room){}
      
         //StoC
-        public void SendStartGame(string roomName, MJsonMessageStartGame msgobj)
+        public void SendStartGame(string name, MJsonMessageStartGame msgobj)
         {
-            SendMessageToClient(roomName, JsonConvert.SerializeObject(msgobj));
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
         }
 
         //StoC
-        public void SendStartKyoku(string roomName, MJsonMessageStartKyoku msgobj)
+        public void SendStartKyoku(string name, MJsonMessageStartKyoku msgobj)
         {
-            SendMessageToClient(roomName, JsonConvert.SerializeObject(msgobj));
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
          }
 
         //StoC
@@ -191,7 +191,7 @@ namespace MjModelProject
         //      public   void Hora(int actor, int target, string pai) { }
 
         //StoC
-        public void SendHora(string name, MJsonMessageReachAccept msgobj)
+        public void SendHora(string name, MJsonMessageHora msgobj)
         {
             SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
         }
