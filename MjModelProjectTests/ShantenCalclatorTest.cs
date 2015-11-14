@@ -16,7 +16,7 @@ namespace MjModelProjectTests
         {
             var ss = new ShantenCalclator();
 
-            using (StreamReader sr = new StreamReader(@"C:\Users\desk\Dropbox\shanten_benchmark_data.num.txt", System.Text.Encoding.GetEncoding("shift_jis")))
+            using (StreamReader sr = new StreamReader(@"../../shanten_benchmark_data.num.txt", System.Text.Encoding.GetEncoding("shift_jis")))
             {
                 ss.UseChitoitsu = false;
                 ss.UseKokushi = false;
