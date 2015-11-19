@@ -24,10 +24,32 @@ namespace MjModelProject
         public const string REACH_ACCEPTED = "reach_accepted";
         public const string HORA = "hora";
         public const string END_KYOKU = "end_kyoku";
+        public const string END_GAME = "end_game";
         public const string RYUKYOKU = "ryukyoku";
         public const string NONE = "none";
-    }
 
+        public static List<string> MsgTypeList = new List<string>()
+        {
+            MsgType.JOIN,
+            MsgType.START_GAME,
+            MsgType.START_KYOKU,
+            MsgType.TSUMO,
+            MsgType.DAHAI ,
+            MsgType.PON,
+            MsgType.CHI,
+            MsgType.ANKAN,
+            MsgType.KAKAN,
+            MsgType.DAIMINKAN,
+            MsgType.DORA,
+            MsgType.REACH,
+            MsgType.REACH_ACCEPTED,
+            MsgType.HORA,
+            MsgType.END_KYOKU,
+            MsgType.END_GAME,
+            MsgType.RYUKYOKU,
+            MsgType.NONE,
+        };
+    }
 
     public class MjsonMessageAll
     {
@@ -38,25 +60,29 @@ namespace MjModelProject
         public List<string> names;
         public string bakaze;
         public int kyoku;
+        public int honba;
+        public int kyotaku;
+        public int oya; 
+        public string dora_marker;
+
         public int actor;
         public bool tsumogiri;
         public int target;
         public string pai;
         public List<string> consumed;
-        public string doraMarker;
+         
+
         public List<int> details;//点数移動
         public List<int> scores;//点数移動結果
-        public List<string> uradoraMarkers;
-        public List<string> horaTehais;
+        public List<string> uradora_markers;
+        public List<string> hora_tehais;
         public Dictionary<string, int> yakus;
+        public List<bool> tenpais;
         public int fu;
         public int fan;
-        public int horaPoints;
+        public int hora_points;
         public string reason;
         public List<List<string>> tehais;
-        public int honba;
-        public int kyotaku;
-        public int oya;
         public List<int> deltas;
 
     }
@@ -90,16 +116,16 @@ namespace MjModelProject
         public int honba;
         public int kyotaku;
         public int oya;
-        public string doraMarker;
+        public string dora_marker;
         public List<List<string>> tehais;
-        public MJsonMessageStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
+        public MJsonMessageStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string dora_marker, List<List<string>> tehais)
         {
             this.bakaze = bakaze;
             this.kyoku = kyoku;
             this.honba = honba;
             this.kyotaku = kyotaku;
             this.oya = oya;
-            this.doraMarker = doraMarker;
+            this.dora_marker = dora_marker;
             this.tehais = tehais;
         }
     }
@@ -239,21 +265,21 @@ namespace MjModelProject
         public int actor;
         public int target;
         public string pai;
-        public List<string> uradoraMarkers;
-        public List<string> horaTehais;
+        public List<string> uradora_markers;
+        public List<string> hora_tehais;
         public Dictionary<string, int> yakus;
         public int fu;
         public int fan;
         public List<int> deltas;
         public List<int> scores;
 
-        public MJsonMessageHora(int actor,int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
+        public MJsonMessageHora(int actor,int target, string pai, List<string> uradora_markers, List<string> hora_tehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
         {
             this.actor = actor;
             this.target = target;
             this.pai = pai;
-            this.uradoraMarkers = uradoraMarkers;
-            this.horaTehais = horaTehais;
+            this.uradora_markers = uradora_markers;
+            this.hora_tehais = hora_tehais;
             this.yakus = yakus;
             this.fu = fu;
             this.fan = fan;
@@ -283,10 +309,10 @@ namespace MjModelProject
     public class MJsonMessageDora
     {
         public string type = MsgType.DORA;
-        public string doraMarker;
-        public MJsonMessageDora(string doraMarker)
+        public string dora_marker;
+        public MJsonMessageDora(string dora_marker)
         {
-            this.doraMarker = doraMarker;
+            this.dora_marker = dora_marker;
         }
     }
 

@@ -49,6 +49,7 @@ namespace MjModelProject
         public void GetMessage(MjsonMessageAll msgobj)
         {
             serverState = serverState.GetMessage(msgobj);
+            Execute();
         }
         public void Execute()
         {

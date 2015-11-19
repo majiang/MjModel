@@ -152,8 +152,21 @@ namespace MjModelProject
         }
 
 
+
+
+
+
         //ここからメッセージを送信するための関数
         //モデル操作完了後に呼び出される。
+        public void SendErrorToRoomMember(MjsonMessageAll msgobj)
+        {
+            var errorMsg = JsonConvert.SerializeObject(msgobj);
+            foreach (var clientName in playerNames) {
+                serverRouter.SendErrorToClient(clientName, errorMsg);
+            }
+        }
+
+
 
         public void SendStartGame()
         {
@@ -180,7 +193,7 @@ namespace MjModelProject
                     msgobj.honba,
                     msgobj.kyotaku,
                     msgobj.oya,
-                    msgobj.doraMarker,
+                    msgobj.dora_marker,
                     unknownTehais));
             }
 

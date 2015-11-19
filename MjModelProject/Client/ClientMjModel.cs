@@ -17,7 +17,7 @@ namespace MjModelProject
         public int currentActor;
         private int myPositionId;
         //private Strategy mjai;
-        private MjsonMessageAll sendMessage;
+        private MjsonMessageAll sentMessage;
         
 
         public void Init()

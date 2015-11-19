@@ -5,137 +5,114 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.Net.Sockets;
 using System.Diagnostics;
 
 namespace MjModelProject
 {
     //client側ね
-    public class ClientRouter : RouterInterface
+    public class ClientRouter
     {
 
         
+        public TcpClient tcpClient;
         public Client client;
-        public IPAddress clientIpAddress;
-        public static readonly IPAddress SERVER_IP = IPAddress.Parse("10.0.1.1");
 
-        //メッセージ送信用
-        public VirtualInternet virtualInternet;
-
-        //受信メッセージ補完リスト
-        List<Packet> getPacketList;
-
-
-        public ClientRouter(VirtualInternet vi)
+        public ClientRouter(TcpClient tclt)
         {
-            virtualInternet = vi;
-            getPacketList = new List<Packet>();
+            tcpClient = tclt;
+            client = new Client(this);
         }
 
 
-
-
-
-
-        public void UpDateServer()
-        {
-            if (getPacketList.Count > 0)
-            {
-                foreach (var packet in getPacketList)
-                {
-                    RouteGetMessage(packet);
-                }
-                getPacketList.Clear();
-            }
-        }
-
-       
-        //受信処理
-        public void AddPacket(Packet packet)
-        {
-            getPacketList.Add(packet);
-        }
 
         //サーバからメッセージを受信してクライアントコントローラに命令を出す部分
-        public void RouteGetMessage(Packet packet)
+        public void RouteGetMessage(string msg)
         {
-            
-            var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(packet.jsonMessage);
-
+            var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(msg);
 
             switch (msgobj.type)
-            {
-                case MsgType.START_GAME:
-                    client.OnStartGame(msgobj.id, msgobj.names);
-                    break;
+                {
+                    case MsgType.START_GAME:
+                        client.OnStartGame(msgobj.id, msgobj.names);
+                        break;
 
-                case MsgType.START_KYOKU:
-                    client.OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.doraMarker, msgobj.tehais);
-                    break;
+                    case MsgType.START_KYOKU:
+                        client.OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.dora_marker, msgobj.tehais);
+                        break;
 
-                case MsgType.TSUMO:
-                    client.OnTsumo(msgobj.actor, msgobj.pai);
-                    break;
-                
-                case MsgType.DAHAI:
-                    client.OnDahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
-                    break;
+                    case MsgType.TSUMO:
+                        client.OnTsumo(msgobj.actor, msgobj.pai);
+                        break;
 
-                case MsgType.PON:
-                    client.OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
+                    case MsgType.DAHAI:
+                        client.OnDahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
+                        break;
 
-                case MsgType.CHI:
-                    client.OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
+                    case MsgType.PON:
+                        client.OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        break;
 
-                case MsgType.KAKAN:
-                    client.OnKakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
+                    case MsgType.CHI:
+                        client.OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        break;
 
-                case MsgType.ANKAN:
-                    client.OnAnkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
+                    case MsgType.KAKAN:
+                        client.OnKakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        break;
 
-                case MsgType.DAIMINKAN:
-                    client.OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                    break;
+                    case MsgType.ANKAN:
+                        client.OnAnkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        break;
 
-                case MsgType.DORA:
-                    client.OnDora(msgobj.doraMarker);
-                    break;
+                    case MsgType.DAIMINKAN:
+                        client.OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        break;
 
-                case MsgType.REACH:
-                    client.OnReach(msgobj.actor);
-                    break;
+                    case MsgType.DORA:
+                        client.OnDora(msgobj.dora_marker);
+                        break;
 
-                case MsgType.REACH_ACCEPTED:
-                    client.OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
-                    break;
+                    case MsgType.REACH:
+                        client.OnReach(msgobj.actor);
+                        break;
 
-                case MsgType.HORA:
-                    client.OnHora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradoraMarkers, msgobj.horaTehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.horaPoints, msgobj.deltas, msgobj.scores);
-                    break;
+                    case MsgType.REACH_ACCEPTED:
+                        client.OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
+                        break;
 
-                case MsgType.RYUKYOKU:
-                    client.OnRyukyoku(msgobj.reason, msgobj.tehais);
-                    break;
+                    case MsgType.HORA:
+                        client.OnHora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradora_markers, msgobj.hora_tehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.hora_points, msgobj.deltas, msgobj.scores);
+                        break;
 
-                case MsgType.END_KYOKU:
-                    client.OnEndKyoku();
-                    break;
+                    case MsgType.RYUKYOKU:
+                        client.OnRyukyoku(msgobj.reason, msgobj.tehais);
+                        break;
 
+                    case MsgType.END_KYOKU:
+                        client.OnEndKyoku();
+                        break;
 
-
+                    case MsgType.END_GAME:
+                        client.OnEndGame();
+                        break;
             }
+
+
 
         }
 
 
 
 
-        public void SendMessageToServer(string message)
+        public async void SendMessageToServer(string message)
         {
-            virtualInternet.RoutePacket(new Packet(clientIpAddress, SERVER_IP, message));
+            message += "\n";
+            Encoding enc = Encoding.UTF8;
+            byte[] sendBytes = enc.GetBytes(message);
+            //データを送信する
+            await tcpClient.GetStream().WriteAsync(sendBytes, 0, sendBytes.Length);
+            Console.WriteLine("send : " + message);
         }
 
         //サーバにメッセージを送信する命令群

@@ -188,6 +188,11 @@ namespace MjModelProject
 
         internal void OnEndKyoku()
         {
+
+            clientRouter.SendNone();
+        }
+        internal void OnEndGame()
+        {
             IsKyokuEnd = true;
             clientRouter.SendNone();
         }
