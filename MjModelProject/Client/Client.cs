@@ -14,7 +14,7 @@ namespace MjModelProject
         public int myPositionId;
         public List<string> playerNames;//入室した順番でプレイヤー名が入っている
 
-        public bool IsKyokuEnd;//for Debug
+        public bool IsEndGame;
 
 
         public Client(ClientRouter cr)
@@ -193,7 +193,7 @@ namespace MjModelProject
         }
         internal void OnEndGame()
         {
-            IsKyokuEnd = true;
+            IsEndGame = true;
             clientRouter.SendNone();
         }
 
