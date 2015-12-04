@@ -50,8 +50,6 @@
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\ClientController.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Network\TCPClient.cs" />
-    <Compile Include="Network\TCPServer.cs" />
     <Compile Include="Result\InfoForResult.cs" />
     <Compile Include="Result\HoraResultCalclator.cs" />
     <Compile Include="Result\PointAnalizer.cs" />
