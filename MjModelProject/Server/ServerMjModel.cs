@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MjModelProject.Result;
 
 namespace MjModelProject
 {
@@ -148,12 +149,17 @@ namespace MjModelProject
             throw new NotImplementedException();
         }
 
-        public void Hora(int actor, int target, string pai)
+        public MJsonMessageHora Hora(int actor, int target, string pai)
         {
-// (int actor,int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
-           // var uradoraMarkers = yama.GetUradoraMarker();
-            
-           // return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiString(), );
+            // validate Hora
+
+            var uradoraMarkers = yama.GetUradoraMarker();
+            var horaResult = HoraResultCalclator.CalcHoraResult(tehais[actor],  new InfoForResult());
+            //var deltas = 
+
+
+            return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiString(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
+                horaResult.yakuResult.Han, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 });
         }
 
         public void None()

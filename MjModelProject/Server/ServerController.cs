@@ -131,8 +131,9 @@ namespace MjModelProject
 
         public void Hora(int actor, int target, string pai)
         {
-          //  var msg = serverMjModel.Hora(actor,target,pai);
+            var msg = serverMjModel.Hora(actor,target,pai);
 
+            SendHora(msg);
         }
 
         public void Ryukyoku()
@@ -271,6 +272,16 @@ namespace MjModelProject
             foreach (var name in playerNames)
             {
                 serverRouter.SendDora(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendHora(MJsonMessageHora msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendHora(name, msgobj);
             }
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));

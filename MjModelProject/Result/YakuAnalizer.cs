@@ -102,15 +102,23 @@ namespace MjModelProject.Result
             {
                 result.yakus.Add(yakuString[(int)MJUtil.Yaku.DORA], CalcDoraNum(horaMentsu, ifr));
             }
-                     
-            /*
-          
+            if( IsSansyokuDoujun(horaMentsu))
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANSYOKUDOJUN], yakuHanNum[(int)MJUtil.Yaku.SANSYOKUDOJUN]);
+            }
+           
+           if( IsIttsuu(horaMentsu) )
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.ITTSUU], yakuHanNum[(int)MJUtil.Yaku.ITTSUU]);
+            }
          
-            setSANSYOKUDOJUN( calcSansyokuDoujun(horaMentsu) );
-            setITTSUU( calcIttsuu( horaMentsu) );
-		
-            //kokokara not test yet
-            setSANANKO( calcSananko(horaMentsu) );
+           if(IsSananko(horaMentsu))
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANANKO], yakuHanNum[(int)MJUtil.Yaku.SANANKO]);
+            }
+            
+            /*
+           
             setTOITOI( calcToitoi( horaMentsu) );
             setSHOSANGEN( calcShosangen( horaMentsu, ifr ) );
 		
@@ -453,6 +461,76 @@ namespace MjModelProject.Result
                 }
             }
             return doraNum;  
+        }
+
+
+        private static bool IsSansyokuDoujun(HoraPattern hp)
+        {
+            var syuntsuStartIndex = new bool[MJUtil.LENGTH_SYU];
+
+            foreach(var tartsu in hp.WithoutHeadTartsuList)
+            {
+                 if( tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                {
+                    syuntsuStartIndex[ tartsu.TartsuStartPaiSyu ] = true;
+                }
+            }
+
+            var syuLength = 9;
+            var manzuBase = 0;
+            var pinzuBase = syuLength;
+            var souzuBase = syuLength * 2;
+
+            for (int i = 0; i < syuLength; i++)
+            { 
+                if( syuntsuStartIndex[manzuBase + i] && syuntsuStartIndex[pinzuBase + i] && syuntsuStartIndex[souzuBase + i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool IsIttsuu(HoraPattern hp)
+        {
+            var syuntsuStartIndex = new bool[MJUtil.LENGTH_SYU];
+
+            foreach (var tartsu in hp.WithoutHeadTartsuList)
+            {
+                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                {
+                    syuntsuStartIndex[tartsu.TartsuStartPaiSyu] = true;
+                }
+            }
+
+            var syuLength = 9;
+            var manzuBase = 0;
+            var pinzuBase = syuLength;
+            var souzuBase = syuLength * 2;
+
+            var result =
+                   (syuntsuStartIndex[manzuBase] && syuntsuStartIndex[manzuBase + 3] && syuntsuStartIndex[manzuBase + 6])
+                  || (syuntsuStartIndex[pinzuBase] && syuntsuStartIndex[pinzuBase + 3] && syuntsuStartIndex[pinzuBase + 6])
+                  || (syuntsuStartIndex[souzuBase] && syuntsuStartIndex[souzuBase + 3] && syuntsuStartIndex[souzuBase + 6]) ;
+
+            return result;
+            
+        }
+
+
+
+        private static bool IsSananko(HoraPattern hp)
+        {
+            var ankoCount = 0;
+            foreach ( var tartsu in hp.WithoutHeadTartsuList)
+            {
+                if(tartsu.TartsuType == MJUtil.TartsuType.ANKO || tartsu.TartsuType == MJUtil.TartsuType.ANKANTSU)
+                {
+                    ankoCount++;
+                }
+            }
+
+            return ankoCount >= 3;
         }
 
         /*

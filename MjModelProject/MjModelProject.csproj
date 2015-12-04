@@ -81,7 +81,7 @@
     <Compile Include="Server\ServerState.cs" />
     <Compile Include="Model\Tehai.cs" />
     <Compile Include="VirtualInternet.cs" />
-    <Compile Include="Model\Yama.cs" />
+    <Compile Include="Yama.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
