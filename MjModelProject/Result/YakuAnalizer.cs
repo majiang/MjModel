@@ -116,14 +116,39 @@ namespace MjModelProject.Result
             {
                 result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANANKO], yakuHanNum[(int)MJUtil.Yaku.SANANKO]);
             }
-            
+        
+            if (IsToitoi(horaMentsu))
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TOITOI], yakuHanNum[(int)MJUtil.Yaku.TOITOI]);
+            }
+
+            if( IsShosangen(horaMentsu))
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SHOSANGEN], yakuHanNum[(int)MJUtil.Yaku.SHOSANGEN]);
+            }
+
+            //混老頭とチャンタ系は同時に成立しないためif elseで判定する
+            if( IsHonroto(horaMentsu))
+            {
+                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HONROTO], yakuHanNum[(int)MJUtil.Yaku.HONROTO]);
+            }
+            else
+            {
+                if( IsChanta(horaMentsu) )
+                {
+
+                }
+                if( IsJunChanta(horaMentsu))
+                {
+
+                }
+            }
+
+
+
             /*
            
-            setTOITOI( calcToitoi( horaMentsu) );
-            setSHOSANGEN( calcShosangen( horaMentsu, ifr ) );
 		
-		
-            setHONROTO( calcHonroto(horaMentsu, ifr) );
             if(getHONROTO() == false){
                 setJUNCHANTA( calcJunchanta(horaMentsu) );
                 setCHANTA( calcChanta( horaMentsu) );
@@ -532,6 +557,102 @@ namespace MjModelProject.Result
 
             return ankoCount >= 3;
         }
+
+        private static bool IsToitoi(HoraPattern hp)
+        {
+            foreach( var tartsu in hp.WithoutHeadTartsuList)
+            {
+                if(tartsu.TartsuType == MJUtil.TartsuType.ANSYUN
+                    || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        private static bool IsShosangen(HoraPattern hp)
+        {
+            if(MJUtil.IsDragon(hp.Head.TartsuStartPaiSyu) == false)
+            {
+                return false;
+            }
+
+            var doragonCount = 0;
+            foreach( var tartsu in hp.WithoutHeadTartsuList)
+            {
+                if (MJUtil.IsDragon(tartsu.TartsuStartPaiSyu))
+                {
+                    doragonCount++;
+                }
+            }
+
+            //頭が三元牌かつ三元牌ターツが２つ以上ある場合
+            return doragonCount >= 2; 
+        }
+
+        private static bool IsHonroto(HoraPattern hp)
+        {
+            foreach( var tartsu in hp.TartsuList)
+            {
+                if( tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                {
+                    return false;
+                }
+
+                if( MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu) == false )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool IsChanta(HoraPattern hp)
+        {
+            foreach( var tartsu in hp.TartsuList)
+            {
+                if( tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                {
+                    if ((tartsu.TartsuStartPaiSyu % 9 == 0) || (tartsu.TartsuStartPaiSyu % 9 == 6))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if( MJUtil.IsRoto(tartsu.TartsuStartPaiSyu))
+                    {
+                        continue;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private static bool IsJunChanta(HoraPattern hp)
+        {
+            foreach (var tartsu in hp.TartsuList)
+            {
+                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                {
+                    if ((tartsu.TartsuStartPaiSyu % 9 == 0) || (tartsu.TartsuStartPaiSyu % 9 == 6))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu))
+                    {
+                        continue;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
 
         /*
 

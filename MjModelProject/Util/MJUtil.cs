@@ -374,6 +374,11 @@ public class MJUtil {
 		}
 		return false;
 	}
+    
+ 
+
+
+
 //	public static bool isYaochu(Pai pai){
 //		return isYaochu(pai.PaiNumber);
 //	}
