@@ -14,10 +14,7 @@ namespace MjModelProject
     {
         
         private ServerRouter serverRouter;
-        
-       
-        public List<string> playerNames;//入室した順番でプレイヤー名が入っている
-        public List<int> startPositionID;//入室した順番で初期配置が入っている
+        public List<string> playerNames = new List<string>();//入室した順番でプレイヤー名が入っている
         public ServerMjModel serverMjModel;
        // public List<>//ipaddresとポートが入る？
        
@@ -26,7 +23,6 @@ namespace MjModelProject
         public ServerController(ServerRouter sr,  ServerMjModel mm) {
             serverRouter = sr;
             serverMjModel = mm;
-            playerNames = new List<string>();
         }
 
 
@@ -50,7 +46,9 @@ namespace MjModelProject
         //ここからモデルをいじって、クライアントへ送信するメッセージを作成する関数群
         public void StartGame()
         {
-            
+            //席順をシャッフルする
+            playerNames = new List<String>(playerNames.OrderBy(i => Guid.NewGuid()));
+
             serverMjModel.StartGame();
             SendStartGame();
 
@@ -58,7 +56,6 @@ namespace MjModelProject
 
         public void StartKyoku()
         {
-            //modelへ指示
             var msgobj = serverMjModel.StartKyoku();
             SendStartKyoku(msgobj);
         }
@@ -131,36 +128,41 @@ namespace MjModelProject
 
         public void Hora(int actor, int target, string pai)
         {
-          //  var msg = serverMjModel.Hora(actor,target,pai);
+            var msg = serverMjModel.Hora(actor,target,pai);
 
+            SendHora(msg);
         }
 
         public void Ryukyoku()
         {
-            var ryukyokuMsgobj = new MJsonMessageRyukyoku("fanpai",
-                new List<List<string>>() { 
-                    serverMjModel.tehais[0].GetTehaiString(),
-                    serverMjModel.tehais[1].GetTehaiString(),
-                    serverMjModel.tehais[2].GetTehaiString(),
-                    serverMjModel.tehais[3].GetTehaiString()
-                },
-                new List<bool>() { false, false, false, false },
-                new List<int>() { 0, 0, 0, 0 },
-                new List<int>() { 25000, 25000, 25000, 25000 });
-            
+            var ryukyokuMsgobj = serverMjModel.Ryukyoku();
+
             SendRyukyoku(ryukyokuMsgobj);
         }
 
 
+
+
+
+
         //ここからメッセージを送信するための関数
         //モデル操作完了後に呼び出される。
+        public void SendErrorToRoomMember(MjsonMessageAll msgobj)
+        {
+            var errorMsg = JsonConvert.SerializeObject(msgobj);
+            foreach (var clientName in playerNames) {
+                serverRouter.SendErrorToClient(clientName, errorMsg);
+            }
+        }
+
+
 
         public void SendStartGame()
         {
             for (int i = 0; i < playerNames.Count; i++)
             {
-                serverRouter.SendStartGame(playerNames[i], new MJsonMessageStartGame(serverMjModel.turns[i], playerNames));
-                DebugUtil.ServerDebug(JsonConvert.SerializeObject(new MJsonMessageStartGame(serverMjModel.turns[i], playerNames)));
+                serverRouter.SendStartGame(playerNames[i], new MJsonMessageStartGame(i, playerNames));
+                DebugUtil.ServerDebug(JsonConvert.SerializeObject(new MJsonMessageStartGame(i, playerNames)));
             }
         }
 
@@ -174,14 +176,14 @@ namespace MjModelProject
                 var unknownTehais = new List<List<string>> { Tehai.UNKNOWN_TEHAI_STRING, Tehai.UNKNOWN_TEHAI_STRING, Tehai.UNKNOWN_TEHAI_STRING, Tehai.UNKNOWN_TEHAI_STRING };
                 unknownTehais[i] = knownTehais[i];
 
-                serverRouter.SendStartKyoku(playerNames[i], new MJsonMessageStartKyoku(
+                 serverRouter.SendStartKyoku(playerNames[i], new MJsonMessageStartKyoku(
                     msgobj.bakaze,
                     msgobj.kyoku,
                     msgobj.honba,
                     msgobj.kyotaku,
                     msgobj.oya,
-                    msgobj.doraMarker,
-                    unknownTehais));
+                    msgobj.dora_marker,
+                    unknownTehais)); 
             }
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
@@ -263,6 +265,16 @@ namespace MjModelProject
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
 
+        public void SendHora(MJsonMessageHora msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendHora(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
 
         public bool CanFinishKyoku()
         {
@@ -289,6 +301,24 @@ namespace MjModelProject
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
+
+        public bool CanEndGame()
+        {
+            return serverMjModel.CanEndGame();
+                
+        }
+
+        public void SendEndgame()
+        {
+            var msgobj = new MJsonMessageEndgame();
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendEndgame(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
 
     }
 }

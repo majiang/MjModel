@@ -26,61 +26,13 @@ public class MJUtil {
 	public static readonly int HORAMENTSU_SYU = 1;
 	
 	public static readonly int LENGTH_ID = 144;
-	public static readonly int LENGTH_SYU = 34;
-	public static readonly int LENGTH_HAIPAI = 13;
+	public static readonly int LENGTH_SYU_ALL = 34;
+    public static readonly int LENGTH_SYU_NUMBERS = 9;
+    public static readonly int LENGTH_HAIPAI = 13;
 	public static readonly int LENGTH_TEHAI = 14;
 	
 
-/*
-	public static readonly int REACH = 1; 
-	public static readonly int TSUMO = 2; 
-	public static readonly int IPPATSU = 3; 
-	public static readonly int PINFU = 4; 
-	public static readonly int TANNYAO = 5; 
-	public static readonly int IIPEIKOU = 6; 
-	public static readonly int YAKUHAI = 7; 
-	public static readonly int HOUTEI = 8; 
-	public static readonly int HAITEI = 9; 
-	public static readonly int RINSYAN = 10; 
-	public static readonly int CHANKAN = 11; 
-	
-	public static readonly int DOUBLEREACH = 12; 
-	public static readonly int SANSYOKUDOJUN = 13; 
-	public static readonly int ITTSUU = 14; 
-	public static readonly int SANANKO = 15; 
-	public static readonly int CHANTA = 16; 
-	public static readonly int CHITOITSU = 17; 
-	public static readonly int TOITOI = 18; 
-	public static readonly int SHOSANGEN = 19; 
-	public static readonly int HONROTO = 20; 
-	public static readonly int SANSYOKUDOKO = 21; 
-	public static readonly int SANKANTSU = 22; 
-	public static readonly int HONNITSU = 23; 
-	public static readonly int JUNCHANTA = 24; 
-	public static readonly int RYANPEIKO = 25; 
-	public static readonly int NAGASHIMANGAN = 26; 
-	public static readonly int CHINNITSU = 27; 
-	public static readonly int DORA = 28;
-	
-	
-	//YAKUMAN
-	public static readonly int SUUANKO 	= 29; 
-	public static readonly int KOKUSHIMUSO = 30; 
-	public static readonly int DAISANGEN 	= 31; 
-	public static readonly int SHOSUSI 	= 32; 
-	public static readonly int DAISUSI 	= 33; 
-	public static readonly int TSUISO 		= 34;
-	public static readonly int RYUISO 		= 35; 
-	public static readonly int CHINROTO 	= 36; 
-	public static readonly int CHURENPOTO 	= 37; 
-	public static readonly int SUKANTSU 	= 38; 
-	public static readonly int TENHO 		= 39; 
-	public static readonly int CHIHO 		= 40; 
-	public static readonly int RENHO 		= 41; 
-	public static readonly int SHISANPUTA 	= 42;
-	 
-	public static readonly int LENGTH_YAKU = 43;
-    */
+
 	public static readonly int YAKUMANSTART = (int)Yaku.SUUANKO;
 
         
@@ -118,8 +70,9 @@ public class MJUtil {
         
         SUUANKO,
         KOKUSHIMUSO,
-        SHOSUSI, 	
-        DAISUSI, 	
+        DAISANGEN,
+        SHOSUSHI, 	
+        DAISUSHI, 	
         TSUISO, 		
         RYUISO, 		
         CHINROTO, 	
@@ -134,16 +87,10 @@ public class MJUtil {
 	public static readonly int PAI_URA_ID = 136;
 	public static readonly int PAI_SOURCE_SYU_NUM = 36;
 	
-	private readonly bool[] mIsDragonArray = {
-			false,false,false,false,false,false,false,false,false,false,
-			false,false,false,false,false,false,false,false,false,false,
-			false,false,false,false,false,false,false,false,false,false,
-			true,true,true,		
-	};
+
 
     public enum TartsuType
     {
-
         HEAD,
         ANSYUN,
         MINSYUN,
@@ -374,6 +321,11 @@ public class MJUtil {
 		}
 		return false;
 	}
+    
+ 
+
+
+
 //	public static bool isYaochu(Pai pai){
 //		return isYaochu(pai.PaiNumber);
 //	}
@@ -381,7 +333,7 @@ public class MJUtil {
 		return (syuIdx == 31)||(syuIdx == 32)||(syuIdx == 33);
 	}
 	public static bool IsJihai(int syuIdx) {
-		return (27 <= syuIdx)&&(syuIdx < LENGTH_SYU);//0~26は数牌
+		return (27 <= syuIdx)&&(syuIdx < LENGTH_SYU_ALL);//0~26は数牌
 	}
 	public static bool IsWind(int syuIdx) {
 		return (27 <= syuIdx)&&(syuIdx <= 30);//27~30は風牌
@@ -395,7 +347,12 @@ public class MJUtil {
 				||(syuIdx == 25)//8s
 				||(syuIdx == 32);//6z =hatsu
 	}
+    public static bool IsGreenInSyuntsu(int syuIdx)
+    {
+        //緑一色を満たす牌をtrue
+        return (syuIdx == 19);//2s
+    }
 
-	
-}
+
+    }
 }

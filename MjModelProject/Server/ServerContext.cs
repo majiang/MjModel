@@ -22,15 +22,7 @@ namespace MjModelProject
             serverController = new ServerController(sr, mjModel);
             roomName = rn;
             serverState = new AfterInitialiseState(serverController);
-        }
-
-        public void Init()
-        {
-            mjModel = new ServerMjModel();
-            serverState = new AfterInitialiseState(serverController);
-        }
-
-        
+        }     
 
 
         public bool CanJoin()
@@ -49,15 +41,12 @@ namespace MjModelProject
         public void GetMessage(MjsonMessageAll msgobj)
         {
             serverState = serverState.GetMessage(msgobj);
+            Execute();
         }
         public void Execute()
         {
             serverState = serverState.Execute();
         }
 
-        public bool CanFinishTest()//テスト用function
-        {
-            return serverState.GetType() == typeof(EndState);
-        }
     }
 }

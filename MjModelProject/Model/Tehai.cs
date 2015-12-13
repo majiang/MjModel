@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MjModelProject.Util;
+using MjModelProject.Result;
 
 namespace MjModelProject
 {
     public class Tehai
     {
+        private ShantenCalclator shantenCanclator = new ShantenCalclator();
+        private int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
         public List<Pai> tehai { get; set; }
         public List<Furo> furos { get; set; }
         public NakiAnalizer nakiAnalizer = new NakiAnalizer();
@@ -39,6 +42,8 @@ namespace MjModelProject
 
         public List<string> GetTehaiString()
         {
+            //表示する前にソートする
+            tehai = tehai.OrderBy(e => e.PaiNumber).ToList();
             return tehai.Select(e => e.PaiString).ToList();
         }
 
@@ -158,7 +163,7 @@ namespace MjModelProject
         {
             if (!IsValidKakan(pai, consumed))
             {
-                Console.Write("invalied naki! @Tehai_Ankan");
+                Console.Write("invalied naki! @Tehai_kakan");
                 return;
             }
             //remove pai
@@ -255,6 +260,21 @@ namespace MjModelProject
             return nakiAnalizer.GetPonMessage();
         }
 
+        public int GetShanten()
+        {
+            syu.Initialize();
+            foreach(var pai in tehai)
+            {
+                syu[pai.PaiNumber]++;
+            }
+            return shantenCanclator.CalcShantenWithFuro(syu,furos.Count);
+
+        }
+
+        public bool IsTenpai()
+        {
+            return GetShanten() == 0;
+        }
 
     }
 

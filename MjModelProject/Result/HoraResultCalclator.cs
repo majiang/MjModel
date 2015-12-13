@@ -19,16 +19,23 @@ namespace MjModelProject.Result
     {
         public static HoraResult CalcHoraResult(Tehai tehai, InfoForResult ifr)
         {
-            //取りうる和了形を全て列挙 
+            //面子手の取りうる和了形を全て列挙 
             SplitedTehai splited = TehaiAnalizer.AnalizePattern(tehai);
-
-            //それぞれの役を計算
             List<YakuResult> yakuResultList = new List<YakuResult>();
-            foreach (var pattern in splited.AllHoraPatternList)
-            {
-                yakuResultList.Add( YakuAnalizer.AnalyzeYaku(pattern, ifr, splited.Syu));
-            }
 
+            //面子手和了型が0の場合はチートイツか国士無双
+            if (splited.AllHoraPatternList.Count == 0)
+            {
+                yakuResultList.Add(YakuAnalizer.CalcSpecialYaku(ifr, splited.Syu));
+            }
+            else
+            {
+                //面子手の役を計算   
+                foreach (var pattern in splited.AllHoraPatternList)
+                {
+                    yakuResultList.Add(YakuAnalizer.CalcNormalYaku(pattern, ifr, splited.Syu));
+                }
+            }
             //それぞれの点数を計算
             Dictionary<YakuResult, PointResult> pointResultMap = new Dictionary<YakuResult, PointResult>();
             foreach (var yakuResult in yakuResultList)
