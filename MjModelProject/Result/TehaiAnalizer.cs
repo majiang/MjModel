@@ -13,7 +13,7 @@ namespace MjModelProject.Model
 
         public static SplitedTehai AnalizePattern(Tehai tehai)
         {
-            int[] syu = new int[MJUtil.LENGTH_SYU];
+            int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
             foreach (var pai in tehai.tehai)
             {
                 syu[pai.PaiNumber]++;
@@ -56,7 +56,7 @@ namespace MjModelProject.Model
         public SplitedTehai()
         {
             AllHoraPatternList = new List<HoraPattern>();
-            Syu = new int[MJUtil.LENGTH_SYU];
+            Syu = new int[MJUtil.LENGTH_SYU_ALL];
         }
     }
 
@@ -139,7 +139,7 @@ namespace MjModelProject.Model
             List<Tartsu> work = new List<Tartsu>();
             List<HoraPattern> resultList = new List<HoraPattern>();
             int start = 0;
-            for (int i = 0; i < MJUtil.LENGTH_SYU; i++)
+            for (int i = 0; i < MJUtil.LENGTH_SYU_ALL; i++)
             {
                 if (syu[i] >= 2)
                 {
@@ -164,7 +164,7 @@ namespace MjModelProject.Model
                 return;
             }
 
-            for (int i = start; i < MJUtil.LENGTH_SYU; i++)
+            for (int i = start; i < MJUtil.LENGTH_SYU_ALL; i++)
             {
 
                 if (syu[i] >= 3)
@@ -194,7 +194,7 @@ namespace MjModelProject.Model
         }
         private static bool syuIsZero(int[] syu)
         {
-            int[] zeros = new int[MJUtil.LENGTH_SYU];
+            int[] zeros = new int[MJUtil.LENGTH_SYU_ALL];
             return zeros.SequenceEqual(syu);
         }
 

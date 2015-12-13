@@ -8,6 +8,7 @@ namespace MjModelProject
 {
     public class ServerState
     {
+
         public ServerController serverController;
         public BlockingCollection<MjsonMessageAll> getMsgList = new BlockingCollection<MjsonMessageAll>();
         public bool canExecute = false;
@@ -302,7 +303,7 @@ namespace MjModelProject
                 serverController.SendEndkyoku();
                 getMsgList.Dispose();
 
-                return new EndState(this);
+                return new AfterEndKyokuState(this);
             }
             else
             {
@@ -478,7 +479,7 @@ namespace MjModelProject
                 serverController.SendEndkyoku();
                 getMsgList.Dispose();
 
-                return new EndState(this);
+                return new AfterEndKyokuState(this);
             }
             else
             {
@@ -487,6 +488,59 @@ namespace MjModelProject
         }
 
     }
+
+    public class AfterEndKyokuState : ServerState
+    {
+        public AfterEndKyokuState(ServerState ss)
+        {
+            this.serverController = ss.serverController;
+        }
+
+        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        {
+
+            if (msgobj.type == MsgType.NONE)
+            {
+                getMsgList.Add(msgobj);
+
+                if ((getMsgList.Count == Constants.PLAYER_NUM))
+                {
+                    canExecute = true;
+                }
+            }
+            else
+            {
+                //errorhandring
+                serverController.SendErrorToRoomMember(msgobj);
+            }
+            return this;
+        }
+
+        public override ServerState Execute()
+        {
+            if (canExecute)
+            {
+                if (serverController.CanEndGame())
+                {
+                    serverController.SendEndgame();
+                    return new EndState(this);
+                }
+                else
+                {
+                    serverController.StartKyoku();
+                    return new AfterStartKyokuState(this);
+                }
+
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+    }
+
+
 
     public class EndState : ServerState
     {

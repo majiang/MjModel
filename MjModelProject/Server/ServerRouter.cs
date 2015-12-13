@@ -81,7 +81,12 @@ namespace MjModelProject
                         break;
 
                     default:
-                        var clientName = clientNameTcpClientDictionary.First(e => e.Value == client).Key;
+                        var clientName = clientNameTcpClientDictionary.FirstOrDefault(e => e.Value == client).Key;
+                        if(clientName == null)
+                        {
+                            break;
+                        }
+
                         var roomName = clientNameRoomDictionary[clientName];
 
                         if (roomName == null)
@@ -252,6 +257,15 @@ namespace MjModelProject
         {
             SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
         }
+
+        public void SendEndgame(string name, MJsonMessageEndgame msgobj)
+        {
+            SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
+            RemoveClient(name);
+        }
+
+
+
 
         //CtoS
         //     public   void None() { }

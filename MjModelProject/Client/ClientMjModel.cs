@@ -40,12 +40,7 @@ namespace MjModelProject
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
-            field.bakaze = new Pai(bakaze);
-            field.kyoku = kyoku;
-            field.honba = honba;
-            field.kyotaku = kyotaku;
-            field.oya = oya;
-            field.doramarker.Add(new Pai(doraMarker));
+            field = new Field(kyoku, honba, kyotaku);
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
         }
@@ -141,6 +136,15 @@ namespace MjModelProject
         public MJsonMessagePon GetPonMessage()
         {
             return tehais[myPositionId].GetPonMessage();
+        }
+
+
+        public MJsonMessageDahai thinkDahai(string pai)
+        {
+            var tempTehai = tehais[myPositionId];
+
+
+            return new MJsonMessageDahai(myPositionId, pai, true);
         }
     }
 }

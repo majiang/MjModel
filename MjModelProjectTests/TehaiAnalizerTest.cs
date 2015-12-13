@@ -61,21 +61,23 @@ namespace MjModelProjectTests
         [TestMethod]
         public void 役算出テスト()
         {
-            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "1m", "2m", "2m", "3m", "3m" });
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "2m", "2m", "3m", "3m", "4m" });
 
             var testIfr = new InfoForResult();
             testIfr.IsMenzen = true;
             testIfr.IsOya = true;
             testIfr.IsTsumo = true;
-
-
-            var result = HoraResultCalclator.CalcHoraResult(testTehai, testIfr);
-            
+            testIfr.PassedTurn = 10;
+            var result = new HoraResult(); 
+            for (int i = 0; i < 10000; i++)
+            {
+                result = HoraResultCalclator.CalcHoraResult(testTehai, testIfr);
+            }
             var yakuMap = result.yakuResult.yakus;
-            //Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHINNITSU]) );
-            //Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.PINFU]) );
+            Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHINNITSU]) );
+            Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.PINFU]) );
             Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.IIPEIKOU]) );
-            //Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.ITTSUU]) );
+           
             
         }
     }

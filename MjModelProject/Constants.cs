@@ -10,6 +10,6 @@ namespace MjModelProject
     public static class Constants
     {
         public static readonly int PLAYER_NUM = 4;
-        public static readonly IPAddress SERVER_IP = IPAddress.Parse("10.0.1.1");
+        public static readonly int KYOKU_NUM = 4;
     }
 }

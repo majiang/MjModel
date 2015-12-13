@@ -51,7 +51,9 @@ namespace MjModelProject
         };
     }
 
-    public class MjsonMessageAll
+    public class MjsonMessageBase { }
+
+    public class MjsonMessageAll : MjsonMessageBase 
     {
         public string type;
         public string name;
@@ -86,7 +88,7 @@ namespace MjModelProject
         public List<int> deltas;
 
     }
-    public class MJsonMessageJoin
+    public class MJsonMessageJoin : MjsonMessageBase
     {
         public string type = MsgType.JOIN;
         public string name;
@@ -97,7 +99,7 @@ namespace MjModelProject
             this.room = room;
         }
     }
-    public class MJsonMessageStartGame
+    public class MJsonMessageStartGame : MjsonMessageBase
     {
         public string type = MsgType.START_GAME;
         public int id;//プレーヤid
@@ -108,7 +110,7 @@ namespace MjModelProject
             this.names = names; 
         }
     }
-    public class MJsonMessageStartKyoku
+    public class MJsonMessageStartKyoku : MjsonMessageBase
     {
         public string type = MsgType.START_KYOKU;
         public string bakaze;
@@ -130,7 +132,7 @@ namespace MjModelProject
         }
     }
 
-    public class MJsonMessageTsumo
+    public class MJsonMessageTsumo : MjsonMessageBase
     {
         public string type = MsgType.TSUMO;
         public int actor;
@@ -143,7 +145,7 @@ namespace MjModelProject
 
     }
 
-    public class MJsonMessageDahai
+    public class MJsonMessageDahai : MjsonMessageBase
     {
         public string type = MsgType.DAHAI;
         public int actor;
@@ -158,7 +160,7 @@ namespace MjModelProject
 
     }
 
-    public class MJsonMessagePon
+    public class MJsonMessagePon : MjsonMessageBase
     {
         public string type = MsgType.PON;
         public int actor;
@@ -173,7 +175,7 @@ namespace MjModelProject
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageChi
+    public class MJsonMessageChi : MjsonMessageBase
     {
         public string type = MsgType.CHI;
         public int actor;
@@ -188,7 +190,7 @@ namespace MjModelProject
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageKakan
+    public class MJsonMessageKakan : MjsonMessageBase
     {
         public string type = MsgType.KAKAN;
         public int actor;
@@ -203,7 +205,7 @@ namespace MjModelProject
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageAnkan
+    public class MJsonMessageAnkan : MjsonMessageBase
     {
         public string type = MsgType.ANKAN;
         public int actor;
@@ -218,7 +220,7 @@ namespace MjModelProject
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageDaiminkan
+    public class MJsonMessageDaiminkan : MjsonMessageBase
     {
         public string type = MsgType.DAIMINKAN;
         public int actor;
@@ -234,7 +236,7 @@ namespace MjModelProject
         }
     }
 
-    public class MJsonMessageReach
+    public class MJsonMessageReach : MjsonMessageBase
     {
         public string type = MsgType.REACH;
         public int actor;
@@ -244,7 +246,7 @@ namespace MjModelProject
             this.actor = actor;
         }
     }
-    public class MJsonMessageReachAccept
+    public class MJsonMessageReachAccept : MjsonMessageBase
     {
         public string type = MsgType.REACH_ACCEPTED;
         public int actor;
@@ -259,7 +261,7 @@ namespace MjModelProject
         }
     }
 
-    public class MJsonMessageHora
+    public class MJsonMessageHora : MjsonMessageBase
     {
         public string type = MsgType.HORA;
         public int actor;
@@ -288,7 +290,7 @@ namespace MjModelProject
         }
     }
 
-    public class MJsonMessageRyukyoku
+    public class MJsonMessageRyukyoku : MjsonMessageBase
     {
         public string type = MsgType.RYUKYOKU;
         public string reason;
@@ -306,7 +308,7 @@ namespace MjModelProject
             this.scores = scores;
         }
     }
-    public class MJsonMessageDora
+    public class MJsonMessageDora : MjsonMessageBase
     {
         public string type = MsgType.DORA;
         public string dora_marker;
@@ -316,13 +318,18 @@ namespace MjModelProject
         }
     }
 
-    public class MJsonMessageNone
+    public class MJsonMessageNone : MjsonMessageBase
     {
         public string type = MsgType.NONE;
     }
 
-    public class MJsonMessageEndkyoku
+    public class MJsonMessageEndkyoku : MjsonMessageBase
     {
         public string type = MsgType.END_KYOKU;
+    }
+
+    public class MJsonMessageEndgame : MjsonMessageBase
+    {
+        public string type = MsgType.END_GAME;
     }
 }

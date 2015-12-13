@@ -66,7 +66,7 @@
     <Compile Include="YamaTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.csproj">
+    <ProjectReference Include="..\..\..\..\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\MjTCPServer.csproj">
       <Project>{c949119f-3641-4353-98fa-bbcd9872425c}</Project>
       <Name>ConsoleApplication1</Name>
     </ProjectReference>

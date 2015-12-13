@@ -8,6 +8,7 @@ namespace MjModelProject
 {
     public class Yama
     {
+        private bool USE_RED_DORA = false;
         private const int YAMA_LENGTH = 34*4;
         private const int WANPAI_LENGTH = 14;
         private const int DORA_START_POS = YAMA_LENGTH - WANPAI_LENGTH + 4;
@@ -43,7 +44,6 @@ namespace MjModelProject
 
         private List<Pai> MakeYama()
         {
-
             //牌作成
             var ym = new Pai[YAMA_LENGTH];
             for (int i = 0; i < YAMA_LENGTH; i++)
@@ -51,12 +51,17 @@ namespace MjModelProject
                 ym[i] = new Pai(i >> 2);
             }
 
-            //赤ドラ設定 
-            foreach (var redDora in PaiConverter.RED_DORA_STRING_ID) { 
-                ym[redDora.Value * 4 - 1].IsRedDora = true;
-                ym[redDora.Value * 4 - 1].PaiString = redDora.Key;
+            //赤ドラ設定 →なし。
+            if (USE_RED_DORA)
+            {
+                foreach (var redDora in PaiConverter.RED_DORA_STRING_ID)
+                {
+                    ym[redDora.Value * 4 - 1].IsRedDora = true;
+                    ym[redDora.Value * 4 - 1].PaiString = redDora.Key;
+                }
             }
 
+            //シャッフル
             List<Pai> shuffled = new List<Pai>(ym.OrderBy(i => Guid.NewGuid()));
             return shuffled;
         }
@@ -85,7 +90,6 @@ namespace MjModelProject
 
         public Pai DoRinshan()
         {
-            //嶺上牌を返す
             return mYama[WANPAI_START_POS + rinshanPointer++];
         }
         public Pai OpenDoraOmote()

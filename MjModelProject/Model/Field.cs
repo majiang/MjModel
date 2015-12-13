@@ -8,26 +8,55 @@ namespace MjModelProject
 {
     public class Field
     {
-        public Pai bakaze;
-        public int kyoku;//1~8が入る
-        public int honba;
-        public int kyotaku;
-        public int oya;
-        public List<Pai> doramarker;
+
+
+       
+        public int KyokuId { get; private set; }//1~8が入る
+        public int Honba { get; private set; }
+        public int Kyotaku { get; private set; }
+        public int OyaPlayerId { get; private set; }
+        public Pai Bakaze { get; private set; }
+
+        private static List<Pai> bakazeTemplate = new List<Pai>() { new Pai("E"), new Pai("S"), new Pai("W"), new Pai("N") };
+
 
         public Field()
         {
-            Init();
+        
+            KyokuId = 0;
+            Honba = 0;
+            Kyotaku = 0;
+            OyaPlayerId = getOyaPlayerID(0);
+            Bakaze = getBakaze(0);
         }
 
-        public void Init()
+        public Field(int kyokuid, int honba, int kyotaku)
         {
-            bakaze = new Pai();
-            kyoku = 0;
-            honba = 0;
-            kyotaku = 0;
-            oya = 0;
-            doramarker = new List<Pai>();
+
+            KyokuId = kyokuid;
+            Honba = honba;
+            Kyotaku = kyotaku;
+            OyaPlayerId = getOyaPlayerID(kyokuid);
+            Bakaze = getBakaze(kyokuid);
+        }
+
+        private static int getOyaPlayerID(int kyokuId)
+        {
+            return kyokuId % 4;
+        }
+
+        private static Pai getBakaze(int kyokuId)
+        {
+            return bakazeTemplate[kyokuId % 4];
+        }
+
+        public static Field ChangeOnRyukyoku(Field fld, List<bool> tenpais)
+        {
+            var nextKyokuId = tenpais[fld.OyaPlayerId] ? fld.KyokuId : fld.KyokuId + 1;
+            var nextHonba = fld.Honba++;
+            var nextkyotaku = fld.Kyotaku;
+
+            return new Field(nextKyokuId, nextHonba, nextkyotaku);
         }
     }
 }

@@ -115,64 +115,10 @@ namespace MjModelProject
             Console.WriteLine("send : " + message);
         }
 
-        //サーバにメッセージを送信する命令群
-        //CtoS
-        public void SendJoin(MJsonMessageJoin msg){
-            SendMessageToServer(JsonConvert.SerializeObject(msg));
-        }
-
-        //StoC
- //       void SendStartGame(int id, List<string> names)
- 
-        //StoC
-//        void SendStartKyoku(int bakaze, int kyoku, int honba, int kyotaku, int oya, int doraMarker, List<List<int>> tehais) { }
-
-        //StoC
-//        void SendTsumo(int actor, string pai) { }
-
-        //Both
-        public void SendDahai(MJsonMessageDahai msg){
-            SendMessageToServer(JsonConvert.SerializeObject(msg));
-        }
-
-        //Both
-        public void SendPon(MJsonMessagePon msg){
-            SendMessageToServer(JsonConvert.SerializeObject(msg));
-        }
-        //Both
-        public void SendChi(MJsonMessageChi msg)
+        public void SendMJsonMessage(object jsonmsg)
         {
-            SendMessageToServer(JsonConvert.SerializeObject(msg));
+            SendMessageToServer(JsonConvert.SerializeObject(jsonmsg));
         }
-        //Both
-        public void SendKakan(int actor, int target, string pai, List<int> consumed) { }
-
-        //Both
-        public void SendDaiminkan(int actor, int target, string pai, List<int> consumed) { }
-
-        //Both
-        public void SendAnkan(int actor, int target, string pai, List<int> consumed) { }
-
-        //StoC
-//        void Dora(int doraMarker) { }
-
-        //Both
-        public void SendReach(int actor) { }
-
-        //StoC
-        //void ReachAccepted(int actor, List<int> deltas, List<int> scores) { }
-
-        //CtoS
-        public void SendHora(int actor, int target, string pai) { }
-
-        //StoC
-        //void Hora(int actor, int target, string pai, List<int> uradoraMarkers, List<int> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores) { }
-
-        //StoC
-        //void Ryukyoku(string reason, List<List<int>> tehais) { }
-
-        //StoC
-        //void EndKyoku()
 
 
         //CtoS

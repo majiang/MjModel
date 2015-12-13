@@ -31,7 +31,7 @@ namespace MjModelProject
         {
             var msgobj = new MJsonMessageJoin(name, room);
             
-            clientRouter.SendJoin(msgobj);
+            clientRouter.SendMJsonMessage(msgobj);
             
         }
 
@@ -58,9 +58,9 @@ namespace MjModelProject
             if (actor == myPositionId)
             {
 
-                //thinkDahai();
-                var tsumogiri = true;
-                clientRouter.SendDahai(new MJsonMessageDahai(actor, pai, tsumogiri));
+                var msgobj = clientMjModel.thinkDahai(pai);
+               
+                clientRouter.SendMJsonMessage(msgobj);
             }
             else
             {
@@ -82,7 +82,7 @@ namespace MjModelProject
                 if (doAction)
                 {
                     var msgobj = clientMjModel.GetChiMessage();
-                    clientRouter.SendChi(msgobj);
+                    clientRouter.SendMJsonMessage(msgobj);
                     return;
                 }
                 else
@@ -100,7 +100,7 @@ namespace MjModelProject
                 if (doAction)
                 {
                     var msgobj = clientMjModel.GetPonMessage();
-                    clientRouter.SendPon(msgobj);
+                    clientRouter.SendMJsonMessage(msgobj);
                     return;
                 }
                 else
@@ -122,7 +122,7 @@ namespace MjModelProject
                 var tsumogiri = false;
                 var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count - 1];
                 //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
-                clientRouter.SendDahai(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
+                clientRouter.SendMJsonMessage(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
             else
             {
@@ -138,7 +138,7 @@ namespace MjModelProject
                 var tsumogiri = false;
                 var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count-1];
                 //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
-                clientRouter.SendDahai(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
+                clientRouter.SendMJsonMessage(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
             else
             {
