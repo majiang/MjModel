@@ -7,30 +7,13 @@ using System.Net;
 namespace MjModelProjectTests
 {
     [TestClass]
-    public class RouterTest
+    public class IntegrationTest
     {
         [TestMethod]
-        public void クライアントルーターテスト()
-        {
-
-
-        }
-
-        [TestMethod]
-        public void サーバールーターテスト()
-        {
-            VirtualInternet vi = new VirtualInternet();
-            ServerRouter sr = new ServerRouter(vi);
-            ServerContext sc = new ServerContext(sr, "roomname");
-        }
-
-        
-        [TestMethod]
-        public void ルーター間通信テスト()
+        public void ツモ切りクライアントテスト()
         {
             //サーバールータテストセットアップ
             VirtualInternet vi = new VirtualInternet();
-
 
             //クライアントセットアップ
             ClientRouter cr0 = new ClientRouter(vi);
@@ -62,38 +45,28 @@ namespace MjModelProjectTests
 
             //サーバーセットアップ
             ServerRouter sr = new ServerRouter(vi);
+            
             vi.AddRouter(Constants.SERVER_IP, sr);
 
-
-           
-
-            var jsonstring0 = "{\"type\":\"join\",\"name\":\"testname0\",\"room\":\"testroom\"}";
-            var jsonstring1 = "{\"type\":\"join\",\"name\":\"testname1\",\"room\":\"testroom\"}";
-            var jsonstring2 = "{\"type\":\"join\",\"name\":\"testname2\",\"room\":\"testroom\"}";
-            var jsonstring3 = "{\"type\":\"join\",\"name\":\"testname3\",\"room\":\"testroom\"}";
-
-
-            cl0.clientRouter.SendMessageToServer(jsonstring0);
-            cl1.clientRouter.SendMessageToServer(jsonstring1);
-            cl2.clientRouter.SendMessageToServer(jsonstring2);
-            cl3.clientRouter.SendMessageToServer(jsonstring3);
-
+            var rn = "room";
+            cl0.kickGame("tester0", rn);
+            cl1.kickGame("tester1", rn);
+            cl2.kickGame("tester2", rn);
+            cl3.kickGame("tester3", rn);
+            sr.UpDateServer();//受信したメッセージを処理   
             //セットアップここまで
 
-
-            sr.UpDateServer();//受信したメッセージを処理
-
-            Assert.IsTrue(sr.clientNameRoomDictionary.ContainsKey("testname0"));
-            Assert.AreEqual(sr.clientNameRoomDictionary["testname0"], "testroom");
-
-            cl0.clientRouter.UpDateServer();
-            //Console.Write(cl0.positionId);
-
-
-
-
-
+            while (sr.roomNameServerDictionary[rn].CanFinishTest() == false)
+            {
+                cl0.clientRouter.UpDateServer();
+                cl1.clientRouter.UpDateServer();
+                cl2.clientRouter.UpDateServer();
+                cl3.clientRouter.UpDateServer();
+                sr.UpDateServer();//受信したメッセージを処理  
+            }
         }
-        
+
+
+
     }
 }

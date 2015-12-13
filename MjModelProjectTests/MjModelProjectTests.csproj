@@ -58,8 +58,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShantenCalclatorTest.cs" />
+    <Compile Include="TehaiAnalizerTest.cs" />
     <Compile Include="TehaiTests.cs" />
     <Compile Include="RouterTest.cs" />
+    <Compile Include="IntegrationTest.cs" />
     <Compile Include="YamaTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="shanten_benchmark_data.num.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

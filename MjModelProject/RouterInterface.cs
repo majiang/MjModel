@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    public class Kawa
+    public interface RouterInterface
     {
+        void AddPacket(Packet packet);
     }
 }
