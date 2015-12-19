@@ -17,7 +17,7 @@ namespace MjModelProject
         public Field field { get; set; }
         
         public int currentActor;
-        public InfoForResult infoForResult { get; set; }
+        public List<InfoForResult> infoForResult { get; set; }
 
         public List<int> points { get; set; }
 
@@ -27,9 +27,9 @@ namespace MjModelProject
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-        
+
             currentActor = 0;
-            infoForResult = new InfoForResult();
+            infoForResult = new List<InfoForResult>() {new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
             points = new List<int> { 25000, 25000, 25000, 25000 };
         }
 
@@ -42,12 +42,13 @@ namespace MjModelProject
 
         public MJsonMessageStartKyoku StartKyoku()
         {
-            //syokika ? 
             yama.Init();
-
-
+            kawas.ForEach(e => e.Init());
             var haipais = yama.MakeHaipai();
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
+            SetCurrentActor(0);
+            infoForResult = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
+
             return new MJsonMessageStartKyoku(
                         field.Bakaze.PaiString,
                         field.KyokuId,
@@ -103,37 +104,45 @@ namespace MjModelProject
             var dapai = new Pai(pai);
             tehais[actor].Da(dapai);
             kawas[actor].Sutehai(dapai, false, false);
+            GoNextActor();
             return new MJsonMessageDahai(actor, pai, tsumogiri);
         }
 
         public MJsonMessagePon Pon(int actor, int target, string pai, List<string> consumed)
         {
-            //kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Pon(actor, target, pai, consumed);
+            SetCurrentActor(actor);
             return new MJsonMessagePon(actor, target, pai, consumed);
         }
 
         public MJsonMessageChi Chi(int actor, int target, string pai, List<string> consumed)
         {
-            //kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Chi(actor, target, pai, consumed);
+            SetCurrentActor(actor);
             return new MJsonMessageChi(actor, target, pai, consumed);
         }
 
-        public void Kakan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageKakan Kakan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            tehais[actor].Kakan( actor, target, pai, consumed);
+            SetCurrentActor(actor);
+            return new MJsonMessageKakan(actor, target, pai, consumed);
         }
 
-        public void Ankan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageAnkan Ankan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            tehais[actor].Ankan(actor, consumed);
+            SetCurrentActor(actor);
+            return new MJsonMessageAnkan(actor, target, pai, consumed);
         }
 
         public MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            //kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
+            kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Daiminkan(actor, target, pai, consumed);
+            SetCurrentActor(actor);
             return new MJsonMessageDaiminkan(actor, target, pai, consumed);
         }
 
@@ -143,9 +152,9 @@ namespace MjModelProject
             return new MJsonMessageDora(openedPai.PaiString);
         }
 
-        public void Reach(int p)
+        public MJsonMessageReach Reach(int actor)
         {
-            throw new NotImplementedException();
+            return new MJsonMessageReach(actor);
         }
 
         public MJsonMessageHora Hora(int actor, int target, string pai)
@@ -155,10 +164,10 @@ namespace MjModelProject
             var uradoraMarkers = yama.GetUradoraMarker();
             var horaResult = HoraResultCalclator.CalcHoraResult(tehais[actor],  new InfoForResult());
             //var deltas = 
-
+            
 
             //場況を更新
-            //TODO
+            //TODO 
 
 
             return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiString(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,

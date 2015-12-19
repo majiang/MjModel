@@ -17,13 +17,7 @@ namespace MjModelProject
         //メッセージ受信時にクライアントの名前を見てルーム名を取得。後にコントローラを取得
         public Dictionary<string, ServerContext> roomNameServerDictionary;//部屋ごとにコントローラを作成< room, servercontroller >
         public Dictionary<string, string> clientNameRoomDictionary;//クライアントリスト< name, room >
-
         public Dictionary<string, TcpClient> clientNameTcpClientDictionary;
-
-        //メッセージ送信時にクライアントの名前が渡されるので名前でクライアントルータを取得して送信。
-        public Dictionary<string, IPAddress> clientNameIpDictionary;//プレーヤ名とクライアントIPのリスト< name, clientIP > //ソケットに変更予定
-        
-
 
         //受信メッセージ保管リスト
         public List<Packet> getPacketList;
@@ -32,11 +26,8 @@ namespace MjModelProject
 
         public ServerRouter()
         {
-            //virtualInternet = vi;
             roomNameServerDictionary = new Dictionary<string, ServerContext>();
             clientNameRoomDictionary = new Dictionary<string, string>();
-            //clientNameIpDictionary = new Dictionary<string, IPAddress>();
-            //getPacketList = new List<Packet>();
             clientNameTcpClientDictionary = new Dictionary<string, TcpClient>();
         }
 
@@ -71,8 +62,8 @@ namespace MjModelProject
                             Console.WriteLine("{0} Join at {1}", msgobj.name, msgobj.room);
                             clientNameRoomDictionary.Add(msgobj.name, msgobj.room);
                             clientNameTcpClientDictionary.Add(msgobj.name, client);
-                            //Join実行中にクライアント名をキーにしてIPを探索するので、
-                            //Join実行前にclientNameIpDictionaryを登録する必要あり。
+                            //Join実行中にクライアント名をキーにしてクライアントを探索するので、
+                            //Join実行前にクライアントをclientNameTcpClientDictionaryへ登録する必要あり。
                             roomNameServerDictionary[msgobj.room].GetJoin(msgobj);
                         } else
                         {
@@ -99,6 +90,10 @@ namespace MjModelProject
                         }
                         break;
                 }
+            }
+            catch(Exception e)
+            {
+                DebugUtil.ServerDebug(e.Message);
             }
             finally
             {
@@ -165,8 +160,7 @@ namespace MjModelProject
                 DebugUtil.ServerDebug("Client is not Connected");
             }
         }
-        //CtoS
- //       public void SendJoin(string name , string room){}
+
      
         //StoC
         public void SendStartGame(string name, MJsonMessageStartGame msgobj)
@@ -239,8 +233,7 @@ namespace MjModelProject
             SendMessageToClient(name, JsonConvert.SerializeObject(msgobj));
         }
 
-        //CtoS
-        //      public   void Hora(int actor, int target, string pai) { }
+
 
         //StoC
         public void SendHora(string name, MJsonMessageHora msgobj)
@@ -267,8 +260,6 @@ namespace MjModelProject
 
 
 
-        //CtoS
-        //     public   void None() { }
 
     }
     

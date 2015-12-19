@@ -13,7 +13,6 @@ namespace MjModelProject
         public static void ServerDebug(string msg)
         {
             Debug.WriteLine("Server:"+msg);
-
         }
 
     }

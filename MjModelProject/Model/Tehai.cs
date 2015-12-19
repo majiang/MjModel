@@ -40,6 +40,7 @@ namespace MjModelProject
             this.furos = new List<Furo>();
         }
 
+
         public List<string> GetTehaiString()
         {
             //表示する前にソートする
@@ -158,6 +159,11 @@ namespace MjModelProject
             //add furo
             furos.Add(new Furo(MJUtil.TartsuType.ANKANTSU, actor, new Pai(), consumed));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
         }
+        public void Ankan(int actor, List<string> consumed)
+        {
+            Ankan(actor, ConsumedStringToConsumedPai(consumed));
+        }
+
 
         public void Kakan(int actor, int target, Pai pai, List<Pai> consumed)
         {
@@ -180,6 +186,10 @@ namespace MjModelProject
                     break;
                 }
             }
+        }
+        public void Kakan(int actor, int target, string pai, List<string> consumed)
+        {
+            Kakan(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
 
 
