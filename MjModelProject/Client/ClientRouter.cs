@@ -112,7 +112,7 @@ namespace MjModelProject
             byte[] sendBytes = enc.GetBytes(message);
             //データを送信する
             await tcpClient.GetStream().WriteAsync(sendBytes, 0, sendBytes.Length);
-            Console.WriteLine("send : " + message);
+            //Console.WriteLine("send : " + message);
         }
 
         public void SendMJsonMessage(object jsonmsg)

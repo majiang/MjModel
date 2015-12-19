@@ -12,6 +12,11 @@ namespace MjModelProject
 
         public Kawa()
         {
+            Init();
+        }
+
+        public void Init()
+        {
             discards = new List<KawaPai>();
         }
 

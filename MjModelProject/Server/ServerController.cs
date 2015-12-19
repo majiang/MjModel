@@ -43,7 +43,7 @@ namespace MjModelProject
         }
 
 
-        //ここからモデルをいじって、クライアントへ送信するメッセージを作成する関数群
+        //ここからモデルを操作後に、クライアントへ送信するメッセージを送信する関数群
         public void StartGame()
         {
             //席順をシャッフルする
@@ -51,7 +51,6 @@ namespace MjModelProject
 
             serverMjModel.StartGame();
             SendStartGame();
-
         }
 
         public void StartKyoku()
@@ -68,45 +67,47 @@ namespace MjModelProject
             SendTsumo(msgobj);
         }
 
-        //ここからメッセージを受け取った際の関数
-        //モデルの操作後にビューを変更する。
+
 
         public void Dahai(int actor, string pai, bool tsumogiri)
         {
             var msgobj = serverMjModel.Dahai(actor, pai, tsumogiri);
             SendDahai(msgobj);
-            serverMjModel.GoNextActor();
+            
         }
 
         public void Pon(int actor, int target, string pai, List<string> consumed)
         {
             var msg = serverMjModel.Pon(actor, target, pai, consumed);
             SendPon(msg);
-            serverMjModel.SetCurrentActor(actor);
+          
         }
 
         public void Chi(int actor, int target, string pai, List<string> consumed)
         {
             var msg = serverMjModel.Chi(actor, target, pai, consumed);
             SendChi(msg);
-            serverMjModel.SetCurrentActor(actor);
+
         }
 
         public void Kakan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            var msg = serverMjModel.Kakan(actor, target, pai, consumed);
+            SendKakan(msg);
+
         }
 
         public void Ankan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            var msg = serverMjModel.Ankan(actor, target, pai, consumed);
+            SendAnkan(msg);
         }
 
         public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             var msg = serverMjModel.Daiminkan(actor, target, pai, consumed);
             SendDaiminkan(msg);
-            serverMjModel.SetCurrentActor(actor);
+
         }
 
         public void Rinshan()
@@ -123,7 +124,8 @@ namespace MjModelProject
 
         public void Reach(int actor)
         {
-            throw new NotImplementedException();
+            var msg = serverMjModel.Reach(actor);
+            SendReach(msg);
         }
 
         public void Hora(int actor, int target, string pai)
@@ -253,13 +255,40 @@ namespace MjModelProject
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
+        public void SendKakan(MJsonMessageKakan msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendKakan(name, msgobj);
+            }
 
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendAnkan(MJsonMessageAnkan msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendAnkan(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
 
         public void SendDora(MJsonMessageDora msgobj)
         {
             foreach (var name in playerNames)
             {
                 serverRouter.SendDora(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+        public void SendReach(MJsonMessageReach msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendReach(name, msgobj);
             }
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
