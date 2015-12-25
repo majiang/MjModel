@@ -34,18 +34,12 @@ namespace MjModelProject
         {
             serverController.Join(msgobj.name);
             serverState = serverState.GetMessage(msgobj);
-            serverState = serverState.Execute();
         }
 
         //ここからメッセージを受け取った際の状態遷移関数
         public void GetMessage(MjsonMessageAll msgobj)
         {
             serverState = serverState.GetMessage(msgobj);
-            Execute();
-        }
-        public void Execute()
-        {
-            serverState = serverState.Execute();
         }
 
     }

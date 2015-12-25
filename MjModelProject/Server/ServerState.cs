@@ -11,10 +11,8 @@ namespace MjModelProject
 
         public ServerController serverController;
         public BlockingCollection<MjsonMessageAll> getMsgList = new BlockingCollection<MjsonMessageAll>();
-        public bool canExecute = false;
-
         public virtual ServerState GetMessage(MjsonMessageAll msgobj) { return this; }
-        public virtual ServerState Execute() { return this; }//無くす方向で
+
 
 
     }
@@ -40,7 +38,8 @@ namespace MjModelProject
 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.StartGame();
+                    return new AfterStartGameState(this);
                 }
             }
             else
@@ -49,28 +48,12 @@ namespace MjModelProject
             }
             return this;
         }
-
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.StartGame();
-                return new AfterStartGameState(this);
-            }
-            else
-            {
-                return this;
-            }
-        }
-
     }
 
 
     public class AfterStartGameState : ServerState
     {
       
-
-
         public AfterStartGameState(ServerState ss)
         {
             this.serverController = ss.serverController;
@@ -85,7 +68,9 @@ namespace MjModelProject
             
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.StartKyoku();
+                    getMsgList.Dispose();
+                    return new AfterStartKyokuState(this);
                 }
             }
             else
@@ -96,19 +81,6 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.StartKyoku();
-                getMsgList.Dispose();
-                return new AfterStartKyokuState(this);
-            }
-            else
-            {
-                return this;
-            }
-        }
     }
 
     public class AfterStartKyokuState : ServerState
@@ -127,7 +99,9 @@ namespace MjModelProject
              
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.Tsumo();
+                    getMsgList.Dispose();
+                    return new AfterTsumoState(this);
                 }
             }
             else
@@ -136,20 +110,6 @@ namespace MjModelProject
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
-        }
-
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.Tsumo();
-                getMsgList.Dispose();
-                return new AfterTsumoState(this);
-            }
-            else
-            {
-                return this;
-            }
         }
     }
 
@@ -164,29 +124,48 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
             
-            if ((msgobj.type == MsgType.DAHAI)
-                || (msgobj.type == MsgType.REACH)
-                || (msgobj.type == MsgType.ANKAN)
-                || (msgobj.type == MsgType.KAKAN)
-                || (msgobj.type == MsgType.NONE))
+            if ((msgobj.IsDAHAI())
+                || (msgobj.IsREACH())
+                || (msgobj.IsANKAN())
+                || (msgobj.IsKAKAN())
+                || (msgobj.IsHORA())
+                || (msgobj.IsNONE()))
             {
                 getMsgList.Add(msgobj);
                 
                 if (getMsgList.Count == Constants.PLAYER_NUM)
                 {
-                    
-                    if (getMsgList.Count(e => e.type == MsgType.DAHAI) == 1 &&
-                        getMsgList.Count(e => e.type == MsgType.NONE) == Constants.PLAYER_NUM - 1)
+
+                    //
+                    if (getMsgList.Count(e => e.IsHORA()) >= 1 )
                     {
-                        var dahaiObj = (MjsonMessageAll)getMsgList.First(e => e.type == MsgType.DAHAI);
+                        var horaObj = getMsgList.Where(e => e.IsHORA())
+                            .OrderBy(e => (e.actor > e.target ? e.actor - 4 : e.actor))//頭ハネを表現している
+                            .First();
+                        serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
+                        getMsgList.Dispose();
+                        return new AfterDahaiState(this);
+                    }
+
+                    //RinshanFlggOff
+                    //serverController.ResetRinshanFlag();
+                    //serverController.ResetIppatsuFlag();
+
+
+
+                    if (getMsgList.Count(e => e.IsDAHAI()) == 1 &&
+                        getMsgList.Count(e => e.IsNONE()) == Constants.PLAYER_NUM - 1)
+                    {
+                        var dahaiObj = getMsgList.Where(e => e.IsDAHAI())
+                            .First();
                         serverController.Dahai(dahaiObj.actor, dahaiObj.pai, dahaiObj.tsumogiri);
                         getMsgList.Dispose();
                         return new AfterDahaiState(this);
                     }
-                    else if (getMsgList.Count(e => e.type == MsgType.REACH) == 1 &&
-                            getMsgList.Count(e => e.type == MsgType.NONE) == Constants.PLAYER_NUM - 1)
+                    else if (getMsgList.Count(e => e.IsREACH()) == 1 &&
+                            getMsgList.Count(e => e.IsNONE()) == Constants.PLAYER_NUM - 1)
                     {
-                        var dahaiObj = (MjsonMessageAll)getMsgList.First(e => e.type == MsgType.REACH);
+                        var dahaiObj = getMsgList.First(e => e.IsREACH());
                         serverController.Reach(dahaiObj.actor);
                         getMsgList.Dispose();
                         return new AfterReachState(this);
@@ -223,7 +202,7 @@ namespace MjModelProject
                 if (getMsgList.Count == Constants.PLAYER_NUM)
                 {
                     //４人共アクションがない場合
-                    if (getMsgList.Count(e => e.type == MsgType.NONE) == Constants.PLAYER_NUM)
+                    if (getMsgList.Count(e => e.IsNONE()) == Constants.PLAYER_NUM)
                     {
                         //終局判定
                         if (serverController.CanFinishKyoku())
@@ -242,30 +221,30 @@ namespace MjModelProject
                     //以下実装予定
                     //hora
 
-                    else if (getMsgList.Count(e => e.type == MsgType.HORA) >= 1)
+                    else if (getMsgList.Count(e => e.IsHORA()) >= 1)
                     {
-                        var horaObj = getMsgList.First(e => e.type == MsgType.HORA);
+                        var horaObj = getMsgList.First(e => e.IsHORA());
                         serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
                         getMsgList.Dispose();
                         return new AfterHoraState(this);
                     }
-                    else if (getMsgList.Count(e => e.type == MsgType.DAIMINKAN) == 1)
+                    else if (getMsgList.Count(e => e.IsDAIMINKAN()) == 1)
                     {
-                        var daiminkanObj = getMsgList.First(e => e.type == MsgType.DAIMINKAN);
+                        var daiminkanObj = getMsgList.First(e => e.IsDAIMINKAN());
                         serverController.Daiminkan(daiminkanObj.actor, daiminkanObj.target, daiminkanObj.pai, daiminkanObj.consumed);
                         getMsgList.Dispose();
                         return new AfterDaiminkanState(this);
                     }
-                    else if (getMsgList.Count(e => e.type == MsgType.PON) == 1)
+                    else if (getMsgList.Count(e => e.IsPON()) == 1)
                     {
-                        var ponObj = getMsgList.First(e => e.type == MsgType.PON);
+                        var ponObj = getMsgList.First(e => e.IsPON());
                         serverController.Pon(ponObj.actor, ponObj.target, ponObj.pai, ponObj.consumed);
                         getMsgList.Dispose();
                         return new AfterTsumoState(this);
                     }
-                    else if (getMsgList.Count(e => e.type == MsgType.CHI) == 1)
+                    else if (getMsgList.Count(e => e.IsCHI()) == 1)
                     {
-                        var chiObj = getMsgList.First(e => e.type == MsgType.CHI);
+                        var chiObj = getMsgList.First(e => e.IsCHI());
                         serverController.Chi(chiObj.actor, chiObj.target, chiObj.pai, chiObj.consumed);
                         getMsgList.Dispose();
                         return new AfterTsumoState(this);
@@ -295,13 +274,15 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
             
-            if (msgobj.type == MsgType.NONE)
+            if (msgobj.IsNONE())
             {
                 getMsgList.Add(msgobj);
                 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.Rinshan();
+                    getMsgList.Dispose();
+                    return new AfterDaiminkanRinshanState(this);
                 }
             }
             else
@@ -310,20 +291,6 @@ namespace MjModelProject
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
-        }
-
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.Rinshan();
-                getMsgList.Dispose();
-                return new AfterDaiminkanRinshanState(this);
-            }
-            else
-            {
-                return this;
-            }
         }
     }
 
@@ -337,13 +304,14 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
             
-            if (msgobj.type == MsgType.DAHAI && msgobj.actor == serverController.serverMjModel.currentActor)
+            if (msgobj.IsDAHAI() && msgobj.actor == serverController.serverMjModel.currentActor)
             {
                 getMsgList.Add(msgobj);
                 
                 if ((getMsgList.Count == 1))
                 {
-                    canExecute = true;
+                    serverController.OpenDora();
+                    return new AfterDaiminkanRinshanDoraOpenState(this, getMsgList);//打俾オブジェクトを受け渡し
                 }
             }
             else
@@ -354,18 +322,6 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.OpenDora();
-                return new AfterDaiminkanRinshanDoraOpenState(this, getMsgList);//打俾オブジェクトを受け渡し
-            }
-            else
-            {
-                return this;
-            }
-        }
     }
 
     public class AfterDaiminkanRinshanDoraOpenState : ServerState
@@ -385,13 +341,16 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
             
-            if (msgobj.type == MsgType.NONE)
+            if (msgobj.IsNONE())
             {
                 getMsgList.Add(msgobj);
 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    var dahaiObj = dahaiMsgList.First();//打俾オブジェクトは1個しかないことを前提
+                    serverController.Dahai(dahaiObj.actor, dahaiObj.pai, dahaiObj.tsumogiri);
+                    getMsgList.Dispose();
+                    return new AfterDahaiState(this);
                 }
             }
             else
@@ -402,20 +361,6 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                var dahaiObj = dahaiMsgList.First();//打俾オブジェクトは1個しかないことを前提
-                serverController.Dahai(dahaiObj.actor, dahaiObj.pai, dahaiObj.tsumogiri);
-                getMsgList.Dispose();
-                return new AfterDahaiState(this);
-            }
-            else
-            {
-                return this;
-            }
-        }
     }
 
 
@@ -428,21 +373,24 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
 
-            if ((msgobj.type == MsgType.DAHAI)
-              || (msgobj.type == MsgType.NONE))
+            if ((msgobj.IsDAHAI())
+              || (msgobj.IsNONE()))
             {
-                if (getMsgList.Count(e => e.type == MsgType.DAHAI) == 1 &&
-                    getMsgList.Count(e => e.type == MsgType.NONE) == Constants.PLAYER_NUM - 1)
+                if (getMsgList.Count(e => e.IsDAHAI()) == 1 &&
+                    getMsgList.Count(e => e.IsNONE()) == Constants.PLAYER_NUM - 1)
                 {
-                    var dahaiObj = (MjsonMessageAll)getMsgList.First(e => e.type == MsgType.DAHAI);
+                    var dahaiObj = getMsgList.First(e => e.IsDAHAI());
                     serverController.Dahai(dahaiObj.actor, dahaiObj.pai, dahaiObj.tsumogiri);
                     getMsgList.Dispose();
                     return new AfterDahaiState(this);
-                    getMsgList.Add(msgobj);
+                    
                 }
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.SendEndkyoku();
+                    getMsgList.Dispose();
+
+                    return new AfterEndKyokuState(this);
                 }
             }
             else
@@ -453,20 +401,7 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.SendEndkyoku();
-                getMsgList.Dispose();
 
-                return new AfterEndKyokuState(this);
-            }
-            else
-            {
-                return this;
-            }
-        }
 
     }
 
@@ -481,13 +416,16 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
 
-            if (msgobj.type == MsgType.NONE)
+            if (msgobj.IsNONE())
             {
                 getMsgList.Add(msgobj);
                 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.SendEndkyoku();
+                    getMsgList.Dispose();
+
+                    return new AfterEndKyokuState(this);
                 }
             }
             else
@@ -498,20 +436,6 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.SendEndkyoku();
-                getMsgList.Dispose();
-
-                return new AfterEndKyokuState(this);
-            }
-            else
-            {
-                return this;
-            }
-        }
 
     }
 
@@ -525,13 +449,16 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
 
-            if (msgobj.type == MsgType.NONE)
+            if (msgobj.IsNONE())
             {
                 getMsgList.Add(msgobj);
 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    serverController.SendEndkyoku();
+                    getMsgList.Dispose();
+
+                    return new AfterEndKyokuState(this);
                 }
             }
             else
@@ -542,20 +469,7 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                serverController.SendEndkyoku();
-                getMsgList.Dispose();
 
-                return new AfterEndKyokuState(this);
-            }
-            else
-            {
-                return this;
-            }
-        }
     }
 
     public class AfterEndKyokuState : ServerState
@@ -568,13 +482,22 @@ namespace MjModelProject
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
 
-            if (msgobj.type == MsgType.NONE)
+            if (msgobj.IsNONE())
             {
                 getMsgList.Add(msgobj);
 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
-                    canExecute = true;
+                    if (serverController.CanEndGame())
+                    {
+                        serverController.SendEndgame();
+                        return new EndState(this);
+                    }
+                    else
+                    {
+                        serverController.StartKyoku();
+                        return new AfterStartKyokuState(this);
+                    }
                 }
             }
             else
@@ -585,27 +508,6 @@ namespace MjModelProject
             return this;
         }
 
-        public override ServerState Execute()
-        {
-            if (canExecute)
-            {
-                if (serverController.CanEndGame())
-                {
-                    serverController.SendEndgame();
-                    return new EndState(this);
-                }
-                else
-                {
-                    serverController.StartKyoku();
-                    return new AfterStartKyokuState(this);
-                }
-
-            }
-            else
-            {
-                return this;
-            }
-        }
 
     }
 
@@ -620,11 +522,7 @@ namespace MjModelProject
         }
         public override ServerState GetMessage(MjsonMessageAll msgobj)
         {
-            return this;
-        }
-
-        public override ServerState Execute()
-        {
+            
             return this;
         }
     }

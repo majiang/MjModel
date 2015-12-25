@@ -398,9 +398,9 @@ namespace MjModelProject.Result
                 return false;
             }
 
-            //頭もしくは門前順子であるか判定
-            foreach (var tartsu in hp.TartsuList) {
-                if ((tartsu.TartsuType != MJUtil.TartsuType.ANSYUN) && (tartsu.TartsuType != MJUtil.TartsuType.HEAD)) {
+            //門前順子でない場合ピンフではない
+            foreach (var tartsu in hp.WithoutHeadTartsuList) {
+                if ((tartsu.TartsuType != MJUtil.TartsuType.ANSYUN)) {
                     return false;
                 }
             }
