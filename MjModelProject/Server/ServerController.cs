@@ -142,9 +142,7 @@ namespace MjModelProject
             SendRyukyoku(ryukyokuMsgobj);
         }
 
-
-
-
+        
 
 
         //ここからメッセージを送信するための関数
@@ -347,6 +345,10 @@ namespace MjModelProject
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
+
+
+
+        //ここからInfoForResult操作用関数
 
 
     }

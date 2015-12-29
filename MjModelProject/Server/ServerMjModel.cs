@@ -238,7 +238,13 @@ namespace MjModelProject
 
         private List<int> CalcResultPoint(List<int> points, List<int> deltas)
         {
-            return points.Zip(deltas, (p, d) => p + d).ToList();
+            var sums = new List<int>();
+            foreach( var p in points.Select( (val,index) => new {val, index }))
+            {
+                sums.Add( points[p.index] + deltas[p.index]);
+            }
+
+            return sums;
         }
         
 

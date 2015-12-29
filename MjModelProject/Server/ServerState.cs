@@ -19,7 +19,6 @@ namespace MjModelProject
 
     public class AfterInitialiseState : ServerState
     {
-   
         public AfterInitialiseState(ServerController sc)
         {
             this.serverController = sc;
