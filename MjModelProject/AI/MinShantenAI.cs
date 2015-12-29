@@ -20,6 +20,18 @@ namespace MjModelProject.AI
         public override MjsonMessageBase thinkDahai(int mypositionId, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field)
         {
 
+
+
+            var paiString = CalcMinShantenPai(mypositionId, pai, tehais, AIPositionId, kawas, field);
+
+            return new MJsonMessageDahai(mypositionId, paiString, pai == paiString);
+
+        }
+
+
+        private string CalcMinShantenPai(int mypositionId, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field)
+        {
+            
             var syu = new int[MJUtil.LENGTH_SYU_ALL];
             foreach (var p in tehais[mypositionId].tehai)
             {
@@ -37,21 +49,11 @@ namespace MjModelProject.AI
                 resultDict.Add(id.index, shantenCalclator.CalcShantenWithFuro(syu, tehais[mypositionId].furos.Count));
                 syu[id.index]++;
             }
-            var best = resultDict.OrderBy(e => e.Value).Single().Key;
-            var paiString = tehais[mypositionId].tehai.Where(e => e.PaiNumber == best).First().PaiString;
-
-            return new MJsonMessageDahai(mypositionId, paiString, pai == paiString);
-
-        }
+            var bestPaiIndex = resultDict.OrderBy(e => e.Value).Single().Key;
+            var paiString = tehais[mypositionId].tehai.Where(e => e.PaiNumber == bestPaiIndex).First().PaiString;
 
 
-        private string CalcMinShantenPai(string pai, Tehai tehai)
-        {
-            var bestPai = "";
-
-
-
-            return bestPai;
+            return paiString;
         }
 
 
