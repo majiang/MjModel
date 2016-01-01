@@ -92,6 +92,7 @@ public class MJUtil {
     public enum TartsuType
     {
         HEAD,
+        NAKIHEAD,
         ANSYUN,
         MINSYUN,
         ANKO,
@@ -326,9 +327,7 @@ public class MJUtil {
 
 
 
-//	public static bool isYaochu(Pai pai){
-//		return isYaochu(pai.PaiNumber);
-//	}
+
 	public static bool IsDragon(int syuIdx) {
 		return (syuIdx == 31)||(syuIdx == 32)||(syuIdx == 33);
 	}

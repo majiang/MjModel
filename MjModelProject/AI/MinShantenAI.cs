@@ -10,26 +10,21 @@ namespace MjModelProject.AI
 {
     class MinShantenAI : AIBase
     {
-        ShantenCalclator shantenCalclator = new ShantenCalclator();
+        ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
 
-        public override MjsonMessageBase thinkAction(int dapaiActor, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field)
+        public override MjsonMessageBase thinkAction(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
             return new MJsonMessageNone();
         }
 
-        public override MjsonMessageBase thinkDahai(int mypositionId, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field)
+        public override MjsonMessageBase thinkDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
-
-
-
-            var paiString = CalcMinShantenPai(mypositionId, pai, tehais, AIPositionId, kawas, field);
-
+            var paiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
             return new MJsonMessageDahai(mypositionId, paiString, pai == paiString);
-
         }
 
 
-        private string CalcMinShantenPai(int mypositionId, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field)
+        private string CalcMinShantenPai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
             
             var syu = new int[MJUtil.LENGTH_SYU_ALL];
@@ -49,7 +44,7 @@ namespace MjModelProject.AI
                 resultDict.Add(id.index, shantenCalclator.CalcShantenWithFuro(syu, tehais[mypositionId].furos.Count));
                 syu[id.index]++;
             }
-            var bestPaiIndex = resultDict.OrderBy(e => e.Value).Single().Key;
+            var bestPaiIndex = resultDict.OrderBy(e => e.Value).First().Key;
             var paiString = tehais[mypositionId].tehai.Where(e => e.PaiNumber == bestPaiIndex).First().PaiString;
 
 

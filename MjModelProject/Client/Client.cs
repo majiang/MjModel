@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MjModelProject.AI;
 
 namespace MjModelProject
 {
@@ -13,6 +14,8 @@ namespace MjModelProject
         public ClientController clientController;
         public int myPositionId;
         public List<string> playerNames;//入室した順番でプレイヤー名が入っている
+        private AIBase ai; 
+        private object MsgBufferForReach;
 
         public bool IsEndGame;
 
@@ -25,6 +28,8 @@ namespace MjModelProject
 
             clientController.clientMjModel = clientMjModel;
             clientController.clientRouter = cr;
+
+            ai = new MinShantenAI();
         }
 
         public void kickGame(string name, string room)
@@ -53,13 +58,27 @@ namespace MjModelProject
 
 
         internal void OnTsumo(int actor, string pai)
-        {
-            clientController.Tsumo(actor, pai);
+        {   
             if (actor == myPositionId)
             {
+                if (clientMjModel.CanTsumoHora(pai))
+                {
+                    clientRouter.SendMJsonMessage(new MJsonMessageHora(myPositionId, myPositionId, pai));
+                    return;
+                }
 
-                var msgobj = clientMjModel.thinkDahai(pai);
-               
+                //和了判定が終了した後に手配に加える
+                clientController.Tsumo(actor, pai);
+
+                if (clientMjModel.CanReach(myPositionId))
+                {
+                    MsgBufferForReach = ai.thinkDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field);
+                    clientRouter.SendMJsonMessage(new MJsonMessageReach(myPositionId));
+                    return;
+                }
+
+
+                var msgobj = ai.thinkDahai(myPositionId ,pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field);
                 clientRouter.SendMJsonMessage(msgobj);
             }
             else
@@ -71,9 +90,17 @@ namespace MjModelProject
 
         internal void OnDahai(int actor, string pai, bool tsumogiri)
         {
+            if (clientMjModel.CanRonHora(actor, pai))
+                
+            {
+                clientRouter.SendMJsonMessage(new MJsonMessageHora(myPositionId, actor, pai));
+                return;
+            }
+         
             clientController.Dahai(actor, pai, tsumogiri);
             //thinkNaki();
             
+            /*
             //CHI
             if (clientMjModel.CanChi(actor, myPositionId, pai))
             {
@@ -109,6 +136,7 @@ namespace MjModelProject
                     return;
                 }
             }
+            */
 
             // do nothing
              clientRouter.SendNone();
@@ -168,11 +196,20 @@ namespace MjModelProject
 
         internal void OnReach(int actor)
         {
-            clientRouter.SendNone();
+
+            if (actor == myPositionId)
+            {
+                clientRouter.SendMJsonMessage(MsgBufferForReach);
+            }
+            else
+            {
+                clientRouter.SendNone();
+            }
         }
 
         internal void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
         {
+            clientMjModel.ReachAccept(actor, scores);
             clientRouter.SendNone();
         }
 

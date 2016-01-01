@@ -21,6 +21,11 @@ namespace MjModelProject
 
         public List<int> points { get; set; }
 
+        public ServerMjModel()
+        {
+            Init();
+        }
+
         private void Init()
         {
             yama = new Yama();
@@ -161,8 +166,14 @@ namespace MjModelProject
         {
             // validate Hora
 
+
+            //actorとtargetが異なる場合はロン和了であり手配にはロン牌が含まれていないためツモ和了とは別の求め方をする
+            
             var uradoraMarkers = yama.GetUradoraMarker();
-            var horaResult = HoraResultCalclator.CalcHoraResult(tehais[actor],  new InfoForResult());
+            HoraResult horaResult;
+            horaResult = HoraResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
+
+
             //var deltas = 
             
 
@@ -191,7 +202,7 @@ namespace MjModelProject
             var deltas = CalcRyukyokuDeltaPoint(tenpais);
             
             //点数を更新
-            points = CalcResultPoint(points, deltas);
+            points = AddPoints(points, deltas);
 
             //場況を更新
             field = Field.ChangeOnRyukyoku(field, tenpais);
@@ -200,7 +211,17 @@ namespace MjModelProject
         }
 
 
+        public MJsonMessageReachAccept ReachAccept()
+        {
+            var reachedActor = ((currentActor - 1) + 4) % 4;
+            var deltas = new List<int> { 0, 0, 0, 0 };
+            deltas[reachedActor] = -Constants.REACH_POINT;
+            points = AddPoints(points, deltas);
 
+            SetReach(reachedActor);
+
+            return new MJsonMessageReachAccept(reachedActor, deltas, points);
+        }
 
 
         //以下Validater
@@ -236,7 +257,7 @@ namespace MjModelProject
             }
         }
 
-        private List<int> CalcResultPoint(List<int> points, List<int> deltas)
+        private List<int> AddPoints(List<int> points, List<int> deltas)
         {
             var sums = new List<int>();
             foreach( var p in points.Select( (val,index) => new {val, index }))
@@ -248,7 +269,18 @@ namespace MjModelProject
         }
         
 
-      
+        public void SetReach(int actor)
+        {
+            if (yama.GetUsedYamaNum() > 4 && infoForResult.Count(e => e.IsFured) == 0)
+            {
+                infoForResult[actor].IsDoubleReach = true;
+            }
+            else
+            {
+                infoForResult[actor].IsReach = true;
+            }
+            field.AddKyotaku();
+        }
 
     }
 }

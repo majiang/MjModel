@@ -10,11 +10,11 @@ namespace MjModelProject.AI
     {
         //ツモ順が来た時にどんなアクションするか
         //許可されているのは　ツモ、打牌、暗槓、加槓
-        abstract public MjsonMessageBase thinkDahai(int myPositionId, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field);
+        abstract public MjsonMessageBase thinkDahai(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field);
 
         //外家が打牌した時にどんなアクションするか
         //許可されているのは　何もしない、和了、ポン、カン、チー、ミンカン
-        abstract public MjsonMessageBase thinkAction(int dapaiActor, string pai, List<Tehai> tehais, int AIPositionId, List<Kawa> kawas, Field field);
+        abstract public MjsonMessageBase thinkAction(int myPositionId,int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field);
 
     }
 }

@@ -11,32 +11,37 @@ namespace MjModelProject.Model
     public static class TehaiAnalizer
     {
 
-        public static SplitedTehai AnalizePattern(Tehai tehai)
+        public static SplitedTehai AnalizePattern(Tehai tehai, string horaPai, bool isRon)
         {
-            int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
+
+            //手配＆和了牌の牌の合計枚数をカウント
+            int[] inHandSyu = new int[MJUtil.LENGTH_SYU_ALL];
             foreach (var pai in tehai.tehai)
             {
-                syu[pai.PaiNumber]++;
+                inHandSyu[pai.PaiNumber]++;
             }
+            inHandSyu[PaiConverter.STRING_TO_ID[horaPai]]++;
+
+
             TehaiSpliter ts = new TehaiSpliter();
 
-           
-            var splited = ts.SplitTehai(syu, tehai.furos);
+            //手に残っている手配のターツ構成を全て算出
+            var splited = ts.SplitTehai(inHandSyu, tehai.furos, horaPai, isRon);
 
             foreach (var furopai in tehai.furos)
             {
                 switch (furopai.ftype)
                 {
                     case MJUtil.TartsuType.MINSYUN:
-                        splited.Syu[furopai.minPaiSyu]++;
-                        splited.Syu[furopai.minPaiSyu + 1]++;
-                        splited.Syu[furopai.minPaiSyu + 2]++;
+                        splited.SyuNum[furopai.minPaiSyu]++;
+                        splited.SyuNum[furopai.minPaiSyu + 1]++;
+                        splited.SyuNum[furopai.minPaiSyu + 2]++;
                         break;
                     case MJUtil.TartsuType.MINKO:
-                        splited.Syu[furopai.minPaiSyu] += 3;
+                        splited.SyuNum[furopai.minPaiSyu] += 3;
                         break;
                     case MJUtil.TartsuType.MINKANTSU:
-                        splited.Syu[furopai.minPaiSyu] += 4;
+                        splited.SyuNum[furopai.minPaiSyu] += 4;
                         break;
                 }
             }
@@ -52,11 +57,11 @@ namespace MjModelProject.Model
     public class SplitedTehai
     {
         public List<HoraPattern> AllHoraPatternList { get; set; }
-        public int[] Syu { get; set; }
+        public int[] SyuNum { get; set; }//フーロ牌も含めた牌枚数配列
         public SplitedTehai()
         {
             AllHoraPatternList = new List<HoraPattern>();
-            Syu = new int[MJUtil.LENGTH_SYU_ALL];
+            SyuNum = new int[MJUtil.LENGTH_SYU_ALL];
         }
     }
 
@@ -80,6 +85,11 @@ namespace MjModelProject.Model
             WithoutHeadTartsuList.AddRange(furoTartsuList);
         }
 
+        public HoraPattern GetCopy()
+        {
+            return new HoraPattern(this.TartsuList);
+        }
+
     }
 
     public class Tartsu
@@ -94,23 +104,107 @@ namespace MjModelProject.Model
             this.TartsuStartPaiSyu = tartsuStartPaiSyu;
         }
 
+        public bool Contains(string pai)
+        {
+            var targetPaiId = PaiConverter.STRING_TO_ID[pai];
+            if (IsAnsyun() || IsMinsyun())
+            {
+                return TartsuStartPaiSyu <= targetPaiId
+                    && targetPaiId <= TartsuStartPaiSyu + 2;
+            }
+            else
+            {
+                return TartsuStartPaiSyu == targetPaiId;
+            }
+        }
+
+
+        public bool IsHead()
+        {
+            return TartsuType == MJUtil.TartsuType.HEAD;
+        }
+        public bool IsNakiHead()
+        {
+            return TartsuType == MJUtil.TartsuType.NAKIHEAD;
+        }
+        public bool IsAnsyun()
+        {
+            return TartsuType == MJUtil.TartsuType.ANSYUN;
+        }
+        public bool IsMinsyun()
+        {
+            return TartsuType == MJUtil.TartsuType.MINSYUN;
+        }
+        public bool IsAnko()
+        {
+            return TartsuType == MJUtil.TartsuType.ANKO;
+        }
+        public bool IsMinko()
+        {
+            return TartsuType == MJUtil.TartsuType.MINKO;
+        }
+        public bool IsAnkantsu()
+        {
+            return TartsuType == MJUtil.TartsuType.ANKANTSU;
+        }
+        public bool IsMinkantsu()
+        {
+            return TartsuType == MJUtil.TartsuType.MINKANTSU;
+        }
+
+
+        public void ChangeNakiTartsu()
+        {
+            if (IsHead())
+            {
+                TartsuType = MJUtil.TartsuType.NAKIHEAD;
+            }
+            else if(IsAnsyun())
+            {
+                TartsuType = MJUtil.TartsuType.MINSYUN;
+            }
+            else if (IsAnko())
+            {
+                TartsuType = MJUtil.TartsuType.MINKO;
+            }
+            else if (IsAnkantsu())
+            {
+                TartsuType = MJUtil.TartsuType.MINKANTSU;
+            }
+
+        }
     }
 
 
 
     public class TehaiSpliter
     {
-        static readonly int BLOCK_NUM = 5;
-        static readonly int BLOCK_LENGTH = 2;
-        static readonly int HORAMENTSU_TYPE = MJUtil.HORAMENTSU_TYPE;
-        static readonly int HORAMENTSU_SYU = MJUtil.HORAMENTSU_SYU;
 
 
-
-        public SplitedTehai SplitTehai(int[] syu, List<Furo> furos)
+        public SplitedTehai SplitTehai(int[] syu, List<Furo> furos, string horaPai, bool isRon)
         {
             //全通りの上がり構成を算出
             List<HoraPattern> horaMentsuList = split(syu);
+
+            //ロン牌を含む場合、ターツを鳴きターツに変換する
+            if (isRon)
+            {
+                var ronConsiderdMentsuList = new List<HoraPattern>();
+                foreach(var horaMentsu in horaMentsuList)
+                {
+                    foreach(var tartsu in horaMentsu.TartsuList.Select( (val,index) => new { val, index }).Where(e => e.val.Contains(horaPai)))
+                    {
+                        var considerd = horaMentsu.GetCopy();
+                        considerd.TartsuList[tartsu.index].ChangeNakiTartsu();
+                        ronConsiderdMentsuList.Add(considerd);
+                    }
+                }
+
+                horaMentsuList = ronConsiderdMentsuList;
+            }
+
+
+
 
             //Make Furo Tartsu
             List<Tartsu> furoTartsu = new List<Tartsu>();
@@ -127,7 +221,7 @@ namespace MjModelProject.Model
             //メンツ構造と種類枚数を持つオブジェクトを生成
             SplitedTehai horaMentsuData = new SplitedTehai();
             horaMentsuData.AllHoraPatternList = horaMentsuList;
-            horaMentsuData.Syu = syu;
+            horaMentsuData.SyuNum = syu;
 
             return horaMentsuData;
         }

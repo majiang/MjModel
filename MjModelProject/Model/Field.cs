@@ -9,8 +9,6 @@ namespace MjModelProject
     public class Field
     {
 
-
-       
         public int KyokuId { get; private set; }//1~8が入る
         public int Honba { get; private set; }
         public int Kyotaku { get; private set; }
@@ -22,7 +20,6 @@ namespace MjModelProject
 
         public Field()
         {
-        
             KyokuId = 0;
             Honba = 0;
             Kyotaku = 0;
@@ -57,6 +54,11 @@ namespace MjModelProject
             var nextkyotaku = fld.Kyotaku;
 
             return new Field(nextKyokuId, nextHonba, nextkyotaku);
+        }
+
+        public void AddKyotaku()
+        {
+            Kyotaku += Constants.REACH_POINT;
         }
     }
 }

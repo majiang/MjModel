@@ -30,7 +30,7 @@ namespace MjModelProject.Result
 
     public static class YakuAnalizer
     {
-        public static YakuResult CalcSpecialYaku(InfoForResult ifr, int[] horaSyu)
+        public static YakuResult CalcSpecialYaku(InfoForResult ifr, Field field, int[] horaSyu)
         {
             YakuResult result = new YakuResult();
             result.Fu = 25;//国士無双の場合は符を考慮しなくてよいため七対子の符に設定
@@ -125,11 +125,11 @@ namespace MjModelProject.Result
         }
 
 
-        public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, int[] horaSyu)
+        public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, Field field,int[] horaSyu)
         {
             YakuResult result = new YakuResult();
 
-            result.Fu = CalcFu(horaMentsu, ifr);
+            result.Fu = CalcFu(horaMentsu, field, ifr);
             result.IsTsumo = ifr.IsTsumo;
             result.IsOya = ifr.IsOya;
 
@@ -324,6 +324,7 @@ namespace MjModelProject.Result
             if (HasYakuman(result.yakus))
             {
                 result.yakus = SelectYakuman(result.yakus);
+                result.IsYakuman = true;
             }
 
             //飜数計算
@@ -336,7 +337,7 @@ namespace MjModelProject.Result
 
 
 
-        private static int CalcFu(HoraPattern horaMentsu, InfoForResult ifpc) {
+        private static int CalcFu(HoraPattern horaMentsu, Field field, InfoForResult ifpc) {
             int fuSum = 0;
             int futei = 20;
             fuSum += futei;
@@ -346,14 +347,14 @@ namespace MjModelProject.Result
             }
 
 
-            int head = horaMentsu.TartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.HEAD).First().TartsuStartPaiSyu;
-            if (ifpc.IsJifuu(head)) {
+            int headSyuId = horaMentsu.TartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.HEAD).First().TartsuStartPaiSyu;
+            if (ifpc.IsBafuu(headSyuId)) {
                 fuSum += 2;
             }
-            if (ifpc.IsJifuu(head)) {
+            if (ifpc.IsJifuu(headSyuId)) {
                 fuSum += 2;
             }
-            if (MJUtil.IsDragon(head)) {
+            if (MJUtil.IsDragon(headSyuId)) {
                 fuSum += 2;
             }
 
@@ -555,7 +556,7 @@ namespace MjModelProject.Result
 
         private static bool IsYakuhai(HoraPattern hp, InfoForResult ifr)
         {
-            foreach (var tartsu in hp.TartsuList)
+            foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
                 if (ifr.IsJifuu(tartsu.TartsuStartPaiSyu) 
                     || ifr.IsBafuu(tartsu.TartsuStartPaiSyu)
@@ -571,7 +572,7 @@ namespace MjModelProject.Result
         {
             int yakuhaiNum = 0;
             //TODO
-            foreach (var tartsu in hp.TartsuList)
+            foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
                 //ダブ東、ダブ南の場合があるので自風と場風は独立に判定する
                 if (ifr.IsJifuu(tartsu.TartsuStartPaiSyu))

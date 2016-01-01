@@ -61,7 +61,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AiBase.cs" />
     <Compile Include="AI\AIBase.cs" />
     <Compile Include="AI\MinShantenAI.cs" />
     <Compile Include="Client\Client.cs" />
@@ -93,7 +92,6 @@
     <Compile Include="Client\ClientMjModel.cs" />
     <Compile Include="Server\ServerContext.cs" />
     <Compile Include="Server\ServerController.cs" />
-    <Compile Include="Model\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client\ClientRouter.cs" />
     <Compile Include="Server\ServerMjModel.cs" />

@@ -142,7 +142,11 @@ namespace MjModelProject
             SendRyukyoku(ryukyokuMsgobj);
         }
 
-        
+        public void ReachAccept()
+        {
+            var reachAcceptMsgobj = serverMjModel.ReachAccept();
+            SendReachAccept(reachAcceptMsgobj);
+        }
 
 
         //ここからメッセージを送信するための関数
@@ -287,6 +291,16 @@ namespace MjModelProject
             foreach (var name in playerNames)
             {
                 serverRouter.SendReach(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
+        public void SendReachAccept(MJsonMessageReachAccept msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendReachAccept(name, msgobj);
             }
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));

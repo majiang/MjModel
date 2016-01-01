@@ -16,7 +16,6 @@ namespace MjModelProject
 
         private int HAIPAI_LENGTH = 13;
 
-        public int restPai;
         public List<Pai> doraMarkers;
          
 
@@ -32,7 +31,7 @@ namespace MjModelProject
         public void Init()
         {
             mYama = MakeYama();
-            restPai = YAMA_LENGTH - WANPAI_LENGTH;
+
             doraMarkers = new List<Pai>();
             yamaPointer = 0;
             rinshanPointer = 0;
@@ -79,6 +78,11 @@ namespace MjModelProject
         public int GetRestYamaNum()
         {
             return YAMA_LENGTH - WANPAI_LENGTH - yamaPointer - rinshanPointer;
+        }
+
+        public int GetUsedYamaNum()
+        {
+            return yamaPointer + rinshanPointer;
         }
 
         public bool CanKan()

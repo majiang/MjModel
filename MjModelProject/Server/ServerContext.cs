@@ -12,7 +12,7 @@ namespace MjModelProject
         public ServerController serverController;
         public ServerMjModel mjModel;
         public string roomName;
-        private ServerState serverState;
+        ServerState serverState;
 
 
         public ServerContext(ServerRouter sr, string rn)
