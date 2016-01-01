@@ -15,14 +15,46 @@ namespace MjModelProjectTests
     public class PointTest
     {
         [TestMethod]
-        public void 結果算出テスト()
+        public void ツモ点数算出テスト0()
         {
-            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1m", "1m", "1m", "2m", "3m" });//チンイツピンフイッツーイーペーコー
-            InfoForResult ifpc = new InfoForResult();            
-            HoraResult horaResult = HoraResultCalclator.CalcHoraResult(testTehai, ifpc);
-            //Notyet
+            //40符3翻 ダブ東 ツモ 7800点
+            {
+                var expected = 7800;
+                var tehai = new Tehai(new List<string>() { "1m", "2m", "3m", "4p", "5p", "6p", "7p", "7p", "7p", "9p", "9p", "E", "E" });
+
+                var gameId = 0;
+                var playerPosition = 0;
+
+                var ifr = new InfoForResult(gameId, playerPosition);
+                ifr.IsTsumo = true;
+                ifr.IsMenzen = true;
+                ifr.PassedTurn = 4;
+                var fd = new Field();
+
+                var result = HoraResultCalclator.CalcHoraResult(tehai, ifr, fd, "E");
+                Assert.AreEqual(expected, result.pointResult.HoraPlayerIncome);
+            }
+
+            //50符2翻 ツモ 三暗刻 9600点
+            {
+                var expected = 9600;
+                var tehai = new Tehai(new List<string>() { "1m", "1m", "1m", "2p", "2p", "2p", "4p", "5p", "5p", "5p", "6p", "E", "E" });
+
+                var gameId = 0;
+                var playerPosition = 0;
+
+                var ifr = new InfoForResult(gameId, playerPosition);
+                ifr.IsTsumo = true;
+                ifr.IsMenzen = true;
+                ifr.PassedTurn = 4;
+                var fd = new Field();
+
+                var result = HoraResultCalclator.CalcHoraResult(tehai, ifr, fd, "5p");
+                Assert.AreEqual(expected, result.pointResult.HoraPlayerIncome);
+            }
 
         }
+
     }
 
     
@@ -34,11 +66,11 @@ namespace MjModelProjectTests
     public class TehaiAnalizerTest
     {
         [TestMethod]
-        public void 手配分割テスト()
+        public void 和了時構成分割テスト()
         {
-            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "1m", "2m", "2m", "3m", "3m" });
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "1m", "2m", "2m", "3m"});
 
-            var result = TehaiAnalizer.AnalizePattern(testTehai);
+            var result = TehaiAnalizer.AnalizePattern(testTehai,"3m",false);
             Debug.WriteLine(result.AllHoraPatternList.Count);
             foreach (var r in result.AllHoraPatternList)
             {
@@ -61,39 +93,26 @@ namespace MjModelProjectTests
         [TestMethod]
         public void 役算出テスト()
         {
-            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "2m", "2m", "3m", "3m", "4m" });
 
-            var testIfr = new InfoForResult();
-            testIfr.IsMenzen = true;
-            testIfr.IsOya = true;
-            testIfr.IsTsumo = true;
-            testIfr.PassedTurn = 10;
-            var result = new HoraResult(); 
-            for (int i = 0; i < 10000; i++)
+            //清一色ピンフ一盃口
             {
-                result = HoraResultCalclator.CalcHoraResult(testTehai, testIfr);
+                Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "2m", "2m", "3m", "3m" });
+
+                var testIfr = new InfoForResult();
+                testIfr.IsMenzen = true;
+                testIfr.IsOya = true;
+                testIfr.IsTsumo = true;
+                testIfr.PassedTurn = 10;
+                var result = new HoraResult();
+                result = HoraResultCalclator.CalcHoraResult(testTehai, testIfr, new Field(), "4m");
+                var yakuMap = result.yakuResult.yakus;
+                Assert.IsTrue(yakuMap.ContainsKey(MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHINNITSU]));
+                Assert.IsTrue(yakuMap.ContainsKey(MJUtil.YAKU_STRING[(int)MJUtil.Yaku.PINFU]));
+                Assert.IsTrue(yakuMap.ContainsKey(MJUtil.YAKU_STRING[(int)MJUtil.Yaku.IIPEIKOU]));
             }
-            var yakuMap = result.yakuResult.yakus;
-            Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHINNITSU]) );
-            Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.PINFU]) );
-            Assert.IsTrue( yakuMap.ContainsKey( MJUtil.YAKU_STRING[(int)MJUtil.Yaku.IIPEIKOU]) );
-           
-            
         }
     }
     
     
-    //点数計算テスト
-    [TestClass]
-    public class PointAnalizerTest
-    {
-        [TestMethod]
-        public void 点数計算テスト()
-        {
-            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "1m", "2m", "2m", "3m", "3m" });
 
-            var result = TehaiAnalizer.AnalizePattern(testTehai);
-
-        }
-    }
 }

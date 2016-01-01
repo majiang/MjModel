@@ -9,11 +9,6 @@ namespace MjModelProjectTests
     [TestClass]
     public class IntegrationTest
     {
-        [TestMethod]
-        public void ツモ切りクライアントテスト()
-        {
-
-        }
 
 
 
