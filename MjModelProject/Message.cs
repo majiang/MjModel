@@ -360,7 +360,6 @@ namespace MjModelProject
             this.deltas = deltas;
             this.scores = scores;
         }
-
         public MJsonMessageHora(int actor, int target, string pai)
         {
             type = MsgType.HORA;
@@ -368,9 +367,12 @@ namespace MjModelProject
             this.target = target;
             this.pai = pai;
         }
-    }
 
-    public class MJsonMessageRyukyoku : MjsonMessageBase
+    }
+    
+
+
+        public class MJsonMessageRyukyoku : MjsonMessageBase
     {
         
         public string reason;

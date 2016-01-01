@@ -145,7 +145,7 @@ namespace MjModelProject
                         var horaObj = GetNearestHoraPlayerMsg(getMsgList);
                         serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
                         getMsgList.Dispose();
-                        return new AfterDahaiState(this);
+                        return new AfterHoraState(this);
                     }
 
                     //RinshanFlggOff

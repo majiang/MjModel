@@ -10,19 +10,20 @@ namespace MjModelProject.Result
 
     public class InfoForResult
     {
-        public bool IsMenzen { get; set; }
-        public bool IsTsumo { get; set; }
-        public bool IsIppatsu { get; set; }
-        public bool IsHaitei { get; set; }
-        public bool IsHoutei { get; set; }
-        public bool IsRinshan { get; set; }
-        public bool IsChankan { get; set; }
-        public int LastAddedSyu { get; set; }
-        public bool IsReach { get; set; }
-        public bool IsDoubleReach { get; set; }
-        public bool IsOya { get; set; }
-        public int PassedTurn { get; set; }
-        public bool IsFured { get; set; }
+        public bool IsMenzen;
+        public bool IsTsumo;
+        public bool IsIppatsu;
+        public bool IsHaitei;
+        public bool IsHoutei;
+        public bool IsRinshan;
+        public bool IsChankan;
+        public Pai LastAddedPai;
+        public bool IsReach;
+        public bool IsDoubleReach;
+        public bool IsOya;
+        public int PassedTurn;
+        public bool IsFured;//for player 
+        public bool IsFuredOnField;
         private int gameId;
         private List<int> doraMarkerList = new List<int>();
         private List<int> uradoraMarkerList = new List<int>();
@@ -98,5 +99,31 @@ namespace MjModelProject.Result
         {
             return jifuuList.Count(e => e.PaiNumber == paiId) > 0;
         }
+
+        public void SetLastAddedPai(Pai pai)
+        {
+            LastAddedPai = pai;
+        }
+        public void SetLastAddedPai(int id)
+        {
+            LastAddedPai = new Pai(id);
+        }
+
+        public void SetLastAddedPai(string paiString)
+        {
+            LastAddedPai = new Pai(paiString);
+        }
+
+        public int GetLastAddedSyu()
+        {
+            return LastAddedPai.PaiNumber;
+        }
+
+        public bool IsFirstTurn()
+        {
+            return (0 <= PassedTurn && PassedTurn <= 3) && IsFuredOnField == false;
+        }
+
+
     }
 }

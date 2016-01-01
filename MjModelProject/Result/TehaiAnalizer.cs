@@ -20,8 +20,10 @@ namespace MjModelProject.Model
             {
                 inHandSyu[pai.PaiNumber]++;
             }
-            inHandSyu[PaiConverter.STRING_TO_ID[horaPai]]++;
-
+            if (isRon)
+            {
+                inHandSyu[PaiConverter.STRING_TO_ID[horaPai]]++;
+            }
 
             TehaiSpliter ts = new TehaiSpliter();
 
@@ -94,7 +96,7 @@ namespace MjModelProject.Model
 
     public class Tartsu
     {
-
+        public bool IsRonedTartsu;
         public MJUtil.TartsuType TartsuType { get; private set; }
         public int TartsuStartPaiSyu { get; private set; }
 
@@ -123,10 +125,7 @@ namespace MjModelProject.Model
         {
             return TartsuType == MJUtil.TartsuType.HEAD;
         }
-        public bool IsNakiHead()
-        {
-            return TartsuType == MJUtil.TartsuType.NAKIHEAD;
-        }
+
         public bool IsAnsyun()
         {
             return TartsuType == MJUtil.TartsuType.ANSYUN;
@@ -153,13 +152,10 @@ namespace MjModelProject.Model
         }
 
 
-        public void ChangeNakiTartsu()
+        public void ChangeRonedTartsu()
         {
-            if (IsHead())
-            {
-                TartsuType = MJUtil.TartsuType.NAKIHEAD;
-            }
-            else if(IsAnsyun())
+            IsRonedTartsu = true;
+            if (IsAnsyun())
             {
                 TartsuType = MJUtil.TartsuType.MINSYUN;
             }
@@ -167,12 +163,11 @@ namespace MjModelProject.Model
             {
                 TartsuType = MJUtil.TartsuType.MINKO;
             }
-            else if (IsAnkantsu())
-            {
-                TartsuType = MJUtil.TartsuType.MINKANTSU;
-            }
+            
 
         }
+
+
     }
 
 
@@ -186,7 +181,7 @@ namespace MjModelProject.Model
             //全通りの上がり構成を算出
             List<HoraPattern> horaMentsuList = split(syu);
 
-            //ロン牌を含む場合、ターツを鳴きターツに変換する
+            //ロン牌を含むターツが複数ある場合はそれぞれに対してロン上がりのフラグを立てて手配構成を作成。
             if (isRon)
             {
                 var ronConsiderdMentsuList = new List<HoraPattern>();
@@ -195,7 +190,7 @@ namespace MjModelProject.Model
                     foreach(var tartsu in horaMentsu.TartsuList.Select( (val,index) => new { val, index }).Where(e => e.val.Contains(horaPai)))
                     {
                         var considerd = horaMentsu.GetCopy();
-                        considerd.TartsuList[tartsu.index].ChangeNakiTartsu();
+                        considerd.TartsuList[tartsu.index].ChangeRonedTartsu();
                         ronConsiderdMentsuList.Add(considerd);
                     }
                 }

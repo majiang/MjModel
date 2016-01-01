@@ -92,7 +92,6 @@ public class MJUtil {
     public enum TartsuType
     {
         HEAD,
-        NAKIHEAD,
         ANSYUN,
         MINSYUN,
         ANKO,

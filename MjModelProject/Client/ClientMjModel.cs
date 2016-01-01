@@ -44,11 +44,14 @@ namespace MjModelProject
             
             Init();
             myPositionId = id;
+
         }
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             field = new Field(kyoku, honba, kyotaku);
+            currentActor = 0;
+            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
         }
@@ -145,14 +148,14 @@ namespace MjModelProject
 
         public bool CanReach(int playerId)
         {
-            return (shantenCalclator.CalcShanten(tehais[playerId]) <= 0) 
-                && (infoForResult[playerId].IsDoubleReach || infoForResult[playerId].IsReach) == false;
+            return ( shantenCalclator.CalcShanten(tehais[playerId]) <= 0) 
+                && ( (infoForResult[playerId].IsDoubleReach || infoForResult[playerId].IsReach) == false );
         }
 
         public bool CanTsumoHora(string pai)
         {
             //TODO condsider yaku
-            return shantenCalclator.CalcShanten(tehais[myPositionId], pai) == -1;
+            return shantenCalclator.CalcShanten(tehais[myPositionId]) == -1;
         }
 
         public bool CanRonHora(int target, string pai)

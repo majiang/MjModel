@@ -84,9 +84,9 @@ namespace MjModelProject
                         {
                             SendErrorToClient(client, message);
                         }
-                        else {
+                        else
+                        {
                             roomNameServerDictionary[roomName].GetMessage(msgobj);
-
                         }
                         break;
                 }

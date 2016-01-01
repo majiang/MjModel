@@ -159,8 +159,7 @@ namespace MjModelProject.Result
             if (IsPinfu(horaMentsu, ifr))
             {
                 result.yakus.Add(yakuString[(int)MJUtil.Yaku.PINFU], yakuHanNum[(int)MJUtil.Yaku.PINFU]);
-                //ピンフの場合強制的に20符になる
-                result.Fu = 20;
+                result.Fu = ifr.IsTsumo ? 20 : 30;//ピンフツモは20符、ピンフロンは30符
             }
             if (IsTannyao(horaMentsu))
             {
@@ -342,11 +341,12 @@ namespace MjModelProject.Result
             int futei = 20;
             fuSum += futei;
 
+            //門前ロンの場合
             if (ifpc.IsMenzen && (!ifpc.IsTsumo)) {
                 fuSum += 10;
             }
 
-
+            //頭が役牌の場合
             int headSyuId = horaMentsu.TartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.HEAD).First().TartsuStartPaiSyu;
             if (ifpc.IsBafuu(headSyuId)) {
                 fuSum += 2;
@@ -358,6 +358,7 @@ namespace MjModelProject.Result
                 fuSum += 2;
             }
 
+            //ツモの場合
             if (ifpc.IsTsumo) {
                 fuSum += 2;
             }
@@ -394,17 +395,17 @@ namespace MjModelProject.Result
 
             }
 
-            int lastAddedSyu = ifpc.LastAddedSyu;
+            int lastAddedSyu = ifpc.GetLastAddedSyu();
 
-
-            //単騎待ちの場合＋２符
-            if (lastAddedSyu == horaMentsu.TartsuList[0].TartsuStartPaiSyu)
+            //待ちによる符加算
+            //単騎待ちの場合
+            if (horaMentsu.Head.IsRonedTartsu)
             {
                 fuSum += 2;
             }
             else
             {
-                //カンチャンorペンチャンの場合＋２符
+                //カンチャンorペンチャンの場合
                 for (int i = 1; i < horaMentsu.TartsuList.Count; i++) {
                     if ((horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.ANSYUN) && (horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.MINSYUN))
                     {
@@ -425,7 +426,7 @@ namespace MjModelProject.Result
             }
 
 
-            //喰いタンのみ平和系の場合２０符であるが、２符足して３０符に切り上げる必要あり
+            //喰い平和系の場合そのまま計算すると20符だが、ルール的にピンフ以外は最低30符のため2符足して30符に切り上げる
             if ((fuSum == 20) && (ifpc.IsMenzen == false)) {
                 fuSum += 2;
             }
@@ -442,18 +443,19 @@ namespace MjModelProject.Result
                 return false;
             }
 
-            //門前順子でない場合ピンフではない
+            //門前順子またはロン和了明順メンツではない場合ピンフではない
             foreach (var tartsu in hp.WithoutHeadTartsuList) {
-                if ((tartsu.TartsuType != MJUtil.TartsuType.ANSYUN)) {
+                if ( ( (tartsu.IsAnsyun()) || ( tartsu.IsMinsyun() && tartsu.IsRonedTartsu) ) == false)
+                {
                     return false;
                 }
             }
 
             //リャンメン待ちか判定
-            int lastAddedSyu = ifr.LastAddedSyu;
-            foreach (var tartsu in hp.WithoutHeadTartsuList)
+            int lastAddedSyu = ifr.GetLastAddedSyu();
+            foreach (var tartsu in hp.WithoutHeadTartsuList )
             {
-                if ((tartsu.TartsuStartPaiSyu == lastAddedSyu) && (lastAddedSyu % 9 != 6)
+                if ( (tartsu.TartsuStartPaiSyu == lastAddedSyu) && (lastAddedSyu % 9 != 6)
                     || (tartsu.TartsuStartPaiSyu == lastAddedSyu - 2) && (lastAddedSyu % 9 != 2))
                 {
                     return true;
@@ -514,8 +516,8 @@ namespace MjModelProject.Result
                 return false;
             }
 
-            //4ターツ全てが門前順子でない場合は終了
-            if (hp.TartsuList.Select(e => e.TartsuType == MJUtil.TartsuType.ANSYUN).Count() != 4)
+            //4ターツ全てが門前順子またはロンした明順でない場合は終了
+            if (hp.TartsuList.Where(e => ( e.IsAnsyun() || (e.IsMinsyun() && e.IsRonedTartsu) ) == false ).Count() != 4)
             {
                 return false;
             }
@@ -539,8 +541,8 @@ namespace MjModelProject.Result
                 return false;
             }
 
-            //一盃口対象である門前順子のみ抜き出し
-            var ansyuns = hp.WithoutHeadTartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.ANSYUN)
+            //一盃口対象である門前順子またはロンした明順のみ抜き出し
+            var ansyuns = hp.WithoutHeadTartsuList.Where(e => e.IsAnsyun() || (e.IsMinsyun() && e.IsRonedTartsu))
                                                   .OrderBy(e => e.TartsuStartPaiSyu);
             var prevStartPaisyu = -1;
             foreach (var ansyun in ansyuns)
@@ -618,7 +620,7 @@ namespace MjModelProject.Result
 
         private static bool IsDora(InfoForResult ifr, int[] horaSyu)
         {
-            return ifr.CalcDoraNum(horaSyu) == 0;
+            return ifr.CalcDoraNum(horaSyu) > 0;
         }
 
 
@@ -742,7 +744,7 @@ namespace MjModelProject.Result
 
         private static bool IsSananko(HoraPattern hp)
         {
-            return hp.WithoutHeadTartsuList.Count(e => e.TartsuType == MJUtil.TartsuType.ANKO || e.TartsuType == MJUtil.TartsuType.ANKANTSU)
+            return hp.WithoutHeadTartsuList.Count(e => e.IsAnko() || e.IsAnkantsu() )
                 >= 3;
         }
 
@@ -750,8 +752,8 @@ namespace MjModelProject.Result
         {
             foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
-                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN
-                    || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+                if (tartsu.IsAnsyun()
+                    || tartsu.IsMinsyun())
                 {
                     return false;
                 }
@@ -1115,7 +1117,7 @@ namespace MjModelProject.Result
 
         private static bool IsChiho(InfoForResult ifr)
         {
-            return (1 <= ifr.PassedTurn && ifr.PassedTurn <= 3) && ifr.IsFured;
+            return ifr.IsFirstTurn() && ifr.IsOya == false; 
         }
 
 

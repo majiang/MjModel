@@ -32,9 +32,8 @@ namespace MjModelProject
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-
             currentActor = 0;
-            infoForResult = new List<InfoForResult>() {new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
+            infoForResult = new List<InfoForResult>() {new InfoForResult(field.KyokuId,0), new InfoForResult(field.KyokuId,1), new InfoForResult(field.KyokuId,2), new InfoForResult(field.KyokuId,3) };
             points = new List<int> { 25000, 25000, 25000, 25000 };
         }
 
@@ -52,7 +51,7 @@ namespace MjModelProject
             var haipais = yama.MakeHaipai();
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
             SetCurrentActor(0);
-            infoForResult = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
+            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
 
             return new MJsonMessageStartKyoku(
                         field.Bakaze.PaiString,
@@ -83,8 +82,11 @@ namespace MjModelProject
 
         public MJsonMessageTsumo Tsumo()
         {
+
+
             var tsumoPai = yama.DoTsumo();
             tehais[currentActor].Tsumo(tsumoPai);
+            infoForResult[currentActor].SetLastAddedPai(tsumoPai);
 
             return new MJsonMessageTsumo(
                 currentActor,
@@ -96,6 +98,7 @@ namespace MjModelProject
         {
             var tsumoPai = yama.DoRinshan();
             tehais[currentActor].Tsumo(tsumoPai);
+            infoForResult[currentActor].SetLastAddedPai(tsumoPai);
 
             return new MJsonMessageTsumo(
                 currentActor,
@@ -170,15 +173,32 @@ namespace MjModelProject
             //actorとtargetが異なる場合はロン和了であり手配にはロン牌が含まれていないためツモ和了とは別の求め方をする
             
             var uradoraMarkers = yama.GetUradoraMarker();
+            var ifr = infoForResult[actor];
+            ifr.PassedTurn = yama.GetUsedYamaNum();
+            ifr.IsFured = tehais[actor].furos.Count > 0;
+            ifr.IsMenzen = !ifr.IsFured;
+
+
+
+            if (actor == target)
+            {
+                ifr.IsHaitei = yama.GetRestYamaNum() == 0;
+                ifr.IsTsumo = true;
+            }
+            else
+            {
+                infoForResult[actor].SetLastAddedPai(pai);
+                ifr.IsHoutei = yama.GetRestYamaNum() == 0;
+                ifr.IsTsumo = false;
+            }
             HoraResult horaResult;
             horaResult = HoraResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
 
 
-            //var deltas = 
             
 
             //場況を更新
-            //TODO 
+            //TODO  delta と pointResult
 
 
             return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiString(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
@@ -187,7 +207,7 @@ namespace MjModelProject
 
         public void None()
         {
-            throw new NotImplementedException();
+       
         }
 
         public MJsonMessageRyukyoku Ryukyoku()
@@ -271,7 +291,7 @@ namespace MjModelProject
 
         public void SetReach(int actor)
         {
-            if (yama.GetUsedYamaNum() > 4 && infoForResult.Count(e => e.IsFured) == 0)
+            if (yama.GetUsedYamaNum() < 4 && infoForResult.Count(e => e.IsFuredOnField) == 0)
             {
                 infoForResult[actor].IsDoubleReach = true;
             }

@@ -61,14 +61,14 @@ namespace MjModelProject
         {   
             if (actor == myPositionId)
             {
+                clientController.Tsumo(myPositionId, pai);
+
                 if (clientMjModel.CanTsumoHora(pai))
                 {
                     clientRouter.SendMJsonMessage(new MJsonMessageHora(myPositionId, myPositionId, pai));
                     return;
                 }
 
-                //和了判定が終了した後に手配に加える
-                clientController.Tsumo(actor, pai);
 
                 if (clientMjModel.CanReach(myPositionId))
                 {
