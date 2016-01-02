@@ -33,16 +33,16 @@ namespace MjModelProject.AI
                 syu[p.PaiNumber]++;
             }
             var resultDict = new Dictionary<int, int>();
-            foreach (var id in syu.Select((value, index) => new { value, index }))
+            foreach (var paiId in syu.Select((value, index) => new { value, index }))
             {
-                if (id.value == 0)
+                if (paiId.value == 0)
                 {
                     continue;
                 }
 
-                syu[id.index]--;
-                resultDict.Add(id.index, shantenCalclator.CalcShantenWithFuro(syu, tehais[mypositionId].furos.Count));
-                syu[id.index]++;
+                syu[paiId.index]--;
+                resultDict.Add(paiId.index, shantenCalclator.CalcShantenWithFuro(syu, tehais[mypositionId].furos.Count));
+                syu[paiId.index]++;
             }
             var bestPaiIndex = resultDict.OrderBy(e => e.Value).First().Key;
             var paiString = tehais[mypositionId].tehai.Where(e => e.PaiNumber == bestPaiIndex).First().PaiString;

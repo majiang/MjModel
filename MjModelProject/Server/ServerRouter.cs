@@ -11,22 +11,17 @@ namespace MjModelProject
     public class ServerRouter
     {
         private System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);
-        //public VirtualInternet virtualInternet;
+
         //ユーザーネームは一意という前提。
 
         //メッセージ受信時にクライアントの名前を見てルーム名を取得。後にコントローラを取得
-        public Dictionary<string, ServerContext> roomNameServerDictionary;//部屋ごとにコントローラを作成< room, servercontroller >
+        public Dictionary<string, GameContext> roomNameServerDictionary;//部屋ごとにコントローラを作成< room, servercontroller >
         public Dictionary<string, string> clientNameRoomDictionary;//クライアントリスト< name, room >
         public Dictionary<string, TcpClient> clientNameTcpClientDictionary;
-
-        //受信メッセージ保管リスト
-        public List<Packet> getPacketList;
         
-
-
         public ServerRouter()
         {
-            roomNameServerDictionary = new Dictionary<string, ServerContext>();
+            roomNameServerDictionary = new Dictionary<string, GameContext>();
             clientNameRoomDictionary = new Dictionary<string, string>();
             clientNameTcpClientDictionary = new Dictionary<string, TcpClient>();
         }
@@ -54,7 +49,7 @@ namespace MjModelProject
                         //roomがない場合room作成
                         if (!roomNameServerDictionary.ContainsKey(msgobj.room))
                         {
-                            roomNameServerDictionary.Add(msgobj.room, new ServerContext(this, msgobj.room));
+                            roomNameServerDictionary.Add(msgobj.room, new GameContext(this, msgobj.room));
                         }
                         //参加人数が上限に達していないかチェック
                         if (roomNameServerDictionary[msgobj.room].CanJoin())

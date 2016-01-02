@@ -10,17 +10,17 @@ using System.Diagnostics;
 
 namespace MjModelProject
 {
-    public class ServerController
+    public class GameController
     {
         
         private ServerRouter serverRouter;
         public List<string> playerNames = new List<string>();//入室した順番でプレイヤー名が入っている
-        public ServerMjModel serverMjModel;
+        public GameModel serverMjModel;
        // public List<>//ipaddresとポートが入る？
        
 
 
-        public ServerController(ServerRouter sr,  ServerMjModel mm) {
+        public GameController(ServerRouter sr,  GameModel mm) {
             serverRouter = sr;
             serverMjModel = mm;
         }

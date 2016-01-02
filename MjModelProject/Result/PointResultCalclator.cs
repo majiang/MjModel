@@ -16,7 +16,7 @@ namespace MjModelProject.Result
         public bool HoraIsTsumo;
     }
 
-    public static class PointAnalizer
+    public static class PointResultCalclator
     {
         private static readonly int BASE_POINT_YAKUMAN = 8000;
         private static readonly int BASE_POINT_SANBAIMAN = 6000;

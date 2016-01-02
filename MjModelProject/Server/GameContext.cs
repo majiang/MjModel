@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    public class ServerContext
+    public class GameContext
     {
         public ServerRouter serverRouter;
-        public ServerController serverController;
-        public ServerMjModel mjModel;
+        public GameController serverController;
+        public GameModel mjModel;
         public string roomName;
-        ServerState serverState;
+        GameState serverState;
 
 
-        public ServerContext(ServerRouter sr, string rn)
+        public GameContext(ServerRouter sr, string rn)
         {
             serverRouter = sr;
-            mjModel = new ServerMjModel();
-            serverController = new ServerController(sr, mjModel);
+            mjModel = new GameModel();
+            serverController = new GameController(sr, mjModel);
             roomName = rn;
             serverState = new AfterInitialiseState(serverController);
         }     

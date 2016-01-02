@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 namespace MjModelProject
 {
-    public class ServerState
+    public class GameState
     {
 
-        public ServerController serverController;
+        public GameController serverController;
         public BlockingCollection<MjsonMessageAll> getMsgList = new BlockingCollection<MjsonMessageAll>();
-        public virtual ServerState GetMessage(MjsonMessageAll msgobj) { return this; }
+        public virtual GameState GetMessage(MjsonMessageAll msgobj) { return this; }
 
         protected MjsonMessageAll GetNearestHoraPlayerMsg(BlockingCollection<MjsonMessageAll> getMsgList)
         {
@@ -21,18 +21,18 @@ namespace MjModelProject
         }
     }
 
-    class AfterInitialiseState : ServerState
+    class AfterInitialiseState : GameState
     {
-        public AfterInitialiseState(ServerController sc)
+        public AfterInitialiseState(GameController sc)
         {
             this.serverController = sc;
         }
-        public AfterInitialiseState(ServerState ss)
+        public AfterInitialiseState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
 
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if (msgobj.type == MsgType.JOIN)
@@ -54,15 +54,15 @@ namespace MjModelProject
     }
 
 
-    class AfterStartGameState : ServerState
+    class AfterStartGameState : GameState
     {
       
-        public AfterStartGameState(ServerState ss)
+        public AfterStartGameState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
 
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
             
             if (msgobj.type == MsgType.NONE)
@@ -86,14 +86,14 @@ namespace MjModelProject
 
     }
 
-    class AfterStartKyokuState : ServerState
+    class AfterStartKyokuState : GameState
     {
    
-        public AfterStartKyokuState(ServerState ss)
+        public AfterStartKyokuState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
             
             if (msgobj.type == MsgType.NONE)
@@ -117,14 +117,14 @@ namespace MjModelProject
     }
 
 
-    class AfterTsumoState : ServerState
+    class AfterTsumoState : GameState
     {
      
-        public AfterTsumoState(ServerState ss)
+        public AfterTsumoState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
             
             if ((msgobj.IsDAHAI())
@@ -191,14 +191,14 @@ namespace MjModelProject
         }
     }
 
-    class AfterDahaiState : ServerState
+    class AfterDahaiState : GameState
     {
 
-        public AfterDahaiState(ServerState ss)
+        public AfterDahaiState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
             
             if ((msgobj.type == MsgType.NONE)
@@ -275,14 +275,14 @@ namespace MjModelProject
 
 
 
-    class AfterKanState : ServerState
+    class AfterKanState : GameState
     {
        
-        public AfterKanState(ServerState ss)
+        public AfterKanState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
             
             if (msgobj.IsNONE())
@@ -305,13 +305,13 @@ namespace MjModelProject
         }
     }
 
-    class AfterOpenDoraState : ServerState
+    class AfterOpenDoraState : GameState
     {
-        public AfterOpenDoraState(ServerState ss)
+        public AfterOpenDoraState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if (msgobj.IsNONE())
@@ -338,13 +338,13 @@ namespace MjModelProject
 
 
 
-    class AfterReachState : ServerState
+    class AfterReachState : GameState
     {
-        public AfterReachState(ServerState ss)
+        public AfterReachState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if ((msgobj.IsDAHAI())
@@ -376,14 +376,14 @@ namespace MjModelProject
     }
 
 
-    class AfterReachDahaiState : ServerState
+    class AfterReachDahaiState : GameState
     {
 
-        public AfterReachDahaiState(ServerState ss)
+        public AfterReachDahaiState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if ((msgobj.type == MsgType.NONE)
@@ -419,17 +419,17 @@ namespace MjModelProject
         }
     }
 
-    class AfterReachAccceptState : ServerState
+    class AfterReachAccceptState : GameState
     {
         BlockingCollection<MjsonMessageAll> prevMsgList = new BlockingCollection<MjsonMessageAll>();
 
-        public AfterReachAccceptState(ServerState ss, BlockingCollection<MjsonMessageAll> getMsgList)
+        public AfterReachAccceptState(GameState ss, BlockingCollection<MjsonMessageAll> getMsgList)
         {
             this.serverController = ss.serverController;
             this.prevMsgList = getMsgList;
         }
 
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
              if (msgobj.IsNONE())
             {
@@ -491,13 +491,13 @@ namespace MjModelProject
 
 
 
-    class AfterHoraState : ServerState
+    class AfterHoraState : GameState
     {
-        public AfterHoraState(ServerState ss)
+        public AfterHoraState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if (msgobj.IsNONE())
@@ -523,14 +523,14 @@ namespace MjModelProject
 
     }
 
-    class AfterRyukyokuState : ServerState
+    class AfterRyukyokuState : GameState
     {
 
-        public AfterRyukyokuState(ServerState ss)
+        public AfterRyukyokuState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if (msgobj.IsNONE())
@@ -556,14 +556,14 @@ namespace MjModelProject
 
     }
 
-    class AfterEndKyokuState : ServerState
+    class AfterEndKyokuState : GameState
     {
-        public AfterEndKyokuState(ServerState ss)
+        public AfterEndKyokuState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
 
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
 
             if (msgobj.IsNONE())
@@ -597,14 +597,14 @@ namespace MjModelProject
 
 
 
-    class EndState : ServerState
+    class EndState : GameState
     {
         public EndState() { }
-        public EndState(ServerState ss)
+        public EndState(GameState ss)
         {
             this.serverController = ss.serverController;
         }
-        public override ServerState GetMessage(MjsonMessageAll msgobj)
+        public override GameState GetMessage(MjsonMessageAll msgobj)
         {
             
             return this;

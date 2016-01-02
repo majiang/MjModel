@@ -8,7 +8,7 @@ using MjModelProject.Result;
 
 namespace MjModelProject
 {
-    public class ServerMjModel
+    public class GameModel
     {
        
         public Yama yama { get; set; }
@@ -21,7 +21,7 @@ namespace MjModelProject
 
         public List<int> points { get; set; }
 
-        public ServerMjModel()
+        public GameModel()
         {
             Init();
         }
@@ -192,7 +192,7 @@ namespace MjModelProject
                 ifr.IsTsumo = false;
             }
             HoraResult horaResult;
-            horaResult = HoraResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
+            horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
 
 
             

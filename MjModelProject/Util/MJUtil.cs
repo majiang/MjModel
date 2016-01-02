@@ -304,7 +304,7 @@ public class MJUtil {
 	
 	private MJUtil (){} 
 	
-	public static bool IsRoto(int syu){
+	public static bool IsRotoPai(int syu){
 		if(syu >= 27){
 			return false;
 		}else if( (syu % 9 == 0)||(syu % 9 == 8) ){
@@ -313,7 +313,7 @@ public class MJUtil {
 		return false;
 	}
 	
-	public static bool IsYaochu(int syu){
+	public static bool IsYaochuPai(int syu){
 		if(syu >= 27){
 			return true;
 		}else if( (syu % 9 == 0)||(syu % 9 == 8) ){
@@ -327,16 +327,16 @@ public class MJUtil {
 
 
 
-	public static bool IsDragon(int syuIdx) {
+	public static bool IsDragonPai(int syuIdx) {
 		return (syuIdx == 31)||(syuIdx == 32)||(syuIdx == 33);
 	}
-	public static bool IsJihai(int syuIdx) {
+	public static bool IsJihaiPai(int syuIdx) {
 		return (27 <= syuIdx)&&(syuIdx < LENGTH_SYU_ALL);//0~26は数牌
 	}
-	public static bool IsWind(int syuIdx) {
+	public static bool IsWindPai(int syuIdx) {
 		return (27 <= syuIdx)&&(syuIdx <= 30);//27~30は風牌
 	}
-	public static bool IsGreen(int syuIdx) {
+	public static bool IsGreenPai(int syuIdx) {
 		//緑一色を満たす牌をtrue
 		return    (syuIdx == 19)//2s
 				||(syuIdx == 20)//3s

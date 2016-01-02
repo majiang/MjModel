@@ -28,7 +28,7 @@ namespace MjModelProject.Result
 
 
 
-    public static class YakuAnalizer
+    public static class YakuResultCalclator
     {
         public static YakuResult CalcSpecialYaku(InfoForResult ifr, Field field, int[] horaSyu)
         {
@@ -347,14 +347,14 @@ namespace MjModelProject.Result
             }
 
             //頭が役牌の場合
-            int headSyuId = horaMentsu.TartsuList.Where(e => e.TartsuType == MJUtil.TartsuType.HEAD).First().TartsuStartPaiSyu;
+            int headSyuId = horaMentsu.TartsuList.Where(e => e.IsHead()).First().TartsuStartPaiSyu;
             if (ifpc.IsBafuu(headSyuId)) {
                 fuSum += 2;
             }
             if (ifpc.IsJifuu(headSyuId)) {
                 fuSum += 2;
             }
-            if (MJUtil.IsDragon(headSyuId)) {
+            if (MJUtil.IsDragonPai(headSyuId)) {
                 fuSum += 2;
             }
 
@@ -368,7 +368,7 @@ namespace MjModelProject.Result
 
             foreach (var tartsu in horaMentsu.TartsuList)
             {
-                if (MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu))
+                if (tartsu.IsYaochuTartsu())
                 {
                     multiple = 2;
                 }
@@ -407,7 +407,7 @@ namespace MjModelProject.Result
             {
                 //カンチャンorペンチャンの場合
                 for (int i = 1; i < horaMentsu.TartsuList.Count; i++) {
-                    if ((horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.ANSYUN) && (horaMentsu.TartsuList[i].TartsuType != MJUtil.TartsuType.MINSYUN))
+                    if ((horaMentsu.TartsuList[i].IsAnsyun() || horaMentsu.TartsuList[i].IsMinsyun()) == false)
                     {
                         continue;
                     }
@@ -438,7 +438,7 @@ namespace MjModelProject.Result
             int headSyu = hp.Head.TartsuStartPaiSyu;
 
             //頭が役牌でないか判定
-            if (ifr.IsBafuu(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragon(headSyu))
+            if (ifr.IsBafuu(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPai(headSyu))
             {
                 return false;
             }
@@ -468,27 +468,11 @@ namespace MjModelProject.Result
         {
             foreach (var tartsu in hp.TartsuList)
             {
-                switch (tartsu.TartsuType)
+                if(tartsu.IsYaochuTartsu())
                 {
-                    case MJUtil.TartsuType.ANSYUN:
-                        if ((tartsu.TartsuStartPaiSyu % 9) == 0 || (tartsu.TartsuStartPaiSyu % 9) == 6)
-                        {
-                            return false;
-                        }
-                        break;
-                    case MJUtil.TartsuType.MINSYUN:
-                        if ((tartsu.TartsuStartPaiSyu % 9) == 0 || (tartsu.TartsuStartPaiSyu % 9) == 6)
-                        {
-                            return false;
-                        }
-                        break;
-                    default:
-                        if (MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu))
-                        {
-                            return false;
-                        }
-                        break;
+                    return false;
                 }
+                
             }
             return true;
         }
@@ -497,7 +481,7 @@ namespace MjModelProject.Result
         {
             foreach (var syu in horaSyu.Select( (val, index) => new { val,index }).Where(e => e.val > 0) )
             {
-                if (MJUtil.IsYaochu(syu.index))
+                if (MJUtil.IsYaochuPai(syu.index))
                 {
                     return false;
                 }
@@ -562,7 +546,7 @@ namespace MjModelProject.Result
             {
                 if (ifr.IsJifuu(tartsu.TartsuStartPaiSyu) 
                     || ifr.IsBafuu(tartsu.TartsuStartPaiSyu)
-                    || MJUtil.IsDragon(tartsu.TartsuStartPaiSyu)
+                    || MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu)
                     )
                 {
                     return true;
@@ -585,7 +569,7 @@ namespace MjModelProject.Result
                 {
                     yakuhaiNum++;
                 }
-                if (MJUtil.IsDragon(tartsu.TartsuStartPaiSyu))
+                if (MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu))
                 {
                     yakuhaiNum++;
                 }
@@ -762,7 +746,7 @@ namespace MjModelProject.Result
         }
         private static bool IsShosangen(HoraPattern hp)
         {
-            if (MJUtil.IsDragon(hp.Head.TartsuStartPaiSyu) == false)
+            if (MJUtil.IsDragonPai(hp.Head.TartsuStartPaiSyu) == false)
             {
                 return false;
             }
@@ -770,7 +754,7 @@ namespace MjModelProject.Result
             var doragonCount = 0;
             foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
-                if (MJUtil.IsDragon(tartsu.TartsuStartPaiSyu))
+                if (MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu))
                 {
                     doragonCount++;
                 }
@@ -789,7 +773,7 @@ namespace MjModelProject.Result
                     return false;
                 }
 
-                if (MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu) == false)
+                if (MJUtil.IsYaochuPai(tartsu.TartsuStartPaiSyu) == false)
                 {
                     return false;
                 }
@@ -801,7 +785,7 @@ namespace MjModelProject.Result
         {
             foreach (var syu in horaSyu.Select((val, index) => new { val, index }).Where(e => e.val > 0))
             {
-                if (MJUtil.IsYaochu(syu.index) == false)
+                if (MJUtil.IsYaochuPai(syu.index) == false)
                 {
                     return false;
                 }
@@ -822,7 +806,7 @@ namespace MjModelProject.Result
                 }
                 else
                 {
-                    if (MJUtil.IsRoto(tartsu.TartsuStartPaiSyu))
+                    if (MJUtil.IsRotoPai(tartsu.TartsuStartPaiSyu))
                     {
                         continue;
                     }
@@ -845,7 +829,7 @@ namespace MjModelProject.Result
                 }
                 else
                 {
-                    if (MJUtil.IsYaochu(tartsu.TartsuStartPaiSyu))
+                    if (MJUtil.IsYaochuPai(tartsu.TartsuStartPaiSyu))
                     {
                         continue;
                     }
@@ -900,7 +884,7 @@ namespace MjModelProject.Result
 
             foreach (var tartsu in hp.TartsuList)
             {
-                if( MJUtil.IsJihai(tartsu.TartsuStartPaiSyu))
+                if( MJUtil.IsJihaiPai(tartsu.TartsuStartPaiSyu))
                 {
                     hasJi |= true;
                 }
@@ -931,7 +915,7 @@ namespace MjModelProject.Result
                 {
                     continue;
                 }
-                if (MJUtil.IsJihai(syu.index))
+                if (MJUtil.IsJihaiPai(syu.index))
                 {
                     hasJi |= true;
                     continue;
@@ -956,7 +940,7 @@ namespace MjModelProject.Result
 
             foreach (var tartsu in hp.TartsuList)
             {
-                if (MJUtil.IsJihai(tartsu.TartsuStartPaiSyu))
+                if (MJUtil.IsJihaiPai(tartsu.TartsuStartPaiSyu))
                 {
                     return false;
                 }
@@ -982,7 +966,7 @@ namespace MjModelProject.Result
                 {
                     continue;
                 }
-                if (MJUtil.IsJihai(syu.index))
+                if (MJUtil.IsJihaiPai(syu.index))
                 {
                     return false;
                 }
@@ -1007,29 +991,29 @@ namespace MjModelProject.Result
 
         private static bool IsDaisangen(HoraPattern hp)
         {
-            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsDragon( e.TartsuStartPaiSyu ) ) == 3;
+            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsDragonPai( e.TartsuStartPaiSyu ) ) == 3;
         }
 
         private static bool IsShosushi(HoraPattern hp)
         {
-            return MJUtil.IsWind(hp.Head.TartsuStartPaiSyu)
-                && hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWind(e.TartsuStartPaiSyu)) == 3;
+            return MJUtil.IsWindPai(hp.Head.TartsuStartPaiSyu)
+                && hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWindPai(e.TartsuStartPaiSyu)) == 3;
         }
 
         private static bool IsDaisushi(HoraPattern hp)
         {
-            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWind(e.TartsuStartPaiSyu)) == 4;
+            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWindPai(e.TartsuStartPaiSyu)) == 4;
         }
 
         private static bool IsTsuiso(HoraPattern hp)
         {
-            return hp.TartsuList.Count(e => MJUtil.IsJihai(e.TartsuStartPaiSyu)) == 5;
+            return hp.TartsuList.Count(e => MJUtil.IsJihaiPai(e.TartsuStartPaiSyu)) == 5;
         }
         private static bool IsTsuiso(int[] horaSyu)
         {
             foreach(var syu in horaSyu.Select( (val,index) => new {val,index }).Where( syu => syu.val > 0))
             {
-                if(MJUtil.IsJihai(syu.index) == false)
+                if(MJUtil.IsJihaiPai(syu.index) == false)
                 {
                     return false;
                 }
@@ -1053,7 +1037,7 @@ namespace MjModelProject.Result
                 }
                 else
                 {
-                    if (MJUtil.IsGreen(tartsu.TartsuStartPaiSyu))
+                    if (MJUtil.IsGreenPai(tartsu.TartsuStartPaiSyu))
                     {
                         greenCount++;
                     }
@@ -1072,7 +1056,7 @@ namespace MjModelProject.Result
                 return false;
             }
 
-            return hp.TartsuList.Count(e => MJUtil.IsRoto(e.TartsuStartPaiSyu)) == 5;
+            return hp.TartsuList.Count(e => MJUtil.IsRotoPai(e.TartsuStartPaiSyu)) == 5;
         }
 
 

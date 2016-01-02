@@ -8,10 +8,23 @@ using MjModelProject.Util;
 
 namespace MjModelProject.Model
 {
-    public static class TehaiAnalizer
+        public class SplitedTehai
+    {
+        public List<HoraPattern> AllHoraPatternList { get; set; }
+        public int[] SyuNum { get; set; }//フーロ牌も含めた牌枚数配列
+        public SplitedTehai()
+        {
+            AllHoraPatternList = new List<HoraPattern>();
+            SyuNum = new int[MJUtil.LENGTH_SYU_ALL];
+        }
+    }
+
+
+
+    public static class SplitedTehaiCalclator
     {
 
-        public static SplitedTehai AnalizePattern(Tehai tehai, string horaPai, bool isRon)
+        public static SplitedTehai CalcSplitedTehai(Tehai tehai, string horaPai, bool isRon)
         {
 
             //手配＆和了牌の牌の合計枚数をカウント
@@ -56,16 +69,7 @@ namespace MjModelProject.Model
 
 
 
-    public class SplitedTehai
-    {
-        public List<HoraPattern> AllHoraPatternList { get; set; }
-        public int[] SyuNum { get; set; }//フーロ牌も含めた牌枚数配列
-        public SplitedTehai()
-        {
-            AllHoraPatternList = new List<HoraPattern>();
-            SyuNum = new int[MJUtil.LENGTH_SYU_ALL];
-        }
-    }
+
 
 
     public class HoraPattern
@@ -87,24 +91,50 @@ namespace MjModelProject.Model
             WithoutHeadTartsuList.AddRange(furoTartsuList);
         }
 
-        public HoraPattern GetCopy()
+        public HoraPattern GetDeepCopy()
         {
-            return new HoraPattern(this.TartsuList);
+            return new HoraPattern(TartsuList.Select(e => e.GetDeepCopy()).ToList());
+        }
+
+        public void ChangeAsRonedTartsu(int index)
+        {
+            if(index < 1 && 4 < index)
+            {
+                return;
+            }
+
+            TartsuList[index].ChangeAsRonedTartsu();
+            WithoutHeadTartsuList[index - 1].ChangeAsRonedTartsu();
         }
 
     }
 
     public class Tartsu
     {
-        public bool IsRonedTartsu;
         public MJUtil.TartsuType TartsuType { get; private set; }
         public int TartsuStartPaiSyu { get; private set; }
+        public bool IsRonedTartsu;
+
 
         public Tartsu(MJUtil.TartsuType tt, int tartsuStartPaiSyu)
         {
             this.TartsuType = tt;
             this.TartsuStartPaiSyu = tartsuStartPaiSyu;
         }
+        public Tartsu(MJUtil.TartsuType tt, int tartsuStartPaiSyu, bool isRoned)
+        {
+            this.TartsuType = tt;
+            this.TartsuStartPaiSyu = tartsuStartPaiSyu;
+            this.IsRonedTartsu = isRoned;
+        }
+
+
+
+        public Tartsu GetDeepCopy()
+        {
+            return new Tartsu(TartsuType,TartsuStartPaiSyu,IsRonedTartsu);
+        }
+
 
         public bool Contains(string pai)
         {
@@ -150,9 +180,11 @@ namespace MjModelProject.Model
         {
             return TartsuType == MJUtil.TartsuType.MINKANTSU;
         }
+   
+       
 
 
-        public void ChangeRonedTartsu()
+        public void ChangeAsRonedTartsu()
         {
             IsRonedTartsu = true;
             if (IsAnsyun())
@@ -163,8 +195,22 @@ namespace MjModelProject.Model
             {
                 TartsuType = MJUtil.TartsuType.MINKO;
             }
-            
+        }
 
+
+
+        
+        public bool IsYaochuTartsu()
+        {
+            if (IsAnsyun() || IsMinsyun())
+            {
+                //1か7から始まる順子の場合true
+                return (TartsuStartPaiSyu % 9) == 0 || (TartsuStartPaiSyu % 9) == 6;
+            }
+            else
+            {
+                return MJUtil.IsYaochuPai(TartsuStartPaiSyu);
+            }            
         }
 
 
@@ -189,8 +235,8 @@ namespace MjModelProject.Model
                 {
                     foreach(var tartsu in horaMentsu.TartsuList.Select( (val,index) => new { val, index }).Where(e => e.val.Contains(horaPai)))
                     {
-                        var considerd = horaMentsu.GetCopy();
-                        considerd.TartsuList[tartsu.index].ChangeRonedTartsu();
+                        var considerd = horaMentsu.GetDeepCopy();
+                        considerd.ChangeAsRonedTartsu(tartsu.index);
                         ronConsiderdMentsuList.Add(considerd);
                     }
                 }
