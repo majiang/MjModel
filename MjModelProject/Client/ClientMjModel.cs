@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MjModelProject.Result;
 
 namespace MjModelProject
 {
@@ -13,12 +14,18 @@ namespace MjModelProject
         public List<Kawa> kawas { get; set; }
         public List<Tehai> tehais { get; set; }
         public Field field { get; set; }
-        public List<int> turns;
+
         public int currentActor;
+        public List<InfoForResult> infoForResult { get; set; }
+
+        public List<int> points { get; set; }
         private int myPositionId;
-        //private Strategy mjai;
-        private MjsonMessageAll sentMessage;
-        
+        ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
+
+        public ClientMjModel() : base()
+        {
+
+        }
 
         public void Init()
         {
@@ -26,21 +33,25 @@ namespace MjModelProject
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-            var turn = new List<int> { 0, 1, 2, 3 };
-            turns = new List<int>(turn.OrderBy(i => Guid.NewGuid()));
+            infoForResult = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
+            points = new List<int> { 25000, 25000, 25000, 25000 };
             currentActor = 0;
-            //初期座席配置作成
+            
         }
 
         public void StartGame(int id)
         {
+            
             Init();
             myPositionId = id;
+
         }
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             field = new Field(kyoku, honba, kyotaku);
+            currentActor = 0;
+            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
         }
@@ -98,6 +109,12 @@ namespace MjModelProject
         {
             throw new NotImplementedException();
         }
+        public void ReachAccept(int actor, List<int> points)
+        {
+            SetReach(actor);
+            this.points = points;
+        }
+
 
         public void Hora(int p1, int p2, int p3)
         {
@@ -129,6 +146,31 @@ namespace MjModelProject
             return false;
         }
 
+        public bool CanReach(int playerId)
+        {
+            return ( shantenCalclator.CalcShanten(tehais[playerId]) <= 0) 
+                && ( (infoForResult[playerId].IsDoubleReach || infoForResult[playerId].IsReach) == false );
+        }
+
+        public bool CanTsumoHora(string pai)
+        {
+            //TODO condsider yaku
+            return shantenCalclator.CalcShanten(tehais[myPositionId]) == -1;
+        }
+
+        public bool CanRonHora(int target, string pai)
+        {
+            if(target == myPositionId)
+            {
+                return false;
+            }
+            //TODO condsider yaku
+            return shantenCalclator.CalcShanten(tehais[myPositionId], pai) == -1;
+        }
+
+
+
+
         public MJsonMessageChi GetChiMessage()
         {
             return tehais[myPositionId].GetChiMessage();
@@ -138,13 +180,18 @@ namespace MjModelProject
             return tehais[myPositionId].GetPonMessage();
         }
 
-
-        public MJsonMessageDahai thinkDahai(string pai)
+        public void SetReach(int actor)
         {
-            var tempTehai = tehais[myPositionId];
-
-
-            return new MJsonMessageDahai(myPositionId, pai, true);
+            if (yama.GetUsedYamaNum() > 4 && infoForResult.Count(e => e.IsFured) == 0)
+            {
+                infoForResult[actor].IsDoubleReach = true;
+            }
+            else
+            {
+                infoForResult[actor].IsReach = true;
+            }
+            field.AddKyotaku();
         }
+
     }
 }

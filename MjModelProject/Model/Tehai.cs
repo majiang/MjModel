@@ -10,7 +10,7 @@ namespace MjModelProject
 {
     public class Tehai
     {
-        private ShantenCalclator shantenCanclator = new ShantenCalclator();
+        private ShantenCalclator shantenCanclator = ShantenCalclator.GetInstance();
         private int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
         public List<Pai> tehai { get; set; }
         public List<Furo> furos { get; set; }

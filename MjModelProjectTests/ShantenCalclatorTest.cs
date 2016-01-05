@@ -14,7 +14,7 @@ namespace MjModelProjectTests
         [TestMethod]
         public void シャンテン数計算テスト()
         {
-            var ss = new ShantenCalclator();
+            var ss = ShantenCalclator.GetInstance();
 
             using (StreamReader sr = new StreamReader(@"../../shanten_benchmark_data.num.txt", System.Text.Encoding.GetEncoding("shift_jis")))
             {

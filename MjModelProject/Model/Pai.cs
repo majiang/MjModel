@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MjModelProject.Util;
 
 namespace MjModelProject
 {
@@ -27,6 +28,10 @@ namespace MjModelProject
         }
 
         public Pai() { }
+
+
+
+
 
 
         public override bool Equals(object obj)

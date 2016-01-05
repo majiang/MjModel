@@ -10,17 +10,17 @@ using System.Diagnostics;
 
 namespace MjModelProject
 {
-    public class ServerController
+    public class GameController
     {
         
         private ServerRouter serverRouter;
         public List<string> playerNames = new List<string>();//入室した順番でプレイヤー名が入っている
-        public ServerMjModel serverMjModel;
+        public GameModel serverMjModel;
        // public List<>//ipaddresとポートが入る？
        
 
 
-        public ServerController(ServerRouter sr,  ServerMjModel mm) {
+        public GameController(ServerRouter sr,  GameModel mm) {
             serverRouter = sr;
             serverMjModel = mm;
         }
@@ -142,9 +142,11 @@ namespace MjModelProject
             SendRyukyoku(ryukyokuMsgobj);
         }
 
-
-
-
+        public void ReachAccept()
+        {
+            var reachAcceptMsgobj = serverMjModel.ReachAccept();
+            SendReachAccept(reachAcceptMsgobj);
+        }
 
 
         //ここからメッセージを送信するための関数
@@ -294,6 +296,16 @@ namespace MjModelProject
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
 
+        public void SendReachAccept(MJsonMessageReachAccept msgobj)
+        {
+            foreach (var name in playerNames)
+            {
+                serverRouter.SendReachAccept(name, msgobj);
+            }
+
+            DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
+        }
+
         public void SendHora(MJsonMessageHora msgobj)
         {
             foreach (var name in playerNames)
@@ -347,6 +359,10 @@ namespace MjModelProject
 
             DebugUtil.ServerDebug(JsonConvert.SerializeObject(msgobj));
         }
+
+
+
+        //ここからInfoForResult操作用関数
 
 
     }

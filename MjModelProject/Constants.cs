@@ -11,5 +11,7 @@ namespace MjModelProject
     {
         public static readonly int PLAYER_NUM = 4;
         public static readonly int KYOKU_NUM = 4;
+
+        public static readonly int REACH_POINT = 1000;
     }
 }

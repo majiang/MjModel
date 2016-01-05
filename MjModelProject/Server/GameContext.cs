@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace MjModelProject
 {
-    public class ServerContext
+    public class GameContext
     {
         public ServerRouter serverRouter;
-        public ServerController serverController;
-        public ServerMjModel mjModel;
+        public GameController serverController;
+        public GameModel mjModel;
         public string roomName;
-        private ServerState serverState;
+        GameState serverState;
 
 
-        public ServerContext(ServerRouter sr, string rn)
+        public GameContext(ServerRouter sr, string rn)
         {
             serverRouter = sr;
-            mjModel = new ServerMjModel();
-            serverController = new ServerController(sr, mjModel);
+            mjModel = new GameModel();
+            serverController = new GameController(sr, mjModel);
             roomName = rn;
             serverState = new AfterInitialiseState(serverController);
         }     
@@ -34,18 +34,12 @@ namespace MjModelProject
         {
             serverController.Join(msgobj.name);
             serverState = serverState.GetMessage(msgobj);
-            serverState = serverState.Execute();
         }
 
         //ここからメッセージを受け取った際の状態遷移関数
         public void GetMessage(MjsonMessageAll msgobj)
         {
             serverState = serverState.GetMessage(msgobj);
-            Execute();
-        }
-        public void Execute()
-        {
-            serverState = serverState.Execute();
         }
 
     }

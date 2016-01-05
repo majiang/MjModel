@@ -15,32 +15,33 @@ namespace MjModelProject.Result
         public PointResult pointResult;
     }
 
-    public static class HoraResultCalclator
+    public static class ResultCalclator
     {
-        public static HoraResult CalcHoraResult(Tehai tehai, InfoForResult ifr)
+        public static HoraResult CalcHoraResult(Tehai tehai, InfoForResult ifr, Field field, string horaPai)
         {
             //面子手の取りうる和了形を全て列挙 
-            SplitedTehai splited = TehaiAnalizer.AnalizePattern(tehai);
+            SplitedTehai splited = SplitedTehaiCalclator.CalcSplitedTehai(tehai, horaPai, !ifr.IsTsumo );
             List<YakuResult> yakuResultList = new List<YakuResult>();
 
             //面子手和了型が0の場合はチートイツか国士無双
             if (splited.AllHoraPatternList.Count == 0)
             {
-                yakuResultList.Add(YakuAnalizer.CalcSpecialYaku(ifr, splited.Syu));
+                yakuResultList.Add(YakuResultCalclator.CalcSpecialYaku(ifr, field, splited.SyuNum));
             }
             else
             {
-                //面子手の役を計算   
+                //面子手の役を計算
                 foreach (var pattern in splited.AllHoraPatternList)
                 {
-                    yakuResultList.Add(YakuAnalizer.CalcNormalYaku(pattern, ifr, splited.Syu));
+                    yakuResultList.Add(YakuResultCalclator.CalcNormalYaku(pattern, ifr, field, splited.SyuNum));
                 }
             }
-            //それぞれの点数を計算
+            
             Dictionary<YakuResult, PointResult> pointResultMap = new Dictionary<YakuResult, PointResult>();
             foreach (var yakuResult in yakuResultList)
             {
-                pointResultMap.Add(yakuResult, PointAnalizer.AnalyzePoint(yakuResult, splited.Syu));
+                //役と符から点数を計算
+                pointResultMap.Add(yakuResult, PointResultCalclator.AnalyzePoint(yakuResult));
             }
 
 
@@ -52,5 +53,8 @@ namespace MjModelProject.Result
             
             return maxResult;
         }
+
+
+     
     }
 }

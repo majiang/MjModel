@@ -51,11 +51,81 @@ namespace MjModelProject
         };
     }
 
-    public class MjsonMessageBase { }
+    public class MjsonMessageBase {
+        public string type;
+        public bool IsJOIN()
+        {
+            return type == MsgType.JOIN;
+        }
+        public bool IsSTART_GAME()
+        {
+            return type == MsgType.START_GAME;
+        }
+        public bool IsSTART_KYOKU()
+        {
+            return type == MsgType.START_KYOKU;
+        }
+        public bool IsTSUMO()
+        {
+            return type == MsgType.TSUMO;
+        }
+        public bool IsDAHAI()
+        {
+            return type == MsgType.DAHAI;
+        }
+        public bool IsPON()
+        {
+            return type == MsgType.PON;
+        }
+        public bool IsCHI()
+        {
+            return type == MsgType.CHI;
+        }
+        public bool IsANKAN()
+        {
+            return type == MsgType.ANKAN;
+        }
+        public bool IsKAKAN()
+        {
+            return type == MsgType.KAKAN;
+        }
+        public bool IsDAIMINKAN()
+        {
+            return type == MsgType.DAIMINKAN;
+        }
+        public bool IsDORA()
+        {
+            return type == MsgType.DORA;
+        }
+        public bool IsREACH()
+        {
+            return type == MsgType.REACH;
+        }
+        public bool IsHORA()
+        {
+            return type == MsgType.HORA;
+        }
+        public bool IsEND_KYOKU()
+        {
+            return type == MsgType.END_KYOKU;
+        }
+        public bool IsEND_GAME()
+        {
+            return type == MsgType.END_GAME;
+        }
+        public bool IsRYUKYOKU()
+        {
+            return type == MsgType.RYUKYOKU;
+        }
+        public bool IsNONE()
+        {
+            return type == MsgType.NONE;
+        }
+    }
 
     public class MjsonMessageAll : MjsonMessageBase 
     {
-        public string type;
+
         public string name;
         public string room;
         public int id;
@@ -134,11 +204,11 @@ namespace MjModelProject
 
     public class MJsonMessageTsumo : MjsonMessageBase
     {
-        public string type = MsgType.TSUMO;
         public int actor;
         public string pai;
         public MJsonMessageTsumo(int actor, string pai)
         {
+            type = MsgType.TSUMO;
             this.actor = actor;
             this.pai = pai;
         }
@@ -147,12 +217,13 @@ namespace MjModelProject
 
     public class MJsonMessageDahai : MjsonMessageBase
     {
-        public string type = MsgType.DAHAI;
+       
         public int actor;
         public string pai;
         public bool tsumogiri;
         public MJsonMessageDahai(int actor, string pai,bool tsumogiri)
         {
+            type = MsgType.DAHAI;
             this.actor = actor;
             this.pai = pai;
             this.tsumogiri = tsumogiri;
@@ -162,13 +233,13 @@ namespace MjModelProject
 
     public class MJsonMessagePon : MjsonMessageBase
     {
-        public string type = MsgType.PON;
         public int actor;
         public int target;
         public string pai;
         public List<string> consumed;
         public MJsonMessagePon(int actor, int target, string pai, List<string> consumed)
         {
+            type = MsgType.PON;
             this.actor = actor;
             this.target = target;
             this.pai = pai;
@@ -177,13 +248,13 @@ namespace MjModelProject
     }
     public class MJsonMessageChi : MjsonMessageBase
     {
-        public string type = MsgType.CHI;
         public int actor;
         public int target;
         public string pai;
         public List<string> consumed;
         public MJsonMessageChi(int actor, int target, string pai, List<string> consumed)
         {
+            type = MsgType.CHI;
             this.actor = actor;
             this.target = target;
             this.pai = pai;
@@ -192,13 +263,13 @@ namespace MjModelProject
     }
     public class MJsonMessageKakan : MjsonMessageBase
     {
-        public string type = MsgType.KAKAN;
         public int actor;
         public int target;
         public string pai;
         public List<string> consumed;
         public MJsonMessageKakan(int actor, int target, string pai, List<string> consumed)
         {
+            type = MsgType.KAKAN;
             this.actor = actor;
             this.target = target;
             this.pai = pai;
@@ -207,13 +278,13 @@ namespace MjModelProject
     }
     public class MJsonMessageAnkan : MjsonMessageBase
     {
-        public string type = MsgType.ANKAN;
         public int actor;
         public int target;
         public string pai;
         public List<string> consumed;
         public MJsonMessageAnkan(int actor, int target, string pai, List<string> consumed)
         {
+            type = MsgType.ANKAN;
             this.actor = actor;
             this.target = target;
             this.pai = pai;
@@ -222,13 +293,13 @@ namespace MjModelProject
     }
     public class MJsonMessageDaiminkan : MjsonMessageBase
     {
-        public string type = MsgType.DAIMINKAN;
         public int actor;
         public int target;
         public string pai;
         public List<string> consumed;
         public MJsonMessageDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
+            type = MsgType.DAIMINKAN;
             this.actor = actor;
             this.target = target;
             this.pai = pai;
@@ -238,23 +309,23 @@ namespace MjModelProject
 
     public class MJsonMessageReach : MjsonMessageBase
     {
-        public string type = MsgType.REACH;
         public int actor;
 
         public MJsonMessageReach(int actor)
         {
+            type = MsgType.REACH;
             this.actor = actor;
         }
     }
     public class MJsonMessageReachAccept : MjsonMessageBase
     {
-        public string type = MsgType.REACH_ACCEPTED;
         public int actor;
         public List<int> deltas;
         public List<int> scores;
 
         public MJsonMessageReachAccept(int actor,List<int> deltas,List<int> scores)
         {
+            type = MsgType.REACH_ACCEPTED;
             this.actor = actor;
             this.deltas = deltas;
             this.scores = scores;
@@ -263,7 +334,7 @@ namespace MjModelProject
 
     public class MJsonMessageHora : MjsonMessageBase
     {
-        public string type = MsgType.HORA;
+     
         public int actor;
         public int target;
         public string pai;
@@ -277,6 +348,7 @@ namespace MjModelProject
 
         public MJsonMessageHora(int actor,int target, string pai, List<string> uradora_markers, List<string> hora_tehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
         {
+            type = MsgType.HORA;
             this.actor = actor;
             this.target = target;
             this.pai = pai;
@@ -288,11 +360,21 @@ namespace MjModelProject
             this.deltas = deltas;
             this.scores = scores;
         }
-    }
+        public MJsonMessageHora(int actor, int target, string pai)
+        {
+            type = MsgType.HORA;
+            this.actor = actor;
+            this.target = target;
+            this.pai = pai;
+        }
 
-    public class MJsonMessageRyukyoku : MjsonMessageBase
+    }
+    
+
+
+        public class MJsonMessageRyukyoku : MjsonMessageBase
     {
-        public string type = MsgType.RYUKYOKU;
+        
         public string reason;
         public List<List<string>> tehais;
         public List<bool> tenpais;
@@ -301,6 +383,7 @@ namespace MjModelProject
 
         public MJsonMessageRyukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
         {
+            type = MsgType.RYUKYOKU;
             this.reason = reason;
             this.tehais = tehais;
             this.tenpais = tenpais;
@@ -310,26 +393,38 @@ namespace MjModelProject
     }
     public class MJsonMessageDora : MjsonMessageBase
     {
-        public string type = MsgType.DORA;
+        
         public string dora_marker;
         public MJsonMessageDora(string dora_marker)
         {
+            type = MsgType.DORA;
             this.dora_marker = dora_marker;
         }
     }
 
     public class MJsonMessageNone : MjsonMessageBase
     {
-        public string type = MsgType.NONE;
+        
+        public MJsonMessageNone()
+        {
+            type = MsgType.NONE;
+        }
     }
 
     public class MJsonMessageEndkyoku : MjsonMessageBase
     {
-        public string type = MsgType.END_KYOKU;
+        
+        public MJsonMessageEndkyoku()
+        {
+            type = MsgType.END_KYOKU;
+        }
     }
 
     public class MJsonMessageEndgame : MjsonMessageBase
     {
-        public string type = MsgType.END_GAME;
+        public MJsonMessageEndgame()
+        {
+            type = MsgType.END_GAME;
+        }
     }
 }
