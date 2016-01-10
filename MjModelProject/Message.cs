@@ -9,6 +9,7 @@ namespace MjModelProject
 {
     public static class MsgType
     {
+        public const string HELLO = "hello";
         public const string JOIN = "join";
         public const string START_GAME = "start_game";
         public const string START_KYOKU = "start_kyoku";
@@ -158,31 +159,44 @@ namespace MjModelProject
         public List<int> deltas;
 
     }
+
+    public class MJsonMessageHello : MjsonMessageBase
+    {
+        public string protocol;
+        public int protocol_version;
+        public MJsonMessageHello(string protocol, int protocol_version)
+        {
+            type = MsgType.HELLO;
+            this.protocol = protocol;
+            this.protocol_version = protocol_version;
+        }
+    }
+
+
     public class MJsonMessageJoin : MjsonMessageBase
     {
-        public string type = MsgType.JOIN;
         public string name;
         public string room;
         public MJsonMessageJoin(string name, string room)
         {
+            type = MsgType.JOIN;
             this.name = name;
             this.room = room;
         }
     }
     public class MJsonMessageStartGame : MjsonMessageBase
     {
-        public string type = MsgType.START_GAME;
         public int id;//プレーヤid
         public List<string> names;
         public MJsonMessageStartGame(int id, List<string> names)
         {
+            type = MsgType.START_GAME;
             this.id = id;
             this.names = names; 
         }
     }
     public class MJsonMessageStartKyoku : MjsonMessageBase
     {
-        public string type = MsgType.START_KYOKU;
         public string bakaze;
         public int kyoku;
         public int honba;
@@ -192,6 +206,7 @@ namespace MjModelProject
         public List<List<string>> tehais;
         public MJsonMessageStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string dora_marker, List<List<string>> tehais)
         {
+            type = MsgType.START_KYOKU;
             this.bakaze = bakaze;
             this.kyoku = kyoku;
             this.honba = honba;
@@ -264,14 +279,11 @@ namespace MjModelProject
     public class MJsonMessageKakan : MjsonMessageBase
     {
         public int actor;
-        public int target;
         public string pai;
         public List<string> consumed;
-        public MJsonMessageKakan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageKakan(int actor,string pai, List<string> consumed)
         {
             type = MsgType.KAKAN;
-            this.actor = actor;
-            this.target = target;
             this.pai = pai;
             this.consumed = consumed;
         }
@@ -279,14 +291,12 @@ namespace MjModelProject
     public class MJsonMessageAnkan : MjsonMessageBase
     {
         public int actor;
-        public int target;
         public string pai;
         public List<string> consumed;
-        public MJsonMessageAnkan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageAnkan(int actor, string pai, List<string> consumed)
         {
             type = MsgType.ANKAN;
             this.actor = actor;
-            this.target = target;
             this.pai = pai;
             this.consumed = consumed;
         }
@@ -340,13 +350,14 @@ namespace MjModelProject
         public string pai;
         public List<string> uradora_markers;
         public List<string> hora_tehais;
-        public Dictionary<string, int> yakus;
+        public List<List<object>> yakus;
         public int fu;
         public int fan;
+        public int hora_points;
         public List<int> deltas;
         public List<int> scores;
 
-        public MJsonMessageHora(int actor,int target, string pai, List<string> uradora_markers, List<string> hora_tehais, Dictionary<string, int> yakus, int fu, int fan, List<int> deltas, List<int> scores)
+        public MJsonMessageHora(int actor,int target, string pai, List<string> uradora_markers, List<string> hora_tehais, List<List<object>> yakus, int fu, int fan, int hora_points, List<int> deltas, List<int> scores)
         {
             type = MsgType.HORA;
             this.actor = actor;
@@ -357,6 +368,7 @@ namespace MjModelProject
             this.yakus = yakus;
             this.fu = fu;
             this.fan = fan;
+            this.hora_points = hora_points;
             this.deltas = deltas;
             this.scores = scores;
         }
