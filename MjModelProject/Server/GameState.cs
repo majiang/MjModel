@@ -152,6 +152,7 @@ namespace MjModelProject
                     //serverController.ResetRinshanFlag();
                     //serverController.ResetIppatsuFlag();
 
+                    //TODO Kakan
 
 
                     if (getMsgList.Count(e => e.IsDAHAI()) == 1 &&
@@ -175,7 +176,7 @@ namespace MjModelProject
                             getMsgList.Count(e => e.IsNONE()) == Constants.PLAYER_NUM - 1)
                     {
                         var kanObj = getMsgList.First(e => e.IsREACH());
-                        serverController.Ankan(kanObj.actor, kanObj.target, kanObj.pai, kanObj.consumed);
+                        serverController.Ankan(kanObj.actor, kanObj.pai, kanObj.consumed);
                         getMsgList.Dispose();
                         return new AfterKanState(this);
                     }

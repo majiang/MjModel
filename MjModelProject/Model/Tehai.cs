@@ -41,7 +41,7 @@ namespace MjModelProject
         }
 
 
-        public List<string> GetTehaiString()
+        public List<string> GetTehaiStringList()
         {
             //表示する前にソートする
             tehai = tehai.OrderBy(e => e.PaiNumber).ToList();
@@ -165,7 +165,7 @@ namespace MjModelProject
         }
 
 
-        public void Kakan(int actor, int target, Pai pai, List<Pai> consumed)
+        public void Kakan(int actor, Pai pai, List<Pai> consumed)
         {
             if (!IsValidKakan(pai, consumed))
             {
@@ -178,7 +178,7 @@ namespace MjModelProject
             //change pon to kakan
             foreach (var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.consumed.SequenceEqual(consumed))
+                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
                 {
                     furo.ftype = MJUtil.TartsuType.MINKANTSU;
                     furo.consumed.Add(pai);
@@ -187,9 +187,9 @@ namespace MjModelProject
                 }
             }
         }
-        public void Kakan(int actor, int target, string pai, List<string> consumed)
+        public void Kakan(int actor,  string pai, List<string> consumed)
         {
-            Kakan(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
+            Kakan(actor,new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
 
 
@@ -230,7 +230,7 @@ namespace MjModelProject
 
             foreach(var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.consumed.SequenceEqual(consumed))
+                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
                 {
                    return true;
                 }
@@ -304,7 +304,41 @@ namespace MjModelProject
             this.furopai = furopai;
             this.consumed = new List<Pai>(consumed);
             this.minPaiSyu = GetMin(furopai, consumed);
+        }
 
+        public Furo(string typeString, string pai,List<string> consumed)
+        {
+            if(MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.HEAD] == typeString)
+            {
+                ftype = MJUtil.TartsuType.HEAD;
+            }
+            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.ANKO] == typeString)
+            {
+                ftype = MJUtil.TartsuType.ANKO;
+            }
+            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.MINKO] == typeString)
+            {
+                ftype = MJUtil.TartsuType.MINKO;
+            }
+            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.ANSYUN] == typeString)
+            {
+                ftype = MJUtil.TartsuType.ANSYUN;
+            }
+            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.MINSYUN] == typeString)
+            {
+                ftype = MJUtil.TartsuType.MINSYUN;
+            }
+            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.ANKANTSU] == typeString)
+            {
+                ftype = MJUtil.TartsuType.ANKANTSU;
+            }
+            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.MINKANTSU] == typeString)
+            {
+                ftype = MJUtil.TartsuType.MINKANTSU;
+            }
+            this.furopai = new Pai(pai);
+            this.consumed = consumed.Select(e => new Pai(e)).ToList();
+            this.minPaiSyu = GetMin(this.furopai, this.consumed);
         }
 
         private int GetMin(Pai furopai, List<Pai> consumed){

@@ -10,13 +10,9 @@ namespace MjModelProject.Model
 {
         public class SplitedTehai
     {
-        public List<HoraPattern> AllHoraPatternList { get; set; }
-        public int[] SyuNum { get; set; }//フーロ牌も含めた牌枚数配列
-        public SplitedTehai()
-        {
-            AllHoraPatternList = new List<HoraPattern>();
-            SyuNum = new int[MJUtil.LENGTH_SYU_ALL];
-        }
+        public List<HoraPattern> AllHoraPatternList =  new List<HoraPattern>();
+        public int[] SyuNum =  new int[MJUtil.LENGTH_SYU_ALL];//フーロ牌も含めた牌枚数配列
+        public int RedDoraNum = 0;
     }
 
 
@@ -29,8 +25,13 @@ namespace MjModelProject.Model
 
             //手配＆和了牌の牌の合計枚数をカウント
             int[] inHandSyu = new int[MJUtil.LENGTH_SYU_ALL];
+            var redDoraCount = 0;
             foreach (var pai in tehai.tehai)
             {
+                if (pai.IsRedDora)
+                {
+                    redDoraCount++;
+                }
                 inHandSyu[pai.PaiNumber]++;
             }
             if (isRon)
@@ -42,24 +43,42 @@ namespace MjModelProject.Model
 
             //手に残っている手配のターツ構成を全て算出
             var splited = ts.SplitTehai(inHandSyu, tehai.furos, horaPai, isRon);
+            
 
-            foreach (var furopai in tehai.furos)
+
+            foreach (var furo in tehai.furos)
             {
-                switch (furopai.ftype)
+                switch (furo.ftype)
                 {
                     case MJUtil.TartsuType.MINSYUN:
-                        splited.SyuNum[furopai.minPaiSyu]++;
-                        splited.SyuNum[furopai.minPaiSyu + 1]++;
-                        splited.SyuNum[furopai.minPaiSyu + 2]++;
+                        splited.SyuNum[furo.minPaiSyu]++;
+                        splited.SyuNum[furo.minPaiSyu + 1]++;
+                        splited.SyuNum[furo.minPaiSyu + 2]++;
                         break;
                     case MJUtil.TartsuType.MINKO:
-                        splited.SyuNum[furopai.minPaiSyu] += 3;
+                        splited.SyuNum[furo.minPaiSyu] += 3;
                         break;
                     case MJUtil.TartsuType.MINKANTSU:
-                        splited.SyuNum[furopai.minPaiSyu] += 4;
+                        splited.SyuNum[furo.minPaiSyu] += 4;
                         break;
                 }
+
+                if (furo.furopai.IsRedDora)
+                {
+                    redDoraCount++;
+                }
+                foreach(var pai in furo.consumed)
+                {
+                    if (pai.IsRedDora)
+                    {
+                        redDoraCount++;
+                    }
+                }
+
             }
+
+            //赤ドラの枚数セット
+            splited.RedDoraNum = redDoraCount;
 
             return splited;
         }
@@ -98,7 +117,7 @@ namespace MjModelProject.Model
 
         public void ChangeAsRonedTartsu(int index)
         {
-            if(index < 1 && 4 < index)
+            if(index < 1 || 4 < index)
             {
                 return;
             }

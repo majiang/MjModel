@@ -20,11 +20,21 @@ namespace MjModelProject
 
         public Field()
         {
-            KyokuId = 0;
+            KyokuId = 1;//1index
             Honba = 0;
             Kyotaku = 0;
             OyaPlayerId = getOyaPlayerID(0);
-            Bakaze = getBakaze(0);
+            Bakaze = bakazeTemplate[0];
+        }
+
+        public Field(int kyokuid, int honba, int kyotaku, string bakaze)
+        {
+
+            KyokuId = kyokuid;
+            Honba = honba;
+            Kyotaku = kyotaku;
+            OyaPlayerId = getOyaPlayerID(kyokuid);
+            Bakaze = new Pai(bakaze);
         }
 
         public Field(int kyokuid, int honba, int kyotaku)
@@ -34,7 +44,7 @@ namespace MjModelProject
             Honba = honba;
             Kyotaku = kyotaku;
             OyaPlayerId = getOyaPlayerID(kyokuid);
-            Bakaze = getBakaze(kyokuid);
+            
         }
 
         private static int getOyaPlayerID(int kyokuId)
@@ -42,10 +52,7 @@ namespace MjModelProject
             return kyokuId % 4;
         }
 
-        private static Pai getBakaze(int kyokuId)
-        {
-            return bakazeTemplate[kyokuId % 4];
-        }
+
 
         public static Field ChangeOnRyukyoku(Field fld, List<bool> tenpais)
         {

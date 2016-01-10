@@ -17,7 +17,7 @@ namespace MjModelProject.Result
 
     public class YakuResult
     {
-        public Dictionary<string, int> yakus = new Dictionary<string, int>();
+        public List<List<object>> yakus = new List<List<object>>();
         public int Han = 0;
         public int Fu = 0;
         public bool IsYakuman;
@@ -30,7 +30,7 @@ namespace MjModelProject.Result
 
     public static class YakuResultCalclator
     {
-        public static YakuResult CalcSpecialYaku(InfoForResult ifr, Field field, int[] horaSyu)
+        public static YakuResult CalcSpecialYaku(InfoForResult ifr, Field field, int[] horaSyu, int redDoraNum)
         {
             YakuResult result = new YakuResult();
             result.Fu = 25;//国士無双の場合は符を考慮しなくてよいため七対子の符に設定
@@ -47,71 +47,78 @@ namespace MjModelProject.Result
 
             //七対子をあらかじめセット
             //国士無双の場合はSelectYakumanで七対子が消えるため初期段階でセットして問題ない
-            result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHITOITSU], yakuHanNum[(int)MJUtil.Yaku.CHITOITSU]);
+            result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHITOITSU], yakuHanNum[(int)MJUtil.Yaku.CHITOITSU] });
+
+
 
 
             if (ifr.IsDoubleReach)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.Yaku.DOUBLEREACH]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.Yaku.DOUBLEREACH] });
             }
             else if (ifr.IsReach)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.REACH], yakuHanNum[(int)MJUtil.Yaku.REACH]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.REACH], yakuHanNum[(int)MJUtil.Yaku.REACH] });
             }
 
             if (ifr.IsTsumo && ifr.IsMenzen)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TSUMO], yakuHanNum[(int)MJUtil.Yaku.TSUMO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TSUMO], yakuHanNum[(int)MJUtil.Yaku.TSUMO] });
             }
             if (ifr.IsIppatsu)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.IPPATSU], yakuHanNum[(int)MJUtil.Yaku.IPPATSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.IPPATSU], yakuHanNum[(int)MJUtil.Yaku.IPPATSU] });
             }
             
-            if (IsDora(ifr,horaSyu))
+            if (ifr.CalcDoraNum(horaSyu)>0)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DORA], CalcDoraNum(ifr, horaSyu));
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DORA], ifr.CalcDoraNum(horaSyu)  });
             }
+            if (redDoraNum>0)
+            {
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.REDDORA],  redDoraNum });
+            }
+
             if (IsChinnitsu(horaSyu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHINNITSU], yakuHanNum[(int)MJUtil.Yaku.CHINNITSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHINNITSU], yakuHanNum[(int)MJUtil.Yaku.CHINNITSU] });
             }
             if (IsHonnitsu(horaSyu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HONNITSU], yakuHanNum[(int)MJUtil.Yaku.HONNITSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HONNITSU], yakuHanNum[(int)MJUtil.Yaku.HONNITSU] });
             }
             if (IsTannyao(horaSyu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TANNYAO], yakuHanNum[(int)MJUtil.Yaku.TANNYAO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TANNYAO], yakuHanNum[(int)MJUtil.Yaku.TANNYAO] });
             }
             if (IsHonroto(horaSyu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HONROTO], yakuHanNum[(int)MJUtil.Yaku.HONROTO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HONROTO], yakuHanNum[(int)MJUtil.Yaku.HONROTO] });
             }
             if (ifr.IsHoutei)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HOUTEI], yakuHanNum[(int)MJUtil.Yaku.HOUTEI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HOUTEI], yakuHanNum[(int)MJUtil.Yaku.HOUTEI] });
             }
             if (ifr.IsHaitei)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HAITEI], yakuHanNum[(int)MJUtil.Yaku.HAITEI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HAITEI], yakuHanNum[(int)MJUtil.Yaku.HAITEI] });
             }
             if (ifr.IsChankan)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHANKAN], yakuHanNum[(int)MJUtil.Yaku.CHANKAN]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHANKAN], yakuHanNum[(int)MJUtil.Yaku.CHANKAN] });
             }
             if (IsTenho(ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TENHO], yakuHanNum[(int)MJUtil.Yaku.TENHO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TENHO], yakuHanNum[(int)MJUtil.Yaku.TENHO] });
             }
 
             if (IsChiho(ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHIHO], yakuHanNum[(int)MJUtil.Yaku.CHIHO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHIHO], yakuHanNum[(int)MJUtil.Yaku.CHIHO] });
             }
             if (IsTsuiso(horaSyu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TSUISO], yakuHanNum[(int)MJUtil.Yaku.TSUISO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TSUISO], yakuHanNum[(int)MJUtil.Yaku.TSUISO] });
             }
 
 
@@ -125,7 +132,7 @@ namespace MjModelProject.Result
         }
 
 
-        public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, Field field,int[] horaSyu)
+        public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, Field field,int[] horaSyu, int redDoraNum)
         {
             YakuResult result = new YakuResult();
 
@@ -141,126 +148,131 @@ namespace MjModelProject.Result
 
             if (ifr.IsDoubleReach)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.Yaku.DOUBLEREACH]);
+
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.Yaku.DOUBLEREACH] });
             }
             else if (ifr.IsReach)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.REACH], yakuHanNum[(int)MJUtil.Yaku.REACH]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.REACH], yakuHanNum[(int)MJUtil.Yaku.REACH] });
             }
 
             if (ifr.IsTsumo && ifr.IsMenzen)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TSUMO], yakuHanNum[(int)MJUtil.Yaku.TSUMO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TSUMO], yakuHanNum[(int)MJUtil.Yaku.TSUMO] });
             }
             if (ifr.IsIppatsu)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.IPPATSU], yakuHanNum[(int)MJUtil.Yaku.IPPATSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.IPPATSU], yakuHanNum[(int)MJUtil.Yaku.IPPATSU] });
             }
             if (IsPinfu(horaMentsu, ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.PINFU], yakuHanNum[(int)MJUtil.Yaku.PINFU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.PINFU], yakuHanNum[(int)MJUtil.Yaku.PINFU] });
                 result.Fu = ifr.IsTsumo ? 20 : 30;//ピンフツモは20符、ピンフロンは30符
             }
             if (IsTannyao(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TANNYAO], yakuHanNum[(int)MJUtil.Yaku.TANNYAO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TANNYAO], yakuHanNum[(int)MJUtil.Yaku.TANNYAO] });
             }
 
             //一盃口と二盃口は両立しない
             if (IsRyanpeiko(horaMentsu, ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.RYANPEIKO], yakuHanNum[(int)MJUtil.Yaku.RYANPEIKO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.RYANPEIKO], yakuHanNum[(int)MJUtil.Yaku.RYANPEIKO] });
             }
             else if (IsIipeiko(horaMentsu, ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.IIPEIKOU], yakuHanNum[(int)MJUtil.Yaku.IIPEIKOU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.IIPEIKOU], yakuHanNum[(int)MJUtil.Yaku.IIPEIKOU] });
             }
 
             if (IsYakuhai(horaMentsu, ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.YAKUHAI], CalcYakuhaiNum(horaMentsu, ifr));
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.YAKUHAI], CalcYakuhaiNum(horaMentsu, ifr)});
             }
             if (ifr.IsHoutei)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HOUTEI], yakuHanNum[(int)MJUtil.Yaku.HOUTEI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HOUTEI], yakuHanNum[(int)MJUtil.Yaku.HOUTEI] });
             }
             if (ifr.IsHaitei)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HAITEI], yakuHanNum[(int)MJUtil.Yaku.HAITEI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HAITEI], yakuHanNum[(int)MJUtil.Yaku.HAITEI] });
             }
             if (ifr.IsRinshan)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.RINSHAN], yakuHanNum[(int)MJUtil.Yaku.RINSHAN]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.RINSHAN], yakuHanNum[(int)MJUtil.Yaku.RINSHAN] });
             }
             if (ifr.IsChankan)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHANKAN], yakuHanNum[(int)MJUtil.Yaku.CHANKAN]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHANKAN], yakuHanNum[(int)MJUtil.Yaku.CHANKAN] });
             }
-            if (IsDora(horaMentsu, ifr))
+            if (ifr.CalcDoraNum(horaSyu) > 0)
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DORA], CalcDoraNum(horaMentsu, ifr));
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DORA], ifr.CalcDoraNum(horaSyu) });
+            }
+            if (redDoraNum > 0)
+            {
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.REDDORA], redDoraNum });
             }
             if (IsSansyokuDoujun(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANSYOKUDOJUN], yakuHanNum[(int)MJUtil.Yaku.SANSYOKUDOJUN]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SANSYOKUDOJUN], yakuHanNum[(int)MJUtil.Yaku.SANSYOKUDOJUN] });
             }
 
             if (IsIttsuu(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.ITTSUU], yakuHanNum[(int)MJUtil.Yaku.ITTSUU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.ITTSUU], yakuHanNum[(int)MJUtil.Yaku.ITTSUU] });
             }
 
             if (IsSananko(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANANKO], yakuHanNum[(int)MJUtil.Yaku.SANANKO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SANANKO], yakuHanNum[(int)MJUtil.Yaku.SANANKO] });
             }
 
             if (IsToitoi(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TOITOI], yakuHanNum[(int)MJUtil.Yaku.TOITOI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TOITOI], yakuHanNum[(int)MJUtil.Yaku.TOITOI] });
             }
 
             if (IsShosangen(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SHOSANGEN], yakuHanNum[(int)MJUtil.Yaku.SHOSANGEN]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SHOSANGEN], yakuHanNum[(int)MJUtil.Yaku.SHOSANGEN] });
             }
 
-            //混老頭とチャンタ系は同時に成立しないためif elseで判定する
+            //混老頭とチャンタ系は同時に成立しない
             if (IsHonroto(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HONROTO], yakuHanNum[(int)MJUtil.Yaku.HONROTO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HONROTO], yakuHanNum[(int)MJUtil.Yaku.HONROTO] });
             }
             else
             {
                 if (IsChanta(horaMentsu))
                 {
-                    result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHANTA], yakuHanNum[(int)MJUtil.Yaku.CHANTA]);
+                    result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHANTA], yakuHanNum[(int)MJUtil.Yaku.CHANTA] });
                 }
                 if (IsJunChanta(horaMentsu))
                 {
-                    result.yakus.Add(yakuString[(int)MJUtil.Yaku.JUNCHANTA], yakuHanNum[(int)MJUtil.Yaku.JUNCHANTA]);
+                    result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.JUNCHANTA], yakuHanNum[(int)MJUtil.Yaku.JUNCHANTA] });
                 }
             }
 
 
             if (IsSansyokuDoko(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANSYOKUDOKO], yakuHanNum[(int)MJUtil.Yaku.SANSYOKUDOKO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SANSYOKUDOKO], yakuHanNum[(int)MJUtil.Yaku.SANSYOKUDOKO] });
             }
 
             if (IsSankantsu(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SANKANTSU], yakuHanNum[(int)MJUtil.Yaku.SANKANTSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SANKANTSU], yakuHanNum[(int)MJUtil.Yaku.SANKANTSU] });
             }
 
             //混一色と清一色は同時に成立しないためif elseで判定する
             if (IsHonnitsu(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.HONNITSU], yakuHanNum[(int)MJUtil.Yaku.HONNITSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HONNITSU], yakuHanNum[(int)MJUtil.Yaku.HONNITSU] });
             }
             else if (IsChinnitsu(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHINNITSU], yakuHanNum[(int)MJUtil.Yaku.CHINNITSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHINNITSU], yakuHanNum[(int)MJUtil.Yaku.CHINNITSU] });
             }
 
 
@@ -268,56 +280,56 @@ namespace MjModelProject.Result
             //ここから役満
             if(IsSuuanko(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SUUANKO], yakuHanNum[(int)MJUtil.Yaku.SUUANKO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SUUANKO], yakuHanNum[(int)MJUtil.Yaku.SUUANKO] });
             }
 
             if (IsDaisangen(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DAISANGEN], yakuHanNum[(int)MJUtil.Yaku.DAISANGEN]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DAISANGEN], yakuHanNum[(int)MJUtil.Yaku.DAISANGEN] });
             }
 
             if (IsShosushi(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SHOSUSHI], yakuHanNum[(int)MJUtil.Yaku.SHOSUSHI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SHOSUSHI], yakuHanNum[(int)MJUtil.Yaku.SHOSUSHI] });
             }
 
             if (IsDaisushi(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.DAISUSHI], yakuHanNum[(int)MJUtil.Yaku.DAISUSHI]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DAISUSHI], yakuHanNum[(int)MJUtil.Yaku.DAISUSHI] });
             }
 
-            if(IsTsuiso(horaMentsu))
+            if (IsTsuiso(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TSUISO], yakuHanNum[(int)MJUtil.Yaku.TSUISO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TSUISO], yakuHanNum[(int)MJUtil.Yaku.TSUISO] });
             }
 
             if (IsRyuiso(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.RYUISO], yakuHanNum[(int)MJUtil.Yaku.RYUISO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.RYUISO], yakuHanNum[(int)MJUtil.Yaku.RYUISO] });
             }
 
             if (IsChinroto(horaMentsu)) {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHINROTO], yakuHanNum[(int)MJUtil.Yaku.CHINROTO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHINROTO], yakuHanNum[(int)MJUtil.Yaku.CHINROTO] });
             }
 
             if(IsChurenpoto(ifr,horaSyu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHURENPOTO], yakuHanNum[(int)MJUtil.Yaku.CHURENPOTO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHURENPOTO], yakuHanNum[(int)MJUtil.Yaku.CHURENPOTO] });
             }
 
             if (IsSukantsu(horaMentsu))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.SUKANTSU], yakuHanNum[(int)MJUtil.Yaku.SUKANTSU]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SUKANTSU], yakuHanNum[(int)MJUtil.Yaku.SUKANTSU] });
             }
 
             if (IsTenho(ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.TENHO], yakuHanNum[(int)MJUtil.Yaku.TENHO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TENHO], yakuHanNum[(int)MJUtil.Yaku.TENHO] });
             }
             
             if( IsChiho(ifr))
             {
-                result.yakus.Add(yakuString[(int)MJUtil.Yaku.CHIHO], yakuHanNum[(int)MJUtil.Yaku.CHIHO]);
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHIHO], yakuHanNum[(int)MJUtil.Yaku.CHIHO] });
             }
 
             if (HasYakuman(result.yakus))
@@ -327,12 +339,12 @@ namespace MjModelProject.Result
             }
 
             //飜数計算
-            result.Han = CalcHanSum(result);
+            result.Han = CalcHanSum(result.yakus);
             return result;
         }
 
 
-
+        
 
 
 
@@ -399,7 +411,7 @@ namespace MjModelProject.Result
 
             //待ちによる符加算
             //単騎待ちの場合
-            if (horaMentsu.Head.IsRonedTartsu)
+            if (horaMentsu.Head.IsRonedTartsu || horaMentsu.Head.TartsuStartPaiSyu == ifpc.GetLastAddedSyu())
             {
                 fuSum += 2;
             }
@@ -578,95 +590,96 @@ namespace MjModelProject.Result
         }
 
 
-        private static bool IsDora(HoraPattern hp, InfoForResult ifr)
-        {
-            foreach (var tartsu in hp.TartsuList)
-            {
-                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
-                {
-                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
-                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
-                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        //private static bool IsDora(HoraPattern hp, InfoForResult ifr)
+        //{
+            
+        //    foreach (var tartsu in hp.TartsuList)
+        //    {
+        //        if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+        //        {
+        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
+        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
+        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //    }
+        //    return false;
+        //}
 
-        private static bool IsDora(InfoForResult ifr, int[] horaSyu)
-        {
-            return ifr.CalcDoraNum(horaSyu) > 0;
-        }
+        //private static bool IsDora(InfoForResult ifr, int[] horaSyu)
+        //{
+        //    return ifr.CalcDoraNum(horaSyu) > 0;
+        //}
 
 
-        private static int CalcDoraNum(HoraPattern hp, InfoForResult ifr)
-        {
-            //赤ドラはカウントしない
-            var doraNum = 0;
-            foreach (var tartsu in hp.TartsuList)
-            {
-                if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
-                {
-                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
-                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
-                         ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
-                    {
-                        doraNum++;
-                    }
-                }
-                else if (tartsu.TartsuType == MJUtil.TartsuType.ANKO || tartsu.TartsuType == MJUtil.TartsuType.MINKO)
-                {
-                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-                    {
-                        doraNum += 3;
-                    }
-                }
-                else if (tartsu.TartsuType == MJUtil.TartsuType.HEAD)
-                {
-                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-                    {
-                        doraNum += 2;
-                    }
-                }
-                else if (tartsu.TartsuType == MJUtil.TartsuType.ANKANTSU || tartsu.TartsuType == MJUtil.TartsuType.MINKANTSU)
-                {
-                    if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-                    {
-                        doraNum += 4;
-                    }
-                }
-            }
-            return doraNum;
-        }
+        //private static int CalcDoraNum(HoraPattern hp, InfoForResult ifr)
+        //{
+        //    //赤ドラはカウントしない
+        //    var doraNum = 0;
+        //    foreach (var tartsu in hp.TartsuList)
+        //    {
+        //        if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
+        //        {
+        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
+        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
+        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
+        //            {
+        //                doraNum++;
+        //            }
+        //        }
+        //        else if (tartsu.TartsuType == MJUtil.TartsuType.ANKO || tartsu.TartsuType == MJUtil.TartsuType.MINKO)
+        //        {
+        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+        //            {
+        //                doraNum += 3;
+        //            }
+        //        }
+        //        else if (tartsu.TartsuType == MJUtil.TartsuType.HEAD)
+        //        {
+        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+        //            {
+        //                doraNum += 2;
+        //            }
+        //        }
+        //        else if (tartsu.TartsuType == MJUtil.TartsuType.ANKANTSU || tartsu.TartsuType == MJUtil.TartsuType.MINKANTSU)
+        //        {
+        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
+        //            {
+        //                doraNum += 4;
+        //            }
+        //        }
+        //    }
+        //    return doraNum;
+        //}
 
-        private static int CalcDoraNum(InfoForResult ifr, int[] horaSyu)
-        {
-            var doraNum = 0;
+        //private static int CalcDoraNum(InfoForResult ifr, int[] horaSyu)
+        //{
+        //    var doraNum = 0;
 
             
-            foreach(var syu in horaSyu.Select( (val,index) => new { val,index } ))
-            {
-                if(syu.val == 0)
-                {
-                    continue;
-                }
+        //    foreach(var syu in horaSyu.Select( (val,index) => new { val,index } ))
+        //    {
+        //        if(syu.val == 0)
+        //        {
+        //            continue;
+        //        }
 
-                if (ifr.IsDora(syu.index))
-                {
-                    doraNum += syu.val;
-                }
-            }
-            return doraNum;
-        }
+        //        if (ifr.IsDora(syu.index))
+        //        {
+        //            doraNum += syu.val;
+        //        }
+        //    }
+        //    return doraNum;
+        //}
 
 
 
@@ -806,7 +819,7 @@ namespace MjModelProject.Result
                 }
                 else
                 {
-                    if (MJUtil.IsRotoPai(tartsu.TartsuStartPaiSyu))
+                    if (MJUtil.IsYaochuPai(tartsu.TartsuStartPaiSyu))
                     {
                         continue;
                     }
@@ -829,7 +842,7 @@ namespace MjModelProject.Result
                 }
                 else
                 {
-                    if (MJUtil.IsYaochuPai(tartsu.TartsuStartPaiSyu))
+                    if (MJUtil.IsRotoPai(tartsu.TartsuStartPaiSyu))
                     {
                         continue;
                     }
@@ -902,6 +915,7 @@ namespace MjModelProject.Result
             return isOneColor && hasJi;
         }
 
+        //チートイ用
         private static bool IsHonnitsu(int[] horaSyu)
         {
             var hasManzu = false;
@@ -1105,22 +1119,24 @@ namespace MjModelProject.Result
         }
 
 
-        private static bool HasYakuman(Dictionary<string, int> yakus)
+        private static bool HasYakuman(List<List<object>> yakus)
         {
-            return yakus.Where(e => e.Key != MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DORA] && e.Value == 13).Count() > 0;
+            return yakus.Where(e => e.Count > 1)
+                .Where( e => ((string)e[0]) != (MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DORA]) && (int)(e[1]) == 13).Count() > 0;
         }
 
-        private static Dictionary<string, int> SelectYakuman(Dictionary<string, int> yakus)
+        private static List<List<object>> SelectYakuman(List<List<object>> yakus)
         {
-            return yakus.Where(e => e.Key != MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DORA] && e.Value == 13).ToDictionary(e => e.Key, e => e.Value);
+            return yakus.Where(e => e.Count > 1)
+                .Where( e => (string)e[0] != MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DORA] && (int)e[1] == 13).ToList();
         }
 
-        private static int CalcHanSum(YakuResult result)
+        private static int CalcHanSum(List<List<object>> yakus)
         {
             var hanSum = 0;
-            foreach( var yaku in result.yakus)
+            foreach( var yaku in yakus)
             {
-                hanSum += yaku.Value;
+                hanSum += (int)yaku[1];
             }
             return hanSum;
         }

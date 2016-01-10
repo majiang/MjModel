@@ -26,14 +26,14 @@ namespace MjModelProject.Result
             //面子手和了型が0の場合はチートイツか国士無双
             if (splited.AllHoraPatternList.Count == 0)
             {
-                yakuResultList.Add(YakuResultCalclator.CalcSpecialYaku(ifr, field, splited.SyuNum));
+                yakuResultList.Add(YakuResultCalclator.CalcSpecialYaku(ifr, field, splited.SyuNum, splited.RedDoraNum));
             }
             else
             {
                 //面子手の役を計算
                 foreach (var pattern in splited.AllHoraPatternList)
                 {
-                    yakuResultList.Add(YakuResultCalclator.CalcNormalYaku(pattern, ifr, field, splited.SyuNum));
+                    yakuResultList.Add(YakuResultCalclator.CalcNormalYaku(pattern, ifr, field, splited.SyuNum, splited.RedDoraNum));
                 }
             }
             

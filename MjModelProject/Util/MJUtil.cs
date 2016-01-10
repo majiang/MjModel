@@ -67,6 +67,7 @@ public class MJUtil {
         NAGASHIMANGAN,
         CHINNITSU,
         DORA,
+        REDDORA,
         
         SUUANKO,
         KOKUSHIMUSO,
@@ -99,6 +100,18 @@ public class MJUtil {
         ANKANTSU,
         MINKANTSU
     };
+    public static readonly string[] TARTSU_TYPE_STRING =
+    {
+        "head",
+        "ansyun",
+        "minsyun",
+        "anko",
+        "minko",
+        "ankantsu",
+        "minkantsu"
+    };
+
+
 	
 	public static readonly String[] YAKU_STRING = {
 		"立直", 
@@ -129,6 +142,7 @@ public class MJUtil {
 		"流し満貫", 
 		"清一色", 
 		"ドラ", 
+        "赤ドラ",
 		
 		//YAKUMAN
 		"四暗刻", 

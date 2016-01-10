@@ -90,16 +90,16 @@ namespace MjModelProject
 
         }
 
-        public void Kakan(int actor, int target, string pai, List<string> consumed)
+        public void Kakan(int actor, string pai, List<string> consumed)
         {
-            var msg = serverMjModel.Kakan(actor, target, pai, consumed);
+            var msg = serverMjModel.Kakan(actor, pai, consumed);
             SendKakan(msg);
 
         }
 
-        public void Ankan(int actor, int target, string pai, List<string> consumed)
+        public void Ankan(int actor,string pai, List<string> consumed)
         {
-            var msg = serverMjModel.Ankan(actor, target, pai, consumed);
+            var msg = serverMjModel.Ankan(actor, pai, consumed);
             SendAnkan(msg);
         }
 

@@ -61,10 +61,10 @@ namespace MjModelProject
                         field.OyaPlayerId,
                         yama.doraMarkers[0].PaiString,
                         new List<List<string>> { 
-                            tehais[0].GetTehaiString(),
-                            tehais[1].GetTehaiString(),
-                            tehais[2].GetTehaiString(),
-                            tehais[3].GetTehaiString()
+                            tehais[0].GetTehaiStringList(),
+                            tehais[1].GetTehaiStringList(),
+                            tehais[2].GetTehaiStringList(),
+                            tehais[3].GetTehaiStringList()
                         }
                     );
         }
@@ -132,18 +132,18 @@ namespace MjModelProject
             return new MJsonMessageChi(actor, target, pai, consumed);
         }
 
-        public MJsonMessageKakan Kakan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageKakan Kakan(int actor, string pai, List<string> consumed)
         {
-            tehais[actor].Kakan( actor, target, pai, consumed);
+            tehais[actor].Kakan( actor, pai, consumed);
             SetCurrentActor(actor);
-            return new MJsonMessageKakan(actor, target, pai, consumed);
+            return new MJsonMessageKakan(actor, pai, consumed);
         }
 
-        public MJsonMessageAnkan Ankan(int actor, int target, string pai, List<string> consumed)
+        public MJsonMessageAnkan Ankan(int actor, string pai, List<string> consumed)
         {
             tehais[actor].Ankan(actor, consumed);
             SetCurrentActor(actor);
-            return new MJsonMessageAnkan(actor, target, pai, consumed);
+            return new MJsonMessageAnkan(actor, pai, consumed);
         }
 
         public MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
@@ -201,8 +201,8 @@ namespace MjModelProject
             //TODO  delta と pointResult
 
 
-            return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiString(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
-                horaResult.yakuResult.Han, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 });
+            return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
+                horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 });
         }
 
         public void None()
@@ -213,10 +213,10 @@ namespace MjModelProject
         public MJsonMessageRyukyoku Ryukyoku()
         {
             var tehaisString = new List<List<string>>() {
-                    tehais[0].GetTehaiString(),
-                    tehais[1].GetTehaiString(),
-                    tehais[2].GetTehaiString(),
-                    tehais[3].GetTehaiString()
+                    tehais[0].GetTehaiStringList(),
+                    tehais[1].GetTehaiStringList(),
+                    tehais[2].GetTehaiStringList(),
+                    tehais[3].GetTehaiStringList()
                 };
             var tenpais = new List<bool>() { tehais[0].IsTenpai(), tehais[1].IsTenpai(), tehais[2].IsTenpai(), tehais[3].IsTenpai() };
             var deltas = CalcRyukyokuDeltaPoint(tenpais);
