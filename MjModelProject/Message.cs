@@ -124,41 +124,7 @@ namespace MjModelProject
         }
     }
 
-    public class MjsonMessageAll : MjsonMessageBase 
-    {
-
-        public string name;
-        public string room;
-        public int id;
-        public List<string> names;
-        public string bakaze;
-        public int kyoku;
-        public int honba;
-        public int kyotaku;
-        public int oya; 
-        public string dora_marker;
-
-        public int actor;
-        public bool tsumogiri;
-        public int target;
-        public string pai;
-        public List<string> consumed;
-         
-
-        public List<int> details;//点数移動
-        public List<int> scores;//点数移動結果
-        public List<string> uradora_markers;
-        public List<string> hora_tehais;
-        public Dictionary<string, int> yakus;
-        public List<bool> tenpais;
-        public int fu;
-        public int fan;
-        public int hora_points;
-        public string reason;
-        public List<List<string>> tehais;
-        public List<int> deltas;
-
-    }
+  
 
     public class MJsonMessageHello : MjsonMessageBase
     {
@@ -438,5 +404,43 @@ namespace MjModelProject
         {
             type = MsgType.END_GAME;
         }
+    }
+
+
+    //サーバー側での受信メッセージパース用
+    public class MjsonMessageAll : MjsonMessageBase
+    {
+        
+        public string name;
+        public string room;
+        public int id;
+        public List<string> names;
+        public string bakaze;
+        public int kyoku;
+        public int honba;
+        public int kyotaku;
+        public int oya;
+        public string dora_marker;
+
+        public int actor;
+        public bool tsumogiri;
+        public int target;
+        public string pai;
+        public List<string> consumed;
+
+
+        public List<int> details;//点数移動
+        public List<int> scores;//点数移動結果
+        public List<string> uradora_markers;
+        public List<string> hora_tehais;
+        public Dictionary<string, int> yakus;
+        public List<bool> tenpais;
+        public int fu;
+        public int fan;
+        public int hora_points;
+        public string reason;
+        public List<List<string>> tehais;
+        public List<int> deltas;
+
     }
 }
