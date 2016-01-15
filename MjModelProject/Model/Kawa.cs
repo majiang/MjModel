@@ -9,6 +9,8 @@ namespace MjModelProject
     public class Kawa
     {
         public List<KawaPai> discards;
+        public List<bool> isReachCalledPosition;
+
 
         public Kawa()
         {
@@ -18,11 +20,32 @@ namespace MjModelProject
         public void Init()
         {
             discards = new List<KawaPai>();
+            isReachCalledPosition = new List<bool>();
         }
 
-        public void Sutehai(Pai pai , bool isFuroTargeted, bool isReached){
-            discards.Add(new KawaPai(pai, isFuroTargeted, isReached));
+        public void Sutehai(Pai pai , bool isReached){
+            discards.Add(new KawaPai(pai));
+            isReachCalledPosition.Add(isReached);
         }
+
+        public void Sutehai(string pai, bool isReached)
+        {
+            discards.Add(new KawaPai(pai));
+            isReachCalledPosition.Add(isReached);
+        }
+
+        public void Sutehai(Pai pai)
+        {
+            discards.Add(new KawaPai(pai));
+            isReachCalledPosition.Add(false);
+        }
+
+        public void Sutehai(string pai)
+        {
+            discards.Add(new KawaPai(pai));
+            isReachCalledPosition.Add(false);
+        }
+
 
         public bool hasPai(string pai)
         {
@@ -34,12 +57,15 @@ namespace MjModelProject
     public class KawaPai : Pai
     {
         public bool isFuroTargeted;
-        public bool isReached;
-
-        public KawaPai(Pai pai, bool isFuroTargeted, bool isReached) : base(pai.PaiString)
+        
+        public KawaPai(Pai pai) : base(pai.PaiString)
         {
-            this.isFuroTargeted = isFuroTargeted;
-            this.isReached = isReached;
+            
+        }
+
+        public KawaPai(string pai) : base(pai)
+        {
+
         }
     }
 }

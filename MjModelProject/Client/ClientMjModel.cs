@@ -67,7 +67,7 @@ namespace MjModelProject
             {
                 tehais[actor].Da(pai);
             }
-            kawas[actor].Sutehai(new Pai(pai),false,tsumogiri);
+            kawas[actor].Sutehai(pai);
         }
 
         public void Pon(int actor, int target, string pai, List<string> consumed)

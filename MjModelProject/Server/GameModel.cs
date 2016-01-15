@@ -111,7 +111,7 @@ namespace MjModelProject
         {
             var dapai = new Pai(pai);
             tehais[actor].Da(dapai);
-            kawas[actor].Sutehai(dapai, false, false);
+            kawas[actor].Sutehai(dapai);
             GoNextActor();
             return new MJsonMessageDahai(actor, pai, tsumogiri);
         }
