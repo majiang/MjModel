@@ -433,7 +433,7 @@ namespace MjModelProject
         public List<int> scores;//点数移動結果
         public List<string> uradora_markers;
         public List<string> hora_tehais;
-        public Dictionary<string, int> yakus;
+        public List<List<object>> yakus;
         public List<bool> tenpais;
         public int fu;
         public int fan;
