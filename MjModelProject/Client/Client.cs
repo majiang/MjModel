@@ -98,6 +98,8 @@ namespace MjModelProject
             }
          
             clientController.Dahai(actor, pai, tsumogiri);
+
+            //ターチャの打牌をうけてからの行動
             //thinkNaki();
             
             /*
@@ -213,7 +215,7 @@ namespace MjModelProject
             clientRouter.SendNone();
         }
 
-        internal void OnHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, Dictionary<string, int> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
+        internal void OnHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, List<List<object>> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
         {
             clientRouter.SendNone();
         }

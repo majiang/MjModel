@@ -121,10 +121,7 @@ namespace MjModelProjectTests
                     }
                     Assert.AreEqual(myPointResult ,expected);
 
-
                     
-
-                   
                 }
             }
         }

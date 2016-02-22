@@ -80,7 +80,6 @@
     <Compile Include="Model\Field.cs" />
     <Compile Include="Result\SplitedTehaiCalclator.cs" />
     <Compile Include="Util\MJUtil.cs" />
-    <Compile Include="MyException.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Model\Pai.cs" />
     <Compile Include="Util\PaiConverter.cs" />
