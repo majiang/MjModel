@@ -167,7 +167,7 @@ namespace MjModelProject
 
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
-            // validate Hora
+            //ToDo validate Hora
 
 
             //actorとtargetが異なる場合はロン和了であり手配にはロン牌が含まれていないためツモ和了とは別の求め方をする
