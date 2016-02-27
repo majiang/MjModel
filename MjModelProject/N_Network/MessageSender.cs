@@ -65,7 +65,7 @@ namespace MjModelProject.N_Network
                 string line = await reader.ReadLineAsync() + '\n';
                 Console.WriteLine("Get Message:" + line);
                 Thread.Sleep(10);
-                serverRouter.RouteGetMessage(client, line);
+                //serverRouter.RouteGetMessage(client, line);
             }
 
         }
