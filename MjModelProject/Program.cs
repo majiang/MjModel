@@ -12,5 +12,11 @@ namespace MjModelProject
         {
 
         }
+
+
+        static void StartServer()
+        {
+
+        }
     }
 }
