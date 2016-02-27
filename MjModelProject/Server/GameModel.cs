@@ -20,6 +20,7 @@ namespace MjModelProject
         public List<InfoForResult> infoForResult { get; set; }
 
         public List<int> points { get; set; }
+        public string LastMadeMessage { get; private set; } = String.Empty;
 
         public GameModel()
         {

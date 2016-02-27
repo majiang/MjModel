@@ -66,6 +66,9 @@
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\ClientController.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="N_Controller\N_Controller.cs" />
+    <Compile Include="N_Network\MessageSender.cs" />
+    <Compile Include="N_View\MessageObjectBuffer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -115,6 +118,10 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="N_Model\" />
+    <Folder Include="N_Router\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
