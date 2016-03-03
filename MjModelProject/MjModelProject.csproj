@@ -48,11 +48,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8\Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Data, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45\Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -61,47 +70,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI\AIBase.cs" />
-    <Compile Include="AI\MinShantenAI.cs" />
-    <Compile Include="Client\Client.cs" />
-    <Compile Include="Client\ClientController.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="N_Controller\N_Controller.cs" />
-    <Compile Include="N_Network\MessageSender.cs" />
-    <Compile Include="N_View\MessageObjectBuffer.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="N_Client\N_Client.cs" />
+    <Compile Include="N_Client\N_IO\ClientMessageSender.cs" />
+    <Compile Include="Old\AI\AIBase.cs" />
+    <Compile Include="Old\AI\MinShantenAI.cs" />
+    <Compile Include="Old\Client\Client.cs" />
+    <Compile Include="Old\Client\ClientController.cs" />
+    <Compile Include="Old\Constants.cs" />
+    <Compile Include="N_Server\N_Room\N_RoomController.cs" />
+    <Compile Include="N_Server\N_IO\MessageSender.cs" />
+    <Compile Include="N_Server\N_Room\N_View\MessageObjectBuffer.cs" />
+    <Compile Include="N_Server\N_Room\N_Room.cs" />
+    <Compile Include="Old\Program.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Result\InfoForResult.cs" />
-    <Compile Include="Result\ResultCalclator.cs" />
-    <Compile Include="Result\PointResultCalclator.cs" />
-    <Compile Include="Util\NakiAnalizer.cs" />
-    <Compile Include="Util\DebugUtil.cs" />
-    <Compile Include="Model\Field.cs" />
-    <Compile Include="Result\SplitedTehaiCalclator.cs" />
-    <Compile Include="Util\MJUtil.cs" />
-    <Compile Include="Packet.cs" />
-    <Compile Include="Model\Pai.cs" />
-    <Compile Include="Util\PaiConverter.cs" />
-    <Compile Include="Result\ShantenCalclator.cs" />
-    <Compile Include="Result\YakuResultCalclator.cs" />
-    <Compile Include="Model\Kawa.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="Client\ClientMjModel.cs" />
-    <Compile Include="Server\GameContext.cs" />
-    <Compile Include="Server\GameController.cs" />
+    <Compile Include="Old\Result\InfoForResult.cs" />
+    <Compile Include="Old\Result\ResultCalclator.cs" />
+    <Compile Include="Old\Result\PointResultCalclator.cs" />
+    <Compile Include="Old\Util\NakiAnalizer.cs" />
+    <Compile Include="Old\Util\DebugUtil.cs" />
+    <Compile Include="Old\Model\Field.cs" />
+    <Compile Include="Old\Result\SplitedTehaiCalclator.cs" />
+    <Compile Include="Old\Util\MJUtil.cs" />
+    <Compile Include="Old\Packet.cs" />
+    <Compile Include="Old\Model\Pai.cs" />
+    <Compile Include="Old\Util\PaiConverter.cs" />
+    <Compile Include="Old\Result\ShantenCalclator.cs" />
+    <Compile Include="Old\Result\YakuResultCalclator.cs" />
+    <Compile Include="Old\Model\Kawa.cs" />
+    <Compile Include="Old\Message.cs" />
+    <Compile Include="Old\Client\ClientMjModel.cs" />
+    <Compile Include="Old\Server\GameContext.cs" />
+    <Compile Include="Old\Server\GameController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Client\ClientRouter.cs" />
-    <Compile Include="Server\GameModel.cs" />
-    <Compile Include="Server\ServerRouter.cs" />
-    <Compile Include="Server\GameState.cs" />
-    <Compile Include="Model\Tehai.cs" />
-    <Compile Include="Model\Yama.cs" />
+    <Compile Include="Old\Client\ClientRouter.cs" />
+    <Compile Include="Old\Server\GameModel.cs" />
+    <Compile Include="Old\Server\ServerRouter.cs" />
+    <Compile Include="Old\Server\GameState.cs" />
+    <Compile Include="Old\Model\Tehai.cs" />
+    <Compile Include="Old\Model\Yama.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -120,8 +133,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="N_Model\" />
-    <Folder Include="N_Router\" />
+    <Folder Include="N_Client\N_Logger\" />
+    <Folder Include="N_Client\N_MessageValidator\" />
+    <Folder Include="N_Client\N_View\" />
+    <Folder Include="N_CommonMjModel\" />
+    <Folder Include="N_Constants\" />
+    <Folder Include="N_NetworkProtocol\" />
+    <Folder Include="N_Server\N_IO\N_NetworkProtocol\" />
+    <Folder Include="N_Server\N_Logger\" />
+    <Folder Include="N_Server\N_Room\N_MessageValidater\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

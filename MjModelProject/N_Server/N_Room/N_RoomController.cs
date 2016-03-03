@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjModelProject.N_Controller
+namespace MjModelProject.N_Room
 {
-    class N_Controller
+    class N_RoomController
     {
-        public N_Controller()
+        public N_RoomController()
         {
             StartMessageThread();
         }

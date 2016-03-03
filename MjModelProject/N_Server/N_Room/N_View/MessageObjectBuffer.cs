@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjModelProject.N_View
+namespace MjModelProject.N_Room
 {
     class MessageObjectBuffer
     {
