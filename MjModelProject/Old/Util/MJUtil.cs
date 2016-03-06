@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjModelProject.Util
+namespace MjServer.Util
 {
 public class MJUtil {
 	public static readonly int ANSYUN = 1;

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjModelProject;
+using MjServer;
 using System.Diagnostics;
 using System.Collections.Generic;
 

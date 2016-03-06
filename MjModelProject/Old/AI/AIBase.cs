@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjModelProject.AI
+namespace MjServer.AI
 {
     abstract class AIBase
     {

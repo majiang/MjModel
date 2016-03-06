@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-namespace MjModelProject
+namespace MjServer
 {
     class Program
     {
@@ -19,7 +19,7 @@ namespace MjModelProject
 
 
         public static Dictionary<TcpClient, int> clientDict = new Dictionary<TcpClient, int>();
-        public static MjModelProject.ServerRouter serverRouter = new ServerRouter();
+        public static MjServer.ServerRouter serverRouter = new ServerRouter();
         
         static void StartServer()
         {

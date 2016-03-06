@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 
 
-namespace MjModelProject
+namespace MjServer
 {
     public class GameController
     {

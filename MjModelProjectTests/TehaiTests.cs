@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjModelProject;
-using MjModelProject.Util;
+using MjServer;
+using MjServer.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjModelProject.Tests
+namespace MjServer.Tests
 {
     [TestClass()]
     public class TehaiTests

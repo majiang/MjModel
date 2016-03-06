@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MjModelProject.Util;
-using MjModelProject;
-using MjModelProject.Model;
+using MjServer.Util;
+using MjServer;
+using MjServer.Model;
 
-namespace MjModelProject.Result
+namespace MjServer.Result
 {
     public class HoraResult
     {

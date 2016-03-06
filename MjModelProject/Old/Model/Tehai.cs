@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MjModelProject.Util;
-using MjModelProject.Result;
+using MjServer.Util;
+using MjServer.Result;
 
-namespace MjModelProject
+namespace MjServer
 {
     public class Tehai
     {
