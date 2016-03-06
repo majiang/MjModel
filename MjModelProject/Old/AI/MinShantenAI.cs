@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MjModelProject.Result;
-using MjModelProject.Util;
+using MjServer.Result;
+using MjServer.Util;
 
-namespace MjModelProject.AI
+namespace MjServer.AI
 {
     class MinShantenAI : AIBase
     {

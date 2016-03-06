@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjModelProject;
+using MjServer;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Sockets;

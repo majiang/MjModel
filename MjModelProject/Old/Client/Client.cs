@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MjModelProject.AI;
+using MjServer.AI;
 
-namespace MjModelProject
+namespace MjServer
 {
     public class Client
     {

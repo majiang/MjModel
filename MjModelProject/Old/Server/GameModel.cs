@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using MjModelProject.Result;
+using MjServer.Result;
 
-namespace MjModelProject
+namespace MjServer
 {
     public class GameModel
     {

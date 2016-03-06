@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 
-namespace MjModelProject
+namespace MjServer
 {
     //client側ね
     public class ClientRouter

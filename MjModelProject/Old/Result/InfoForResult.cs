@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MjModelProject.Util;
+using MjServer.Util;
 
-namespace MjModelProject.Result
+namespace MjServer.Result
 {
 
     public class InfoForResult

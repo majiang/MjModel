@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjModelProject;
+using MjServer;
 using System.Collections.Generic;
-using MjModelProject.Model;
-using MjModelProject.Result;
-using MjModelProject.Util;
+using MjServer.Model;
+using MjServer.Result;
+using MjServer.Util;
 using System.Diagnostics;
 using System.Linq;
 using System.IO;
