@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using MjClient.Client.Logger;
 
 namespace MjClient.IO
 {
@@ -13,9 +14,14 @@ namespace MjClient.IO
     { 
         MessageSender messageSender;
         MessageReciever messageReciever;
-
-
+        
+        
         private ClientIO ()
+        {
+
+        }
+
+        private void MakeSocket()
         {
 
         }
@@ -24,6 +30,7 @@ namespace MjClient.IO
         {
 
         }
+
         public void RecieveMessage()
         {
 

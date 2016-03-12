@@ -6,7 +6,7 @@ using MjNetworkProtocol;
 
 namespace MjClient
 {
-    public class Client
+    public class ClientPlayer
     {
         ClientRouter clientRouter;
         ClientMjModel clientMjModel;
@@ -21,7 +21,7 @@ namespace MjClient
         public bool IsEndGame;
 
 
-        public Client(ClientRouter cr)
+        public ClientPlayer(ClientRouter cr)
         {
             clientRouter = cr;
             clientMjModel = new ClientMjModel();

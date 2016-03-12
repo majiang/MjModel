@@ -49,11 +49,12 @@
   <ItemGroup>
     <Compile Include="Client\AI\AIBase.cs" />
     <Compile Include="Client\AI\MinShantenAI.cs" />
-    <Compile Include="Client\Client.cs" />
+    <Compile Include="Client\ClientPlayer.cs" />
     <Compile Include="Client\ClientController.cs" />
     <Compile Include="Client\ClientMjModel.cs" />
     <Compile Include="Client\ClientRouter.cs" />
     <Compile Include="Client\IO\ClientIO.cs" />
+    <Compile Include="Client\Logger\Clientlogger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -62,7 +63,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Client\Logger\" />
     <Folder Include="Client\MessageValidator\" />
     <Folder Include="Client\ResponceBuilder\" />
   </ItemGroup>
@@ -75,6 +75,9 @@
       <Project>{1e51814c-227e-4c73-90e0-38c9310ca03a}</Project>
       <Name>MjNetworkProtocolLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
