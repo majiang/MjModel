@@ -171,14 +171,14 @@ namespace MjClient
 
 
 
-        public MJsonMessageChi GetChiMessage()
-        {
-            return tehais[myPositionId].GetChiMessage();
-        }
-        public MJsonMessagePon GetPonMessage()
-        {
-            return tehais[myPositionId].GetPonMessage();
-        }
+        //public MJsonMessageChi GetChiMessage()
+        //{
+        //    return tehais[myPositionId].GetChiMessage();
+        //}
+        //public MJsonMessagePon GetPonMessage()
+        //{
+        //    return tehais[myPositionId].GetPonMessage();
+        //}
 
         public void SetReach(int actor)
         {
