@@ -6,95 +6,75 @@ using System.Net.Sockets;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using MjClient.Client.Logger;
+using MjClient.Logger;
 
 namespace MjClient.IO
 {
+    /// <summary>
+    /// Handles Game Message by Tcp Connection.
+    /// </summary>
     class ClientIO : System.Exception
-    { 
-        MessageSender messageSender;
-        MessageReciever messageReciever;
-        
-        
-        private ClientIO ()
-        {
-
-        }
-
-        private void MakeSocket()
-        {
-
-        }
-
-        public void SendMessage()
-        {
-
-        }
-
-        public void RecieveMessage()
-        {
-
-        }
-    }
-
-
-
-    class MessageSender : System.Exception
     {
-
-    }
-
-    class MessageReciever : System.Exception
-    {
-        public delegate bool GetMessageHandler();
-
         public event GetMessageHandler OnGetMessage;
 
-        static void StartServer()
+        public delegate void GetMessageHandler(string message);
+
+        string lineBreakMark = "\r\n";
+
+
+        string ipAddress = "127.0.0.1";
+        int port = 11452;
+        TcpClient tcpClient;
+
+        public ClientIO ()
         {
-            Console.WriteLine("START");
-
-
-            System.Net.IPAddress ipAdd = IPAddress.Loopback;//LAN
-            //System.Net.IPAddress ipAdd = IPAddress.Any;//WAN
-
-            int port = 11452;
-            TcpListener server = new TcpListener(ipAdd, port);
-
-            server.Start();
-            Console.WriteLine("Start Listen({0}:{1})",
-                ((System.Net.IPEndPoint)server.LocalEndpoint).Address,
-                ((System.Net.IPEndPoint)server.LocalEndpoint).Port);
-
-            List<TcpClient> clientList = new List<TcpClient>();
-
-            while (true)
-            {
-                TcpClient client = server.AcceptTcpClient();
-                clientList.Add(client);
-                Task.Run(() => GameStream(client));
-            }
-
+            MakeConnection();
         }
 
-        static async Task GameStream(TcpClient client)
+        private void MakeConnection()
         {
-            Console.WriteLine("Connect to Client ({0}:{1})",
-                ((IPEndPoint)client.Client.RemoteEndPoint).Address,
-
-                ((IPEndPoint)client.Client.RemoteEndPoint).Port);
-
-            NetworkStream stream = client.GetStream();
-            StreamReader reader = new StreamReader(stream);
-
-            while (client.Connected)
-            {
-                string line = await reader.ReadLineAsync() + '\n';
-                Console.WriteLine("Get Message:" + line);
-                Thread.Sleep(10);
-                //serverRouter.RouteGetMessage(client, line);
-            }
-
+            tcpClient = new TcpClient(ipAddress, port);
+            RecieveMessage();
         }
+        
+        private async void RecieveMessage()
+        {
+            StreamReader reader = new StreamReader(tcpClient.GetStream());
+            string line = String.Empty;
+
+            while (tcpClient.Connected)
+            {
+                line += await reader.ReadLineAsync();
+                if (String.IsNullOrEmpty(line))
+                {
+                    break;
+                }
+                else if (line.EndsWith(lineBreakMark) == false)
+                {
+                    continue;
+                }
+
+                //delegate event
+                OnGetMessage(line);
+            } 
+        }
+
+        public void SendMessage(string message)
+        {
+            if (message == String.Empty)
+            {
+                return;
+            }
+            
+            if (tcpClient.Connected)
+            {
+                message += lineBreakMark;
+                Encoding enc = Encoding.UTF8;
+                byte[] sendBytes = enc.GetBytes(message);
+                //データを送信する
+                tcpClient.GetStream().Write(sendBytes, 0, sendBytes.Length);
+            }
+        }
+
     }
 }
