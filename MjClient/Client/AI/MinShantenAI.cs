@@ -4,7 +4,7 @@ using System.Linq;
 using MjNetworkProtocol;
 using MjModelLibrary;
 
-namespace MjClient
+namespace MjClient.AI
 {
     class MinShantenAI : AIBase
     {

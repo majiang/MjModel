@@ -4,31 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjClient.Client.Logger
+namespace MjClient.Logger
 {
-    class ClientLogger
+    public class ClientLogger
     {
-        static ClientLogger singletonClientLogger;
+        private static ClientLogger singletonClientLogger = new ClientLogger();
 
-        private ClientLogger(){}
 
         public static ClientLogger GetInstance()
         {
-            if(singletonClientLogger == null)
-            {
-                singletonClientLogger = new ClientLogger();
-            }
-
             return singletonClientLogger;
         }
 
+        private ClientLogger() { }
 
         /// <summary>
         /// log for client as follows
         /// clientLog:<message>
         /// </summary>
         /// <param name="message">log message</param>
-        public static void Log(string message)
+        public void Log(string message)
         {
             Console.WriteLine("clientLog:{0}",message);
         }

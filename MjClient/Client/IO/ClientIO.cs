@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net;
+using Newtonsoft.Json;
 using System.Net.Sockets;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using MjClient.Logger;
+using MjNetworkProtocol;
 
 namespace MjClient.IO
 {
@@ -31,7 +30,7 @@ namespace MjClient.IO
             MakeConnection();
         }
 
-        private void MakeConnection()
+        public void MakeConnection()
         {
             tcpClient = new TcpClient(ipAddress, port);
             RecieveMessage();
@@ -59,7 +58,7 @@ namespace MjClient.IO
             } 
         }
 
-        public void SendMessage(string message)
+        private void SendMessage(string message)
         {
             if (message == String.Empty)
             {
@@ -76,5 +75,16 @@ namespace MjClient.IO
             }
         }
 
+        public void SendMJsonObject(object jsonmsg)
+        {
+            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+        }
+
+
+        //CtoS
+        public void SendNone()
+        {
+            SendMessage(JsonConvert.SerializeObject(new MJsonMessageNone()));
+        }
     }
 }

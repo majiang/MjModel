@@ -15,14 +15,45 @@ namespace MjClient
     public class ClientRouter
     {
 
-        
-        public TcpClient tcpClient;
-        public ClientPlayer clientPlayer;
+        public delegate void StartGameHandler(int id, List<string> names);
+        public delegate void StartKyokuHandler(string bakaze, int kyoku, int honba, int kyotaku, int oya, string dora_marker, List<List<string>> tehais);
+        public delegate void GetPaiHandler(int actor, string pai);
+        public delegate void DropPaiHandler(int actor, string pai, bool tsumogiri);
+        public delegate void ChiHandler(int actor, int target, string pai, List<string> consumed);
+        public delegate void PonHandler(int actor, int target, string pai, List<string> consumed);
+        public delegate void KakanHandler(int actor, string pai, List<string> consumed);
+        public delegate void DaiminkanHandler(int actor, int target, string pai, List<string> consumed);
+        public delegate void AnkanHandler(int actor, string pai, List<string> consumed);
+        public delegate void ReachHandler(int actor);
+        public delegate void ReachAcceptedHandler(int actor, List<int> delta, List<int> scores);
+        public delegate void OpenDoraHandler(string dora_marker);
+        public delegate void AgariHandler(int actor, int target, string pai, List<string> uradora_markers, List<string> hora_tehais, List<List<object>> yakus, int fu, int fan, int hora_points, List<int> deltas, List<int> scores);
+        public delegate void RyukyokuHandler(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores);
+        public delegate void EndKyokuHandler();
+        public delegate void EndGameHandler();
 
-        public ClientRouter(TcpClient tclt)
+        public event StartGameHandler OnStartGame;
+        public event StartKyokuHandler OnStartKyoku;
+        public event GetPaiHandler OnGetPai;
+        public event DropPaiHandler OnDropPai;
+        public event ChiHandler OnChi;
+        public event PonHandler OnPon;
+        public event KakanHandler OnKakan;
+        public event DaiminkanHandler OnDaiminkan;
+        public event AnkanHandler OnAnkan;
+        public event ReachHandler OnReach;
+        public event ReachAcceptedHandler OnReachAccepted;
+        public event OpenDoraHandler OnOpenDora;
+        public event AgariHandler OnAgari;
+        public event RyukyokuHandler OnRyukyoku;
+        public event EndKyokuHandler OnEndKyoku;
+        public event EndGameHandler OnEndGame;
+
+        public TcpClient tcpClient;
+        public ClientFacade clientPlayer;
+
+        public ClientRouter()
         {
-            tcpClient = tclt;
-            clientPlayer = new ClientPlayer(this);
         }
 
 
@@ -35,96 +66,72 @@ namespace MjClient
             switch (msgobj.type)
                 {
                     case MsgType.START_GAME:
-                        clientPlayer.OnStartGame(msgobj.id, msgobj.names);
+                        OnStartGame(msgobj.id, msgobj.names);
                         break;
 
                     case MsgType.START_KYOKU:
-                        clientPlayer.OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.dora_marker, msgobj.tehais);
+                        OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.dora_marker, msgobj.tehais);
                         break;
 
                     case MsgType.TSUMO:
-                        clientPlayer.OnTsumo(msgobj.actor, msgobj.pai);
+                        OnGetPai(msgobj.actor, msgobj.pai);
                         break;
 
                     case MsgType.DAHAI:
-                        clientPlayer.OnDahai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
+                        OnDropPai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
                         break;
 
                     case MsgType.PON:
-                        clientPlayer.OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                         break;
 
                     case MsgType.CHI:
-                        clientPlayer.OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                         break;
 
                     case MsgType.KAKAN:
-                        clientPlayer.OnKakan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        OnKakan(msgobj.actor, msgobj.pai, msgobj.consumed);
                         break;
 
                     case MsgType.ANKAN:
-                        clientPlayer.OnAnkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        OnAnkan(msgobj.actor, msgobj.pai, msgobj.consumed);
                         break;
 
                     case MsgType.DAIMINKAN:
-                        clientPlayer.OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                        OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
                         break;
 
                     case MsgType.DORA:
-                        clientPlayer.OnDora(msgobj.dora_marker);
+                        OnOpenDora(msgobj.dora_marker);
                         break;
 
                     case MsgType.REACH:
-                        clientPlayer.OnReach(msgobj.actor);
+                        OnReach(msgobj.actor);
                         break;
 
                     case MsgType.REACH_ACCEPTED:
-                        clientPlayer.OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
+                        OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
                         break;
 
                     case MsgType.HORA:
-                        clientPlayer.OnHora(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradora_markers, msgobj.hora_tehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.hora_points, msgobj.deltas, msgobj.scores);
+                        OnAgari(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradora_markers, msgobj.hora_tehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.hora_points, msgobj.deltas, msgobj.scores);
                         break;
 
                     case MsgType.RYUKYOKU:
-                        clientPlayer.OnRyukyoku(msgobj.reason, msgobj.tehais);
+                        OnRyukyoku(msgobj.reason, msgobj.tehais, msgobj.tenpais, msgobj.deltas, msgobj.scores); ;
                         break;
 
                     case MsgType.END_KYOKU:
-                        clientPlayer.OnEndKyoku();
+                        OnEndKyoku();
                         break;
 
                     case MsgType.END_GAME:
-                        clientPlayer.OnEndGame();
+                        OnEndGame();
                         break;
             }
 
 
 
-        }
-
-
-
-
-        public async void SendMessageToServer(string message)
-        {
-            message += "\n";
-            Encoding enc = Encoding.UTF8;
-            byte[] sendBytes = enc.GetBytes(message);
-            //データを送信する
-            await tcpClient.GetStream().WriteAsync(sendBytes, 0, sendBytes.Length);
-            Console.WriteLine("send : " + message);
-        }
-
-        public void SendMJsonMessage(object jsonmsg)
-        {
-            SendMessageToServer(JsonConvert.SerializeObject(jsonmsg));
-        }
-
-
-        //CtoS
-        public void SendNone() {
-            SendMessageToServer(JsonConvert.SerializeObject(new MJsonMessageNone()));
         }
 
     }

@@ -49,8 +49,7 @@
   <ItemGroup>
     <Compile Include="Client\AI\AIBase.cs" />
     <Compile Include="Client\AI\MinShantenAI.cs" />
-    <Compile Include="Client\ClientPlayer.cs" />
-    <Compile Include="Client\ClientController.cs" />
+    <Compile Include="Client\ClientFacade.cs" />
     <Compile Include="Client\ClientMjModel.cs" />
     <Compile Include="Client\ClientRouter.cs" />
     <Compile Include="Client\IO\ClientIO.cs" />

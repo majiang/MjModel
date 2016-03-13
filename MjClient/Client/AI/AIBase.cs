@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MjNetworkProtocol;
 using MjModelLibrary;
 
-namespace MjClient
+namespace MjClient.AI
 {
     abstract class AIBase
     {
