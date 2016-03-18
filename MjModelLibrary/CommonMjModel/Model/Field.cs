@@ -9,10 +9,10 @@ namespace MjModelLibrary
     public class Field
     {
 
-        public int KyokuId { get; private set; }//1~8が入る
+        public int KyokuId { get; private set; }//1~4
         public int Honba { get; private set; }
         public int Kyotaku { get; private set; }
-        public int OyaPlayerId { get; private set; }
+        public int OyaPlayerId { get; private set; }//0~3
         public Pai Bakaze { get; private set; }
 
         private static List<Pai> bakazeTemplate = new List<Pai>() { new Pai("E"), new Pai("S"), new Pai("W"), new Pai("N") };
@@ -23,7 +23,7 @@ namespace MjModelLibrary
             KyokuId = 1;//1index
             Honba = 0;
             Kyotaku = 0;
-            OyaPlayerId = getOyaPlayerID(0);
+            OyaPlayerId = getOyaPlayerID(1);//start kyoku id = 1, start oya player id = 0
             Bakaze = bakazeTemplate[0];
         }
 
@@ -49,14 +49,14 @@ namespace MjModelLibrary
 
         private static int getOyaPlayerID(int kyokuId)
         {
-            return kyokuId % 4;
+            return (kyokuId-1) % 4;
         }
 
 
 
         public static Field ChangeOnRyukyoku(Field fld, List<bool> tenpais)
         {
-            var nextKyokuId = tenpais[fld.OyaPlayerId] ? fld.KyokuId : fld.KyokuId + 1;
+            var nextKyokuId = tenpais[fld.OyaPlayerId] ? fld.KyokuId : (4 + fld.OyaPlayerId + 1)%4 + 1;
             var nextHonba = fld.Honba++;
             var nextkyotaku = fld.Kyotaku;
 

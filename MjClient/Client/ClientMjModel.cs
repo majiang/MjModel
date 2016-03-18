@@ -51,7 +51,7 @@ namespace MjClient
         {
             field = new Field(kyoku, honba, kyotaku);
             currentActor = 0;
-            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
+            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, bakaze), new InfoForResult(field.KyokuId, 1, bakaze), new InfoForResult(field.KyokuId, 2, bakaze), new InfoForResult(field.KyokuId, 3, bakaze) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
         }
@@ -87,11 +87,11 @@ namespace MjClient
                 tehais[actor].Chi(actor, target, pai, consumed);
             }
             kawas[target].discards.Last().isFuroTargeted = true;
-
         }
 
-        public void Kakan(int p1, int p2, int p3, List<int> list)
+        public void Kakan(int actor, int target, string pai, List<string> consumed)
         {
+
             throw new NotImplementedException();
         }
 

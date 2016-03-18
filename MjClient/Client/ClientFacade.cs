@@ -36,6 +36,16 @@ namespace MjClient
             // logger
             // router
             clientRouter = new ClientRouter();
+            clientRouter.OnAgari += OnHora;
+            clientRouter.OnAnkan += OnAnkan;
+            clientRouter.OnChi += OnChi;
+            clientRouter.OnDaiminkan += OnDaiminkan;
+            clientRouter.OnDropPai += OnDahai;
+            clientRouter.OnEndGame += OnEndGame;
+            clientRouter.OnEndKyoku += OnEndKyoku;
+            clientRouter.OnGetPai += OnTsumo;
+            clientRouter.OnKakan += OnKakan;
+            clientRouter.OnOpenDora += OnDora;
 
 
             // messageanalyzer
@@ -45,13 +55,12 @@ namespace MjClient
         }
 
 
-        public void StartClient()
+        public void StartClient(string playerName, string roomName = "debugRoom")
         {
             try
             {
                 clientIO.MakeConnection();
-
-                var startMessage = new MJsonMessageJoin("playerName", "roomName");
+                var startMessage = new MJsonMessageJoin(playerName, "roomName");
                 clientIO.SendMJsonObject(startMessage);
             }
             catch (Exception e)
@@ -73,7 +82,7 @@ namespace MjClient
             //    clientLogger.Log("invalid message : " + message);
             //    return;
             //}
-
+            clientLogger.Log(message);
             clientRouter.RouteGetMessage(message);
         }
         
@@ -214,7 +223,6 @@ namespace MjClient
             {
                 var tsumogiri = false;
                 var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count - 1];
-                //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
                 clientIO.SendMJsonObject(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
             else
@@ -230,7 +238,6 @@ namespace MjClient
             {
                 var tsumogiri = false;
                 var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count-1];
-                //clientController.Dahai(actor,lastPai.paiString,tsumogiri);
                 clientIO.SendMJsonObject(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
             else
@@ -239,12 +246,12 @@ namespace MjClient
             }
         }
 
-        internal void OnKakan(int actor, int target, string pai, List<string> consumed)
+        internal void OnKakan(int actor, string pai, List<string> consumed)
         {
             clientIO.SendNone();
         }
 
-        internal void OnAnkan(int actor, int target, string pai, List<string> consumed)
+        internal void OnAnkan(int actor, string pai, List<string> consumed)
         {
             clientIO.SendNone();
         }

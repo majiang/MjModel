@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="CommonMjModel\Model\Field.cs" />
     <Compile Include="CommonMjModel\Model\Kawa.cs" />
     <Compile Include="CommonMjModel\Model\Pai.cs" />

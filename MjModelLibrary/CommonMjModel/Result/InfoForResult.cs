@@ -36,18 +36,14 @@ namespace MjModelLibrary
         private List<Pai> bafuuList = new List<Pai>();
         private static readonly List<Pai> WindList = new List<Pai>() { new Pai("E"), new Pai("S"), new Pai("W"), new Pai("N") }; 
 
-        public InfoForResult(int gameId = 1, int myPositionId = 0)
+        public InfoForResult(int gameId = 1, int myPositionId = 0, string bakaze = "E")
         {
-            //GameIdを1indexから0indexへ変更
-
-
             this.gameId = gameId;
             var zeroIdxGameId = gameId - 1;
             this.myPositionId = myPositionId;
             IsOya = (zeroIdxGameId % 4) == myPositionId;
 
-            var bafuuIndex = zeroIdxGameId / 4;
-            bafuuList.Add(WindList[bafuuIndex]);
+            bafuuList.Add(WindList.Where(e => e.PaiString == bakaze).First());
 
             var jifuuIndex = (myPositionId - (zeroIdxGameId % 4) + 4) % 4;
             jifuuList.Add(WindList[jifuuIndex]);
@@ -70,15 +66,12 @@ namespace MjModelLibrary
 
 
         public bool IsDora(int id) { 
-
-             //リーチしてたら表ドラと裏ドラを考慮
+            
             var targetDoraOmote = MJUtil.GetDoraOmote(id);
             if ( IsReach )
             {
-                return doraOmoteMultiple[targetDoraOmote] > 0
-                    || uradoraOmoteMultiple[targetDoraOmote] > 0;
+                return doraOmoteMultiple[targetDoraOmote] > 0 || uradoraOmoteMultiple[targetDoraOmote] > 0;
             }
-            //リーチしていない場合表ドラを考慮
             return doraOmoteMultiple[targetDoraOmote] > 0;
         }
 

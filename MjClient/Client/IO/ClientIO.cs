@@ -6,13 +6,14 @@ using System.Text;
 using System.Collections.Generic;
 using MjClient.Logger;
 using MjNetworkProtocol;
+using System.Threading;
 
 namespace MjClient.IO
 {
     /// <summary>
     /// Handles Game Message by Tcp Connection.
     /// </summary>
-    class ClientIO : System.Exception
+    class ClientIO 
     {
         public event GetMessageHandler OnGetMessage;
 
@@ -24,37 +25,32 @@ namespace MjClient.IO
         string ipAddress = "127.0.0.1";
         int port = 11452;
         TcpClient tcpClient;
+        public ClientIO(){}
 
-        public ClientIO ()
-        {
-            MakeConnection();
-        }
 
         public void MakeConnection()
         {
             tcpClient = new TcpClient(ipAddress, port);
-            RecieveMessage();
+            Thread thread = new Thread(RecieveMessage);
+            thread.Start();
         }
         
-        private async void RecieveMessage()
+        private void RecieveMessage()
         {
             StreamReader reader = new StreamReader(tcpClient.GetStream());
             string line = String.Empty;
 
             while (tcpClient.Connected)
             {
-                line += await reader.ReadLineAsync();
+                line += reader.ReadLine();
                 if (String.IsNullOrEmpty(line))
                 {
                     break;
                 }
-                else if (line.EndsWith(lineBreakMark) == false)
-                {
-                    continue;
-                }
-
+                
                 //delegate event
                 OnGetMessage(line);
+                line = String.Empty;
             } 
         }
 

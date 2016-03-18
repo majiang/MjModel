@@ -136,7 +136,7 @@ namespace MjServer
    
         public string MakeErrorMessage(string message)
         {
-            return "{\"type\":\"error\", \"lastMessage\":" + message.Replace("\n", "") + "}\n";
+            return "{\"type\":\"error\", \"lastMessage\":" + message.Replace("\n", "") + "}\r\n";
         }
 
 
@@ -146,9 +146,10 @@ namespace MjServer
             
             if (clientNameTcpClientDictionary[name].Connected)
             {
-                message += "\n";
+                message += "\r\n";
                 NetworkStream stream = clientNameTcpClientDictionary[name].GetStream();
                 stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
+                
             }
             else
             {
