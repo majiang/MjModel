@@ -21,13 +21,17 @@ namespace MjClient
         int myPositionId;
         List<string> playerNames;
         AIBase ai;
-        object MsgBufferForReach;
+        MjsonMessageBase MsgBufferForReach;
 
         public bool IsEndGame;
+        string playerName;
+        string roomName;
 
-
-        public ClientFacade()
+        public ClientFacade(string playerName, string roomName = "debugRoom")
         {
+            this.playerName = playerName;
+            this.roomName = roomName;
+
             // Initialize follows
             // io
             clientIO = new ClientIO();
@@ -36,6 +40,7 @@ namespace MjClient
             // logger
             // router
             clientRouter = new ClientRouter();
+
             clientRouter.OnAgari += OnHora;
             clientRouter.OnAnkan += OnAnkan;
             clientRouter.OnChi += OnChi;
@@ -44,24 +49,39 @@ namespace MjClient
             clientRouter.OnEndGame += OnEndGame;
             clientRouter.OnEndKyoku += OnEndKyoku;
             clientRouter.OnGetPai += OnTsumo;
+            clientRouter.OnHello += OnHello;
             clientRouter.OnKakan += OnKakan;
             clientRouter.OnOpenDora += OnDora;
+            clientRouter.OnPon += OnPon;
+            clientRouter.OnReach += OnReach;
+            clientRouter.OnReachAccepted += OnReachAccepted;
+            clientRouter.OnRyukyoku += OnRyukyoku;
+            clientRouter.OnStartGame += OnStartGame;
+            clientRouter.OnStartKyoku += OnStartKyoku;
+            
+
+
+            //Mjmodel
+            clientMjModel = new ClientMjModel();
 
 
             // messageanalyzer
             // player
-            // model
+
+
+            //ai
+            ai = new MinShantenAI();
 
         }
 
 
-        public void StartClient(string playerName, string roomName = "debugRoom")
+        public void StartClient()
         {
+            
             try
             {
                 clientIO.MakeConnection();
-                var startMessage = new MJsonMessageJoin(playerName, "roomName");
-                clientIO.SendMJsonObject(startMessage);
+
             }
             catch (Exception e)
             {
@@ -86,7 +106,11 @@ namespace MjClient
             clientRouter.RouteGetMessage(message);
         }
         
-
+        void OnHello()
+        {
+            var startMessage = new MJsonMessageJoin(playerName, roomName);
+            clientIO.SendMJsonObject(startMessage);
+        }
 
         /// <summary>
         /// callback for StartGame message.
@@ -290,7 +314,7 @@ namespace MjClient
             clientIO.SendNone();
         }
 
-        internal void OnRyukyoku(string reason, List<List<string>> tehais)
+        internal void OnRyukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
         {
             clientIO.SendNone();
         }

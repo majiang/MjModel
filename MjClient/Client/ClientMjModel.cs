@@ -22,10 +22,7 @@ namespace MjClient
         private int myPositionId;
         ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
 
-        public ClientMjModel() : base()
-        {
-
-        }
+        public ClientMjModel(){}
 
         public void Init()
         {
@@ -36,7 +33,6 @@ namespace MjClient
             infoForResult = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
             points = new List<int> { 25000, 25000, 25000, 25000 };
             currentActor = 0;
-            
         }
 
         public void StartGame(int id)

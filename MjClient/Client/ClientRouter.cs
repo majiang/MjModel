@@ -14,7 +14,7 @@ namespace MjClient
     //client側ね
     public class ClientRouter
     {
-
+        public delegate void HelloHandler();
         public delegate void StartGameHandler(int id, List<string> names);
         public delegate void StartKyokuHandler(string bakaze, int kyoku, int honba, int kyotaku, int oya, string dora_marker, List<List<string>> tehais);
         public delegate void GetPaiHandler(int actor, string pai);
@@ -32,6 +32,7 @@ namespace MjClient
         public delegate void EndKyokuHandler();
         public delegate void EndGameHandler();
 
+        public event HelloHandler OnHello;
         public event StartGameHandler OnStartGame;
         public event StartKyokuHandler OnStartKyoku;
         public event GetPaiHandler OnGetPai;
@@ -48,6 +49,7 @@ namespace MjClient
         public event RyukyokuHandler OnRyukyoku;
         public event EndKyokuHandler OnEndKyoku;
         public event EndGameHandler OnEndGame;
+       
 
         public TcpClient tcpClient;
         public ClientFacade clientPlayer;
@@ -64,70 +66,74 @@ namespace MjClient
             var msgobj = JsonConvert.DeserializeObject<MjsonMessageAll>(msg);
 
             switch (msgobj.type)
-                {
-                    case MsgType.START_GAME:
-                        OnStartGame(msgobj.id, msgobj.names);
-                        break;
+            {
+                case MsgType.HELLO:
+                    OnHello();
+                    break;
 
-                    case MsgType.START_KYOKU:
-                        OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.dora_marker, msgobj.tehais);
-                        break;
+                case MsgType.START_GAME:
+                    OnStartGame(msgobj.id, msgobj.names);
+                    break;
 
-                    case MsgType.TSUMO:
-                        OnGetPai(msgobj.actor, msgobj.pai);
-                        break;
+                case MsgType.START_KYOKU:
+                    OnStartKyoku(msgobj.bakaze, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.oya, msgobj.dora_marker, msgobj.tehais);
+                    break;
 
-                    case MsgType.DAHAI:
-                        OnDropPai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
-                        break;
+                case MsgType.TSUMO:
+                    OnGetPai(msgobj.actor, msgobj.pai);
+                    break;
 
-                    case MsgType.PON:
-                        OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                        break;
+                case MsgType.DAHAI:
+                    OnDropPai(msgobj.actor, msgobj.pai, msgobj.tsumogiri);
+                    break;
 
-                    case MsgType.CHI:
-                        OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                        break;
+                case MsgType.PON:
+                    OnPon(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
 
-                    case MsgType.KAKAN:
-                        OnKakan(msgobj.actor, msgobj.pai, msgobj.consumed);
-                        break;
+                case MsgType.CHI:
+                    OnChi(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
 
-                    case MsgType.ANKAN:
-                        OnAnkan(msgobj.actor, msgobj.pai, msgobj.consumed);
-                        break;
+                case MsgType.KAKAN:
+                    OnKakan(msgobj.actor, msgobj.pai, msgobj.consumed);
+                    break;
 
-                    case MsgType.DAIMINKAN:
-                        OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
-                        break;
+                case MsgType.ANKAN:
+                    OnAnkan(msgobj.actor, msgobj.pai, msgobj.consumed);
+                    break;
 
-                    case MsgType.DORA:
-                        OnOpenDora(msgobj.dora_marker);
-                        break;
+                case MsgType.DAIMINKAN:
+                    OnDaiminkan(msgobj.actor, msgobj.target, msgobj.pai, msgobj.consumed);
+                    break;
 
-                    case MsgType.REACH:
-                        OnReach(msgobj.actor);
-                        break;
+                case MsgType.DORA:
+                    OnOpenDora(msgobj.dora_marker);
+                    break;
 
-                    case MsgType.REACH_ACCEPTED:
-                        OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
-                        break;
+                case MsgType.REACH:
+                    OnReach(msgobj.actor);
+                    break;
 
-                    case MsgType.HORA:
-                        OnAgari(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradora_markers, msgobj.hora_tehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.hora_points, msgobj.deltas, msgobj.scores);
-                        break;
+                case MsgType.REACH_ACCEPTED:
+                    OnReachAccepted(msgobj.actor, msgobj.deltas, msgobj.scores);
+                    break;
 
-                    case MsgType.RYUKYOKU:
-                        OnRyukyoku(msgobj.reason, msgobj.tehais, msgobj.tenpais, msgobj.deltas, msgobj.scores); ;
-                        break;
+                case MsgType.HORA:
+                    OnAgari(msgobj.actor, msgobj.target, msgobj.pai, msgobj.uradora_markers, msgobj.hora_tehais, msgobj.yakus, msgobj.fu, msgobj.fan, msgobj.hora_points, msgobj.deltas, msgobj.scores);
+                    break;
 
-                    case MsgType.END_KYOKU:
-                        OnEndKyoku();
-                        break;
+                case MsgType.RYUKYOKU:
+                    OnRyukyoku(msgobj.reason, msgobj.tehais, msgobj.tenpais, msgobj.deltas, msgobj.scores); ;
+                    break;
 
-                    case MsgType.END_GAME:
-                        OnEndGame();
-                        break;
+                case MsgType.END_KYOKU:
+                    OnEndKyoku();
+                    break;
+
+                case MsgType.END_GAME:
+                    OnEndGame();
+                    break;
             }
 
 
