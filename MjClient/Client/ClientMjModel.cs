@@ -85,34 +85,34 @@ namespace MjClient
             kawas[target].discards.Last().isFuroTargeted = true;
         }
 
-        public void Kakan(int actor, int target, string pai, List<string> consumed)
+        public void Kakan(int actor, string pai, List<string> consumed)
         {
 
             throw new NotImplementedException();
         }
 
-        public void Ankan(int p1, int p2, int p3, List<int> list)
+        public void Ankan(int actor, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        public void Daiminkan(int p1, int p2, int p3, List<int> list)
+        public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             throw new NotImplementedException();
         }
 
-        public void Reach(int p)
+        public void Reach(int actor)
         {
             throw new NotImplementedException();
         }
-        public void ReachAccept(int actor, List<int> points)
+        public void ReachAccept(int actor, List<int> delta, List<int> scores)
         {
             SetReach(actor);
             this.points = points;
         }
 
 
-        public void Hora(int p1, int p2, int p3)
+        public void Hora(int actor, int target, string pai, List<string> uradora_markers, List<string> hora_tehais, List<List<object>> yakus, int fu, int fan, int hora_points, List<int> deltas, List<int> scores)
         {
             throw new NotImplementedException();
         }
@@ -121,6 +121,12 @@ namespace MjClient
         {
             throw new NotImplementedException();
         }
+
+        public void Ryuukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
+        {
+            this.points = scores;
+        }
+
 
 
 

@@ -272,11 +272,13 @@ namespace MjClient
 
         internal void OnKakan(int actor, string pai, List<string> consumed)
         {
+            clientMjModel.Kakan(actor, pai, consumed);
             clientIO.SendNone();
         }
 
-        internal void OnAnkan(int actor, string pai, List<string> consumed)
+        internal void OnAnkan(int actor, List<string> consumed)
         {
+            clientMjModel.Ankan(actor, consumed);
             clientIO.SendNone();
         }
 
@@ -305,7 +307,7 @@ namespace MjClient
 
         internal void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
         {
-            clientMjModel.ReachAccept(actor, scores);
+            clientMjModel.ReachAccept(actor,deltas, scores);
             clientIO.SendNone();
         }
 

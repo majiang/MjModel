@@ -23,7 +23,7 @@ namespace MjClient
         public delegate void PonHandler(int actor, int target, string pai, List<string> consumed);
         public delegate void KakanHandler(int actor, string pai, List<string> consumed);
         public delegate void DaiminkanHandler(int actor, int target, string pai, List<string> consumed);
-        public delegate void AnkanHandler(int actor, string pai, List<string> consumed);
+        public delegate void AnkanHandler(int actor, List<string> consumed);
         public delegate void ReachHandler(int actor);
         public delegate void ReachAcceptedHandler(int actor, List<int> delta, List<int> scores);
         public delegate void OpenDoraHandler(string dora_marker);
@@ -100,7 +100,7 @@ namespace MjClient
                     break;
 
                 case MsgType.ANKAN:
-                    OnAnkan(msgobj.actor, msgobj.pai, msgobj.consumed);
+                    OnAnkan(msgobj.actor, msgobj.consumed);
                     break;
 
                 case MsgType.DAIMINKAN:
