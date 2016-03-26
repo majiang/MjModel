@@ -22,8 +22,8 @@ namespace MjClient.IO
         string lineBreakMark = "\r\n";
 
 
-        string ipAddress = "127.0.0.1";
-        int port = 11452;
+        string ipAddress = "104.214.151.136";
+        int port = 11600;
         TcpClient tcpClient;
         public ClientIO(){}
 
@@ -71,6 +71,18 @@ namespace MjClient.IO
             }
         }
 
+        public void SendMJsonObject(MJsonMessagePon jsonmsg)
+        {
+            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+        }
+        public void SendMJsonObject(MJsonMessageChi jsonmsg)
+        {
+            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+        }
+        public void SendMJsonObject(MJsonMessageDaiminkan jsonmsg)
+        {
+            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+        }
         public void SendMJsonObject(object jsonmsg)
         {
             SendMessage(JsonConvert.SerializeObject(jsonmsg));

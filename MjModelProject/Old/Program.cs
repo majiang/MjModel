@@ -52,6 +52,8 @@ namespace MjServer
 
         static async Task GameStream(TcpClient client)
         {
+            serverRouter.SendHelloToClient(client);
+
             Console.WriteLine("Connect to Client ({0}:{1})",
                 ((IPEndPoint)client.Client.RemoteEndPoint).Address,
 

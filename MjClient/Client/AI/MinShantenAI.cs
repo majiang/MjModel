@@ -6,19 +6,46 @@ using MjModelLibrary;
 
 namespace MjClient.AI
 {
-    class MinShantenAI : AIBase
+    class MinShantenAI : AIInterface
     {
+        public event SendPonHandler SendPon;
+        public event SendChiHandler SendChi;
+        public event SendDaiminkanHandler SendDaiminkan;
+        public event SendNoneHandler SendNone;
+
+        public event SendHoraHandler SendHora;
+        public event SendDahaiHandler SendDahai;
+        public event SendAnkanHandler SendAnkan;
+        public event SendKakanHandler SendKakan;
+
+
+
         ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
 
-        public override MjsonMessageBase thinkAction(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
+        public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
-            return new MJsonMessageNone();
+            SendNone();
         }
 
-        public override MjsonMessageBase thinkDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
+        public void thinkOnTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
-            var paiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
-            return new MJsonMessageDahai(mypositionId, paiString, pai == paiString);
+            var nowShanten = tehais[mypositionId].GetShanten();
+
+
+            if (nowShanten == -1)
+            {
+                SendHora(new MJsonMessageHora(mypositionId, mypositionId, pai));
+                return;
+            }
+
+
+            var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
+
+            if (nowShanten == 0){
+
+            }
+
+
         }
 
 
@@ -33,6 +60,7 @@ namespace MjClient.AI
             var resultDict = new Dictionary<int, int>();
             foreach (var paiId in syu.Select((value, index) => new { value, index }))
             {
+                // if pai num is 0, go next pai
                 if (paiId.value == 0)
                 {
                     continue;

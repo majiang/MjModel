@@ -57,15 +57,43 @@ namespace MjServer
         public static Field ChangeOnRyukyoku(Field fld, List<bool> tenpais)
         {
             var nextKyokuId = tenpais[fld.OyaPlayerId] ? fld.KyokuId : fld.KyokuId + 1;
-            var nextHonba = fld.Honba++;
+            var nextHonba = fld.Honba + 1;
             var nextkyotaku = fld.Kyotaku;
+            var nextBakaze = GetNextBakaze(tenpais[fld.OyaPlayerId], fld.KyokuId, fld.Bakaze);
 
-            return new Field(nextKyokuId, nextHonba, nextkyotaku);
+            return new Field(nextKyokuId, nextHonba, nextkyotaku,nextBakaze);
         }
 
         public void AddKyotaku()
         {
             Kyotaku += Constants.REACH_POINT;
         }
+
+        static string GetNextBakaze(bool oyaTenpai, int ryuukyokedKyokuid, Pai ryuukyokedBakaze)
+        {
+            if (oyaTenpai)
+            {
+                return ryuukyokedBakaze.PaiString;
+            }
+            if (ryuukyokedKyokuid == Constants.PLAYER_NUM)
+            {
+                var index = bakazeTemplate.FindIndex(e => e == ryuukyokedBakaze);
+
+                if (index == bakazeTemplate.Count - 1)
+                {
+                    return bakazeTemplate[0].PaiString;
+                }
+                else {
+                    return bakazeTemplate[index+1].PaiString;
+                }
+            }
+            else
+            {
+                return ryuukyokedBakaze.PaiString;
+            }
+
+            
+        }
+
     }
 }

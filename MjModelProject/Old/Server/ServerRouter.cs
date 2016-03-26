@@ -89,6 +89,7 @@ namespace MjServer
             catch(Exception e)
             {
                 DebugUtil.ServerDebug(e.Message);
+               
             }
             finally
             {
@@ -98,7 +99,7 @@ namespace MjServer
 
         private bool IsValidMessageType(string type)
         {
-            return MsgType.MsgTypeList.Contains(type);
+            return type != null || MsgType.MsgTypeList.Contains(type);
         }
 
         public void SendErrorToClient(TcpClient client, string message)
@@ -157,7 +158,22 @@ namespace MjServer
             }
         }
 
-     
+        public void SendHelloToClient(TcpClient tcpClient)
+        {
+            if (tcpClient.Connected)
+            {
+                var message = JsonConvert.SerializeObject(new MJsonMessageHello());
+                message += "\r\n";
+                NetworkStream stream = tcpClient.GetStream();
+                stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
+
+            }
+            else
+            {
+                DebugUtil.ServerDebug("Client is not Connected");
+            }
+        }
+
         //StoC
         public void SendStartGame(string name, MJsonMessageStartGame msgobj)
         {

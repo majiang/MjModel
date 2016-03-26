@@ -51,10 +51,10 @@
     <Compile Include="CommonMjModel\Result\ShantenCalclator.cs" />
     <Compile Include="CommonMjModel\Result\SplitedTehaiCalclator.cs" />
     <Compile Include="CommonMjModel\Result\YakuResultCalclator.cs" />
-    <Compile Include="N_Constants\Constants.cs" />
-    <Compile Include="N_Constants\DebugUtil.cs" />
-    <Compile Include="N_Constants\MJUtil.cs" />
-    <Compile Include="N_Constants\PaiConverter.cs" />
+    <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Constants\DebugUtil.cs" />
+    <Compile Include="Constants\MJUtil.cs" />
+    <Compile Include="Constants\PaiConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

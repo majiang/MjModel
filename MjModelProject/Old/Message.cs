@@ -130,7 +130,7 @@ namespace MjServer
     {
         public string protocol;
         public int protocol_version;
-        public MJsonMessageHello(string protocol, int protocol_version)
+        public MJsonMessageHello(string protocol = "mjsonp", int protocol_version =1)
         {
             type = MsgType.HELLO;
             this.protocol = protocol;

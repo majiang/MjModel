@@ -12,8 +12,11 @@ namespace MjServer
     {
         public static void ServerDebug(string msg)
         {
-            Debug.WriteLine("Server:"+msg);
+            Debug.WriteLine("Server : "+msg);
         }
-
+        public static void ServerError(string msg)
+        {
+            Debug.WriteLine("Error : " + msg);
+        }
     }
 }
