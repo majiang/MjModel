@@ -232,14 +232,14 @@ namespace MjClient
         void OnReach(int actor)
         {
 
-            if (actor == myPositionId)
-            {
-                clientIO.SendMJsonObject(MsgBufferForReach);
-            }
-            else
-            {
-                clientIO.SendNone();
-            }
+            //if (actor == myPositionId)
+            //{
+            //    clientIO.SendMJsonObject();
+            //}
+            //else
+            //{
+            //    clientIO.SendNone();
+            //}
         }
 
         void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
