@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using MjServer.Result;
+using MjModelLibrary;
 
 namespace MjServer
 {
@@ -49,9 +49,9 @@ namespace MjServer
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
-            field = new Field(kyoku, honba, kyotaku);
+            field = new Field(kyoku, honba, kyotaku, bakaze);
             currentActor = 0;
-            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
+            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0,bakaze), new InfoForResult(field.KyokuId, 1, bakaze), new InfoForResult(field.KyokuId, 2, bakaze), new InfoForResult(field.KyokuId, 3, bakaze) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
         }
@@ -171,14 +171,7 @@ namespace MjServer
 
 
 
-        public MJsonMessageChi GetChiMessage()
-        {
-            return tehais[myPositionId].GetChiMessage();
-        }
-        public MJsonMessagePon GetPonMessage()
-        {
-            return tehais[myPositionId].GetPonMessage();
-        }
+
 
         public void SetReach(int actor)
         {

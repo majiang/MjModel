@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MjModelProject</RootNamespace>
     <AssemblyName>MjModelProject</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PublishUrl>publish\</PublishUrl>
@@ -27,6 +27,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -70,10 +71,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Old\AI\AIBase.cs" />
-    <Compile Include="Old\AI\MinShantenAI.cs" />
-    <Compile Include="Old\Client\Client.cs" />
-    <Compile Include="Old\Client\ClientController.cs" />
     <Compile Include="Old\Constants.cs" />
     <Compile Include="Server\N_Room\N_RoomController.cs" />
     <Compile Include="Server\IO\ServerIO.cs" />
@@ -85,33 +82,17 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Old\Result\InfoForResult.cs" />
-    <Compile Include="Old\Result\ResultCalclator.cs" />
-    <Compile Include="Old\Result\PointResultCalclator.cs" />
-    <Compile Include="Old\Util\NakiAnalizer.cs" />
-    <Compile Include="Old\Util\DebugUtil.cs" />
-    <Compile Include="Old\Model\Field.cs" />
-    <Compile Include="Old\Result\SplitedTehaiCalclator.cs" />
-    <Compile Include="Old\Util\MJUtil.cs" />
     <Compile Include="Old\Packet.cs" />
-    <Compile Include="Old\Model\Pai.cs" />
-    <Compile Include="Old\Util\PaiConverter.cs" />
-    <Compile Include="Old\Result\ShantenCalclator.cs" />
-    <Compile Include="Old\Result\YakuResultCalclator.cs" />
-    <Compile Include="Old\Model\Kawa.cs" />
     <Compile Include="Old\Message.cs" />
-    <Compile Include="Old\Client\ClientMjModel.cs" />
     <Compile Include="Old\Server\GameContext.cs" />
     <Compile Include="Old\Server\GameController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Old\Client\ClientRouter.cs" />
     <Compile Include="Old\Server\GameModel.cs" />
     <Compile Include="Old\Server\ServerRouter.cs" />
     <Compile Include="Old\Server\GameState.cs" />
-    <Compile Include="Old\Model\Tehai.cs" />
-    <Compile Include="Old\Model\Yama.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -131,8 +112,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Old\AI\" />
+    <Folder Include="Old\Model\" />
+    <Folder Include="Old\Result\" />
     <Folder Include="Server\N_Logger\" />
     <Folder Include="Server\N_Room\N_MessageValidater\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MjModelLibrary\MjModelLibrary.csproj">
+      <Project>{b2cdbbce-0f5c-4b4b-a457-18575c71e85d}</Project>
+      <Name>MjModelLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MjNetworkProtocolLibrary\MjNetworkProtocolLibrary.csproj">
+      <Project>{1e51814c-227e-4c73-90e0-38c9310ca03a}</Project>
+      <Name>MjNetworkProtocolLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

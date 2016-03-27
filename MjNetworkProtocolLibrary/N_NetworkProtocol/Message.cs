@@ -404,7 +404,7 @@ namespace MjNetworkProtocol
 
 
     /// <summary>
-    /// This class is amed at parse MessageString to MessageObject on Server side. 
+    /// This class is used when Server program parse MessageString to MessageObject. 
     /// </summary>
     public class MjsonMessageAll : MjsonMessageBase
     {

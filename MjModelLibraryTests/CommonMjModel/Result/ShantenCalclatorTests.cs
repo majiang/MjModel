@@ -1,15 +1,16 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjServer.Result;
-using System.Diagnostics;
-using System.IO;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MjModelLibrary;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 
-
-namespace MjModelProjectTests
+namespace MjModelLibrary.Tests
 {
-    [TestClass]
-    public class ShantenCalclatorTest
+    [TestClass()]
+    public class ShantenCalclatorTests
     {
         [TestMethod]
         public void シャンテン数計算テスト()
@@ -36,7 +37,6 @@ namespace MjModelProjectTests
                     if (actual != expected) throw new Exception(line + " --> " + actual);
                 }
             }
-
         }
     }
 }

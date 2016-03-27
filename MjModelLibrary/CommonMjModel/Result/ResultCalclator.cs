@@ -19,10 +19,17 @@ namespace MjModelLibrary
     {
         public static HoraResult CalcHoraResult(Tehai tehai, InfoForResult ifr, Field field, string horaPai)
         {
+            
+
             //面子手の取りうる和了形を全て列挙 
             SplitedTehai splited = SplitedTehaiCalclator.CalcSplitedTehai(tehai, horaPai, !ifr.IsTsumo );
             List<YakuResult> yakuResultList = new List<YakuResult>();
 
+            int[] realPaiNum = tehai.GetRealPaiNum();
+            if (ifr.IsTsumo == false)
+            {
+                realPaiNum[PaiConverter.STRING_TO_ID[horaPai]]++;
+            }
             //面子手和了型が0の場合はチートイツか国士無双
             if (splited.AllHoraPatternList.Count == 0)
             {
@@ -33,7 +40,7 @@ namespace MjModelLibrary
                 //面子手の役を計算
                 foreach (var pattern in splited.AllHoraPatternList)
                 {
-                    yakuResultList.Add(YakuResultCalclator.CalcNormalYaku(pattern, ifr, field, splited.SyuNum, splited.RedDoraNum));
+                    yakuResultList.Add(YakuResultCalclator.CalcNormalYaku(pattern, ifr, field, splited.SyuNum, realPaiNum, splited.RedDoraNum));
                 }
             }
             

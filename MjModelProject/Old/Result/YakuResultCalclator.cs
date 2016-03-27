@@ -360,7 +360,7 @@ namespace MjServer.Result
 
             //頭が役牌の場合
             int headSyuId = horaMentsu.TartsuList.Where(e => e.IsHead()).First().TartsuStartPaiSyu;
-            if (ifpc.IsBafuu(headSyuId)) {
+            if (ifpc.Isbakaze(headSyuId)) {
                 fuSum += 2;
             }
             if (ifpc.IsJifuu(headSyuId)) {
@@ -450,7 +450,7 @@ namespace MjServer.Result
             int headSyu = hp.Head.TartsuStartPaiSyu;
 
             //頭が役牌でないか判定
-            if (ifr.IsBafuu(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPai(headSyu))
+            if (ifr.Isbakaze(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPai(headSyu))
             {
                 return false;
             }
@@ -557,7 +557,7 @@ namespace MjServer.Result
             foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
                 if (ifr.IsJifuu(tartsu.TartsuStartPaiSyu) 
-                    || ifr.IsBafuu(tartsu.TartsuStartPaiSyu)
+                    || ifr.Isbakaze(tartsu.TartsuStartPaiSyu)
                     || MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu)
                     )
                 {
@@ -577,7 +577,7 @@ namespace MjServer.Result
                 {
                     yakuhaiNum++;
                 }
-                if (ifr.IsBafuu(tartsu.TartsuStartPaiSyu))
+                if (ifr.Isbakaze(tartsu.TartsuStartPaiSyu))
                 {
                     yakuhaiNum++;
                 }

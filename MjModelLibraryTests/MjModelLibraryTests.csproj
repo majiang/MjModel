@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{08C47627-2DA1-4690-86D3-54AB37D6DBA3}</ProjectGuid>
+    <ProjectGuid>{DB58E91C-B895-4FAD-A424-41EEEBE860BD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MjModelProjectTests</RootNamespace>
-    <AssemblyName>MjModelProjectTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>MjModelLibraryTests</RootNamespace>
+    <AssemblyName>MjModelLibraryTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -36,9 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -50,36 +50,29 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommonMjModel\Model\TehaiTests.cs" />
+    <Compile Include="CommonMjModel\Model\YamaTests.cs" />
+    <Compile Include="CommonMjModel\Result\ResultCalclatorTests.cs" />
+    <Compile Include="CommonMjModel\Result\ShantenCalclatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MjModelLibrary\MjModelLibrary.csproj">
-      <Project>{b2cdbbce-0f5c-4b4b-a457-18575c71e85d}</Project>
+      <Project>{B2CDBBCE-0F5C-4B4B-A457-18575C71E85D}</Project>
       <Name>MjModelLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MjModelProject\MjServer.csproj">
-      <Project>{B85A34E7-3992-4867-BFC4-B352E820D005}</Project>
-      <Name>MjServer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="shanten_benchmark_data.num.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ClientIOTest\" />
-    <Folder Include="ServerIOTest\" />
+    <None Include="HoraPatternOutput.log" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

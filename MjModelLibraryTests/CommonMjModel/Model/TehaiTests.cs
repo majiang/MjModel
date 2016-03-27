@@ -1,13 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjServer;
-using MjServer.Util;
+using MjModelLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjServer.Tests
+namespace MjModelLibrary.Tests
 {
     [TestClass()]
     public class TehaiTests
@@ -35,8 +34,8 @@ namespace MjServer.Tests
             var consumed = new List<Pai> { new Pai("4s"), new Pai("5s") };
             consumed.Sort();
 
-            Assert.IsTrue( testTehai.tehai.Contains( new Pai("4s") ) );
-            Assert.IsTrue( testTehai.tehai.Contains( new Pai("5s") ));
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("4s")));
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("5s")));
 
             //実施
             testTehai.Chi(actor, target, furopai, consumed);
@@ -67,7 +66,7 @@ namespace MjServer.Tests
             consumed.Sort();
 
             Assert.IsTrue(testTehai.tehai.Contains(new Pai("1m")));
-            
+
 
             //実施
             testTehai.Pon(actor, target, furopai, consumed);
@@ -78,7 +77,7 @@ namespace MjServer.Tests
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
-            Assert.IsFalse(testTehai.tehai.Contains( new Pai("1m")));
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("1m")));
 
         }
 
@@ -114,7 +113,7 @@ namespace MjServer.Tests
         [TestMethod()]
         public void 手配暗槓テスト()
         {
-            Tehai testTehai = new Tehai( new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") });
+            Tehai testTehai = new Tehai(new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") });
 
             //ankan
             var actor = 0;
@@ -127,7 +126,7 @@ namespace MjServer.Tests
             testTehai.Ankan(actor, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype,  MJUtil.TartsuType.ANKANTSU);
+            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.ANKANTSU);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
@@ -135,7 +134,46 @@ namespace MjServer.Tests
 
         }
 
+        [TestMethod()]
+        public void 手牌加槓テスト()
+        {
+            Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
+            testTehai.Tsumo(new Pai("1m"));
 
+
+            //pon infomation
+            var actor = 0;
+            var target = 3;
+            var furopai = new Pai("1m");
+            var consumed = new List<Pai> { new Pai("1m"), new Pai("1m") };
+            consumed.Sort();
+
+            Assert.IsTrue(testTehai.tehai.Contains(new Pai("1m")));
+
+            //execute pon
+            testTehai.Pon(actor, target, furopai, consumed);
+
+            //tsumo for kakan
+            testTehai.Tsumo(new Pai("1m"));
+
+            //kakan infomation
+            var kakanFuropai = new Pai("1m");
+            var kakanConsumed = new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") };
+            consumed.Sort();
+
+            //execute kakan
+            testTehai.Kakan(actor, kakanFuropai, kakanConsumed);
+
+
+            //フーロオブジェクトの構成が正しいか
+            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, testTehai.furos.LastOrDefault().ftype);
+            Assert.AreEqual(kakanFuropai, testTehai.furos.LastOrDefault().furopai);
+            CollectionAssert.AreEqual(kakanConsumed, testTehai.furos.LastOrDefault().consumed);
+
+            //晒した牌が手配に残っていないか
+            Assert.IsFalse(testTehai.tehai.Contains(new Pai("1m")));
+
+        }
 
     }
 }

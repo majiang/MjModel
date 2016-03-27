@@ -10,7 +10,7 @@ namespace MjModelLibrary
     public class Tehai
     {
         private ShantenCalclator shantenCanclator = ShantenCalclator.GetInstance();
-        private int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
+
         public List<Pai> tehai { get; set; }
         public List<Furo> furos { get; set; }
         public static readonly List<Pai> UNKNOWN_TEHAI_PAI = new List<Pai> 
@@ -263,7 +263,7 @@ namespace MjModelLibrary
 
         public int GetShanten()
         {
-            syu.Initialize();
+            int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
             foreach(var pai in tehai)
             {
                 syu[pai.PaiNumber]++;
@@ -272,9 +272,39 @@ namespace MjModelLibrary
 
         }
 
+        public int[] GetRealPaiNum()
+        {
+            int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
+            foreach (var pai in tehai)
+            {
+                syu[pai.PaiNumber]++;
+            }
+            foreach (var furo in furos)
+            {
+                syu[furo.furopai.PaiNumber]++;
+
+                foreach(var consumedpai in furo.consumed)
+                {
+                    syu[consumedpai.PaiNumber]++;
+                }
+            }
+
+            return syu;
+        }
+
+        public bool IsHora()
+        {
+            return GetShanten() == -1;
+        }
+
         public bool IsTenpai()
         {
             return GetShanten() == 0;
+        }
+
+        public bool IsMenzen()
+        {
+            return furos.Count - furos.Count(e => e.ftype == MJUtil.TartsuType.ANKANTSU) == 0;
         }
 
     }

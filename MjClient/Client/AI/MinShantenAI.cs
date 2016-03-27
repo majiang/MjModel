@@ -17,22 +17,38 @@ namespace MjClient.AI
         public event SendDahaiHandler SendDahai;
         public event SendAnkanHandler SendAnkan;
         public event SendKakanHandler SendKakan;
+        public event SendReachHandler SendReach;
+
+        public MJsonMessageDahai MessagebufferForReach;
 
 
 
         ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mypositionId">your ID</param>
+        /// <param name="dapaiActor">player ID who doropped pai</param>
+        /// <param name="pai">dopped pai name</param>
+        /// <param name="tehais">all player's tehais</param>
+        /// <param name="kawas">all player's discards</param>
+        /// <param name="field">field infomation</param>
         public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
-            SendNone();
+
+
+
+            SendNone(new MJsonMessageNone());
         }
 
         public void thinkOnTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
-            var nowShanten = tehais[mypositionId].GetShanten();
-
-
-            if (nowShanten == -1)
+            var myTehai = tehais[mypositionId];
+        
+            if (myTehai.IsHora())
             {
                 SendHora(new MJsonMessageHora(mypositionId, mypositionId, pai));
                 return;
@@ -40,9 +56,11 @@ namespace MjClient.AI
 
 
             var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
-
-            if (nowShanten == 0){
-
+            
+            if (myTehai.IsTenpai() )
+            {
+                MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString,false);
+                SendReach(new MJsonMessageReach(mypositionId));
             }
 
 

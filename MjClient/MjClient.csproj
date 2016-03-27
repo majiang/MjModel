@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\AI\AIBase.cs" />
+    <Compile Include="Client\AI\AIInterface.cs" />
     <Compile Include="Client\AI\MinShantenAI.cs" />
     <Compile Include="Client\ClientFacade.cs" />
     <Compile Include="Client\ClientMjModel.cs" />

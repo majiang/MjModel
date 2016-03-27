@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using MjServer.Result;
+using MjModelLibrary;
 
 namespace MjServer
 {
@@ -176,8 +176,8 @@ namespace MjServer
             var uradoraMarkers = yama.GetUradoraMarker();
             var ifr = infoForResult[actor];
             ifr.PassedTurn = yama.GetUsedYamaNum();
-            ifr.IsFured = tehais[actor].furos.Count > 0;
-            ifr.IsMenzen = !ifr.IsFured;
+            ifr.IsMenzen = tehais[actor].IsMenzen();
+            ifr.IsFured = !ifr.IsMenzen;
 
 
 

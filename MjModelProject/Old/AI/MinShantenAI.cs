@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MjServer.Result;
 using MjServer.Util;
+using MjModelLibrary;
 
 namespace MjServer.AI
 {

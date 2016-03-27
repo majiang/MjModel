@@ -9,7 +9,7 @@ namespace MjModelLibrary
 {
     public class Yama
     {
-        private bool USE_RED_DORA = false;
+        private bool USE_RED_DORA = true;
         private const int YAMA_LENGTH = 34*4;
         private const int WANPAI_LENGTH = 14;
         private const int DORA_START_POS = YAMA_LENGTH - WANPAI_LENGTH + 4;
@@ -51,7 +51,7 @@ namespace MjModelLibrary
                 ym[i] = new Pai(i >> 2);
             }
 
-            //赤ドラ設定 →なし。
+            //赤ドラ設定
             if (USE_RED_DORA)
             {
                 foreach (var redDora in PaiConverter.RED_DORA_STRING_ID)

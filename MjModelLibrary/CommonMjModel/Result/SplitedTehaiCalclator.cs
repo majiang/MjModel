@@ -20,12 +20,15 @@ namespace MjModelLibrary
     public static class SplitedTehaiCalclator
     {
 
-        public static SplitedTehai CalcSplitedTehai(Tehai tehai, string horaPai, bool isRon)
+        public static SplitedTehai CalcSplitedTehai(Tehai tehai, string horaPaiString, bool isRon)
         {
 
             //手配＆和了牌の牌の合計枚数をカウント
             int[] inHandSyu = new int[MJUtil.LENGTH_SYU_ALL];
             var redDoraCount = 0;
+            var horaPai = new Pai(horaPaiString);
+
+
             foreach (var pai in tehai.tehai)
             {
                 if (pai.IsRedDora)
@@ -36,13 +39,20 @@ namespace MjModelLibrary
             }
             if (isRon)
             {
-                inHandSyu[PaiConverter.STRING_TO_ID[horaPai]]++;
+                inHandSyu[PaiConverter.STRING_TO_ID[horaPaiString]]++;
             }
+
+            if (horaPai.IsRedDora && isRon)
+            {
+                redDoraCount++;
+            }
+
+
 
             TehaiSpliter ts = new TehaiSpliter();
 
             //手に残っている手配のターツ構成を全て算出
-            var splited = ts.SplitTehai(inHandSyu, tehai.furos, horaPai, isRon);
+            var splited = ts.SplitTehai(inHandSyu, tehai.furos, horaPaiString, isRon);
             
 
 
@@ -76,6 +86,8 @@ namespace MjModelLibrary
                 }
 
             }
+
+ 
 
             //赤ドラの枚数セット
             splited.RedDoraNum = redDoraCount;
@@ -330,7 +342,7 @@ namespace MjModelLibrary
                     work.Remove(ts);
                     syu[i] += 3;
                 }
-                if ((i <= 24) && ((syu[i] >= 1) && (syu[i + 1] >= 1) && (syu[i + 2] >= 1)))
+                if ((i <= 24) && ((syu[i] >= 1) && (syu[i + 1] >= 1) && (syu[i + 2] >= 1)) && ((i % 9) < 7)  )
                 {
                     syu[i]--;
                     syu[i + 1]--;

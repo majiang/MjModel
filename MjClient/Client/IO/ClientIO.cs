@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using MjClient.Logger;
 using MjNetworkProtocol;
 using System.Threading;
+using System.Diagnostics;
 
 namespace MjClient.IO
 {
@@ -56,10 +57,7 @@ namespace MjClient.IO
 
         private void SendMessage(string message)
         {
-            if (message == String.Empty)
-            {
-                return;
-            }
+            Debug.Assert(string.IsNullOrEmpty(message));
             
             if (tcpClient.Connected)
             {
@@ -71,28 +69,52 @@ namespace MjClient.IO
             }
         }
 
+        private string MjsonObjectToString(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public void SendMJsonObject(MJsonMessageJoin jsonmsg)
+        {
+            SendMessage(MjsonObjectToString(jsonmsg));
+        }
         public void SendMJsonObject(MJsonMessagePon jsonmsg)
         {
-            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+            SendMessage(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageChi jsonmsg)
         {
-            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+            SendMessage(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageDaiminkan jsonmsg)
         {
-            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+            SendMessage(MjsonObjectToString(jsonmsg));
         }
-        public void SendMJsonObject(object jsonmsg)
+        public void SendMJsonObject(MJsonMessageNone jsonmsg)
         {
-            SendMessage(JsonConvert.SerializeObject(jsonmsg));
+            SendMessage(MjsonObjectToString(jsonmsg));
         }
 
-
-        //CtoS
-        public void SendNone()
+        public void SendMJsonObject(MJsonMessageHora jsonmsg)
         {
-            SendMessage(JsonConvert.SerializeObject(new MJsonMessageNone()));
+            SendMessage(MjsonObjectToString(jsonmsg));
         }
+        public void SendMJsonObject(MJsonMessageDahai jsonmsg)
+        {
+            SendMessage(MjsonObjectToString(jsonmsg));
+        }
+        public void SendMJsonObject(MJsonMessageAnkan jsonmsg)
+        {
+            SendMessage(MjsonObjectToString(jsonmsg));
+        }
+        public void SendMJsonObject(MJsonMessageKakan jsonmsg)
+        {
+            SendMessage(MjsonObjectToString(jsonmsg));
+        }
+        public void SendMJsonObject(MJsonMessageReach jsonmsg)
+        {
+            SendMessage(MjsonObjectToString(jsonmsg));
+        }
+
     }
 }

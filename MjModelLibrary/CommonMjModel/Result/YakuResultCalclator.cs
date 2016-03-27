@@ -125,12 +125,12 @@ namespace MjModelLibrary
                 result.yakus = SelectYakuman(result.yakus);
             }
 
-
+            result.Han = CalcHanSum(result.yakus);
             return result;
         }
 
 
-        public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, Field field,int[] horaSyu, int redDoraNum)
+        public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, Field field,int[] horaSyu, int[] realPaiNum, int redDoraNum)
         {
             YakuResult result = new YakuResult();
 
@@ -202,9 +202,9 @@ namespace MjModelLibrary
             {
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHANKAN], yakuHanNum[(int)MJUtil.Yaku.CHANKAN] });
             }
-            if (ifr.CalcDoraNum(horaSyu) > 0)
+            if (ifr.CalcDoraNum(realPaiNum) > 0)
             {
-                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DORA], ifr.CalcDoraNum(horaSyu) });
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DORA], ifr.CalcDoraNum(realPaiNum) });
             }
             if (redDoraNum > 0)
             {
@@ -242,13 +242,14 @@ namespace MjModelLibrary
             }
             else
             {
-                if (IsChanta(horaMentsu))
-                {
-                    result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHANTA], yakuHanNum[(int)MJUtil.Yaku.CHANTA] });
-                }
+                //純チャンタと混チャンタは同時に成立しない
                 if (IsJunChanta(horaMentsu))
                 {
                     result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.JUNCHANTA], yakuHanNum[(int)MJUtil.Yaku.JUNCHANTA] });
+                }
+                else if (IsChanta(horaMentsu))
+                {
+                    result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHANTA], yakuHanNum[(int)MJUtil.Yaku.CHANTA] });
                 }
             }
 
@@ -358,7 +359,7 @@ namespace MjModelLibrary
 
             //頭が役牌の場合
             int headSyuId = horaMentsu.TartsuList.Where(e => e.IsHead()).First().TartsuStartPaiSyu;
-            if (ifpc.IsBafuu(headSyuId)) {
+            if (ifpc.Isbakaze(headSyuId)) {
                 fuSum += 2;
             }
             if (ifpc.IsJifuu(headSyuId)) {
@@ -417,7 +418,7 @@ namespace MjModelLibrary
             {
                 //カンチャンorペンチャンの場合
                 for (int i = 1; i < horaMentsu.TartsuList.Count; i++) {
-                    if ((horaMentsu.TartsuList[i].IsAnsyun() || horaMentsu.TartsuList[i].IsMinsyun()) == false)
+                    if ((horaMentsu.TartsuList[i].IsAnsyun() || (horaMentsu.TartsuList[i].IsMinsyun() && horaMentsu.TartsuList[i].IsRonedTartsu) ) == false)
                     {
                         continue;
                     }
@@ -448,7 +449,7 @@ namespace MjModelLibrary
             int headSyu = hp.Head.TartsuStartPaiSyu;
 
             //頭が役牌でないか判定
-            if (ifr.IsBafuu(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPai(headSyu))
+            if (ifr.Isbakaze(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPai(headSyu))
             {
                 return false;
             }
@@ -511,7 +512,7 @@ namespace MjModelLibrary
             }
 
             //4ターツ全てが門前順子またはロンした明順でない場合は終了
-            if (hp.TartsuList.Where(e => ( e.IsAnsyun() || (e.IsMinsyun() && e.IsRonedTartsu) ) == false ).Count() != 4)
+            if (hp.WithoutHeadTartsuList.Count( e => e.IsAnsyun() || (e.IsMinsyun()&&e.IsRonedTartsu) ) != 4)
             {
                 return false;
             }
@@ -555,7 +556,7 @@ namespace MjModelLibrary
             foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
                 if (ifr.IsJifuu(tartsu.TartsuStartPaiSyu) 
-                    || ifr.IsBafuu(tartsu.TartsuStartPaiSyu)
+                    || ifr.Isbakaze(tartsu.TartsuStartPaiSyu)
                     || MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu)
                     )
                 {
@@ -575,7 +576,7 @@ namespace MjModelLibrary
                 {
                     yakuhaiNum++;
                 }
-                if (ifr.IsBafuu(tartsu.TartsuStartPaiSyu))
+                if (ifr.Isbakaze(tartsu.TartsuStartPaiSyu))
                 {
                     yakuhaiNum++;
                 }

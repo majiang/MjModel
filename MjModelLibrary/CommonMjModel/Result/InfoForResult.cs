@@ -33,7 +33,7 @@ namespace MjModelLibrary
 
         private int myPositionId;
         private List<Pai> jifuuList = new List<Pai>();
-        private List<Pai> bafuuList = new List<Pai>();
+        private List<Pai> bakazeList = new List<Pai>();
         private static readonly List<Pai> WindList = new List<Pai>() { new Pai("E"), new Pai("S"), new Pai("W"), new Pai("N") }; 
 
         public InfoForResult(int gameId = 1, int myPositionId = 0, string bakaze = "E")
@@ -43,7 +43,7 @@ namespace MjModelLibrary
             this.myPositionId = myPositionId;
             IsOya = (zeroIdxGameId % 4) == myPositionId;
 
-            bafuuList.Add(WindList.Where(e => e.PaiString == bakaze).First());
+            bakazeList.Add(WindList.Where(e => e.PaiString == bakaze).First());
 
             var jifuuIndex = (myPositionId - (zeroIdxGameId % 4) + 4) % 4;
             jifuuList.Add(WindList[jifuuIndex]);
@@ -65,20 +65,15 @@ namespace MjModelLibrary
         }
 
 
-        public bool IsDora(int id) { 
-            
-            var targetDoraOmote = MJUtil.GetDoraOmote(id);
-            if ( IsReach )
-            {
-                return doraOmoteMultiple[targetDoraOmote] > 0 || uradoraOmoteMultiple[targetDoraOmote] > 0;
-            }
-            return doraOmoteMultiple[targetDoraOmote] > 0;
+        public bool IsDora(int id)
+        {    
+           return GetDoraMultiple(id) > 0;
         }
 
         public int GetDoraMultiple(int id)
         {
             var targetDoraOmote = MJUtil.GetDoraOmote(id);
-            if (IsReach)
+            if (IsReach || IsDoubleReach)
             {
                 return doraOmoteMultiple[targetDoraOmote] + uradoraOmoteMultiple[targetDoraOmote];
             }
@@ -112,18 +107,18 @@ namespace MjModelLibrary
         {
             return jifuuList.Count( e => e.PaiString == pai) > 0;
         }
-        public bool IsBafuu(string pai)
+        public bool Isbakaze(string pai)
         {
-            return bafuuList.Count(e => e.PaiString == pai) > 0;
+            return bakazeList.Count(e => e.PaiString == pai) > 0;
         }
 
         public bool IsJifuu(int paiId)
         {
             return jifuuList.Count(e => e.PaiNumber == paiId) > 0;
         }
-        public bool IsBafuu(int paiId)
+        public bool Isbakaze(int paiId)
         {
-            return bafuuList.Count(e => e.PaiNumber == paiId) > 0;
+            return bakazeList.Count(e => e.PaiNumber == paiId) > 0;
         }
 
         public void SetLastAddedPai(Pai pai)

@@ -1,13 +1,16 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MjServer;
-using System.Diagnostics;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MjModelLibrary;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace MjModelProjectTests
+namespace MjModelLibrary.Tests
 {
-    [TestClass]
-    public class YamaTest
+    [TestClass()]
+    public class YamaTests
     {
         private const int FIRST_YAMA_LENGTH = 4 * 34 - 14;
         [TestMethod]
@@ -18,14 +21,14 @@ namespace MjModelProjectTests
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
             foreach (var omote in testYama.GetDoraMarkers())
             {
-                Debug.WriteLine("Dora = "+omote.PaiString);
+                Console.WriteLine("Dora = " + omote.PaiString);
             }
 
 
 
-            while( testYama.GetRestYamaNum() > 0 )
+            while (testYama.GetRestYamaNum() > 0)
             {
-                Debug.WriteLine(testYama.DoTsumo().PaiString);
+                Console.WriteLine(testYama.DoTsumo().PaiString);
             }
         }
 
@@ -36,22 +39,21 @@ namespace MjModelProjectTests
             Yama testYama = new Yama();
 
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
-            
-            Debug.WriteLine(testYama.DoRinshan().PaiString);
+
+            Console.WriteLine(testYama.DoRinshan().PaiString);
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH - 1);
             Assert.IsTrue(testYama.CanKan());
-            
-            Debug.WriteLine(testYama.DoRinshan().PaiString);
+
+            Console.WriteLine(testYama.DoRinshan().PaiString);
             Assert.IsTrue(testYama.CanKan());
-            
-            Debug.WriteLine(testYama.DoRinshan().PaiString);
+
+            Console.WriteLine(testYama.DoRinshan().PaiString);
             Assert.IsTrue(testYama.CanKan());
-            
-            Debug.WriteLine(testYama.DoRinshan().PaiString);
+
+            Console.WriteLine(testYama.DoRinshan().PaiString);
             Assert.IsFalse(testYama.CanKan());
 
         }
-
 
     }
 }

@@ -14,10 +14,12 @@ namespace MjModelLibrary
         public int RonedPlayerOutcome;
         public int HoraPlayerIncome;
         public bool HoraIsTsumo;
+
     }
 
     public static class PointResultCalclator
     {
+        private static bool UseKiriageMangan = false;
         private static readonly int BASE_POINT_YAKUMAN = 8000;
         private static readonly int BASE_POINT_SANBAIMAN = 6000;
         private static readonly int BASE_POINT_BAIMAN = 4000;
@@ -72,8 +74,12 @@ namespace MjModelLibrary
             {
                 return BASE_POINT_YAKUMAN;
             }
-            //数え役満はなし
-            if (han >= 11)
+            //数え役満
+            if (han >= 13)
+            {
+                return BASE_POINT_YAKUMAN;
+            }
+            else if (han >= 11)
             {
                 return BASE_POINT_SANBAIMAN;
             }
@@ -90,12 +96,21 @@ namespace MjModelLibrary
                 return BASE_POINT_MANGAN;
             }
 
-            //飜数が4翻以下の場合は、マンガンの基準点を超えないようにする
+            //飜数が4翻以下の場合は、マンガンの基準点を超えていても満貫の基準点が上限となる
             var basePoint = (int)(fu * Math.Pow(2, han + 2));
             if (basePoint > BASE_POINT_MANGAN)
             {
-                //マンガン扱い
+                //基準点が満貫の基準点を超えていたら満貫扱い
                 return BASE_POINT_MANGAN;
+            }
+
+            if (UseKiriageMangan)
+            {
+                if( (fu == 30) && (han == 4))
+                {
+                    //切り上げ満貫有りの場合は30譜4翻は満貫扱い
+                    return BASE_POINT_MANGAN;
+                }
             }
             return basePoint;
         }
