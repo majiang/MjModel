@@ -71,7 +71,7 @@
     <Content Include="shanten_benchmark_data.num.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="HoraPatternOutput.log" />
+    <None Include="HoraPatternOutputSmall.log" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>
