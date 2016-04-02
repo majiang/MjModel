@@ -66,7 +66,6 @@ namespace MjModelLibrary.Tests
                 {
                     var lineNumber = 0;
 
-
                     while (true)
                     {
                         string line = sr.ReadLine();
