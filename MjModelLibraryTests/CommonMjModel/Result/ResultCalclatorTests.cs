@@ -127,7 +127,7 @@ namespace MjModelLibrary.Tests
                             tehai.tehai.Add(new Pai(lastAddedPai));
                         }
 
-                        /*
+                        
                         var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
                         var myPointResult = result.pointResult.HoraPlayerIncome;
 
@@ -142,7 +142,7 @@ namespace MjModelLibrary.Tests
                             result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
                         }
                         Assert.AreEqual(expected, myPointResult);
-                        */
+                        
 
                     }
                 }
