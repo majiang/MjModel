@@ -62,7 +62,7 @@ namespace MjModelLibrary.Tests
             [TestMethod]
             public void テストデータ使用テスト()
             {
-                using (StreamReader sr = new StreamReader(@"../../HoraPatternOutputSmall.log", Encoding.GetEncoding("shift_jis")))
+                using (StreamReader sr = new StreamReader(@"../../HoraPatternOutputSmall.txt", Encoding.GetEncoding("shift_jis")))
                 {
                     var lineNumber = 0;
 
