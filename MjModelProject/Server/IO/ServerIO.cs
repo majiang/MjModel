@@ -18,7 +18,7 @@ namespace MjServer.N_IO
         {
             messageSender = new MessageSender();
             messagaeReciver = new MessageReciever();
-            //
+            
         }
 
 
