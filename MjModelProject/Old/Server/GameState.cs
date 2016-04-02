@@ -78,7 +78,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -109,7 +109,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -185,7 +185,7 @@ namespace MjServer
             }
             else
             {
-                //error handring
+                //error handling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -266,7 +266,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -299,7 +299,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -328,7 +328,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -368,7 +368,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -413,7 +413,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -483,7 +483,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -515,7 +515,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -548,7 +548,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
@@ -587,7 +587,7 @@ namespace MjServer
             }
             else
             {
-                //errorhandring
+                //errorhandling
                 serverController.SendErrorToRoomMember(msgobj);
             }
             return this;
