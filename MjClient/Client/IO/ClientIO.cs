@@ -23,7 +23,7 @@ namespace MjClient.IO
         string lineBreakMark = "\r\n";
 
 
-        string ipAddress = "104.214.151.136";
+        string ipAddress = "127.0.0.1";
         int port = 11600;
         TcpClient tcpClient;
         public ClientIO(){}
@@ -57,7 +57,11 @@ namespace MjClient.IO
 
         private void SendMessage(string message)
         {
-            Debug.Assert(string.IsNullOrEmpty(message));
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+            //Debug.Assert(string.IsNullOrEmpty(message));
             
             if (tcpClient.Connected)
             {

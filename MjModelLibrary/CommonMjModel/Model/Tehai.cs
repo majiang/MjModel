@@ -297,6 +297,18 @@ namespace MjModelLibrary
 
         }
 
+
+        public int GetShanten(string targetPai)
+        {
+            int[] syu = new int[MJUtil.LENGTH_SYU_ALL];
+            syu[PaiConverter.STRING_TO_ID[targetPai]]++;
+            foreach (var pai in tehai)
+            {
+                syu[pai.PaiNumber]++;
+            }
+            return shantenCanclator.CalcShantenWithFuro(syu, furos.Count);
+        }
+
         public int[] GetRealPaiNum()
         {
             int[] syu = new int[MJUtil.LENGTH_SYU_ALL];

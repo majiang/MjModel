@@ -16,7 +16,7 @@ namespace MjClient
         public Field field { get; set; }
 
         public int currentActor;
-        public List<InfoForResult> infoForResult { get; set; }
+        public List<InfoForResult> infoForResults { get; set; }
 
         public List<int> points { get; set; }
         private int myPositionId;
@@ -30,7 +30,7 @@ namespace MjClient
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-            infoForResult = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
+            infoForResults = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
             points = new List<int> { 25000, 25000, 25000, 25000 };
             currentActor = 0;
         }
@@ -47,14 +47,18 @@ namespace MjClient
         {
             field = new Field(kyoku, honba, kyotaku, bakaze);
             currentActor = 0;
-            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, bakaze), new InfoForResult(field.KyokuId, 1, bakaze), new InfoForResult(field.KyokuId, 2, bakaze), new InfoForResult(field.KyokuId, 3, bakaze) };
+            infoForResults = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, bakaze), new InfoForResult(field.KyokuId, 1, bakaze), new InfoForResult(field.KyokuId, 2, bakaze), new InfoForResult(field.KyokuId, 3, bakaze) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
         }
 
         public void Tsumo(int actor, string pai)
         {
-            tehais[actor].Tsumo(pai);
+            if (actor == myPositionId)
+            {
+                tehais[actor].Tsumo(pai);   
+            }
+
         }
 
         public void Dahai(int actor, string pai, bool tsumogiri)
@@ -93,17 +97,16 @@ namespace MjClient
 
         public void Ankan(int actor, List<string> consumed)
         {
-            throw new NotImplementedException();
+
         }
 
         public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+
         }
 
         public void Reach(int actor)
         {
-            throw new NotImplementedException();
         }
         public void ReachAccept(int actor, List<int> delta, List<int> scores)
         {
@@ -111,15 +114,18 @@ namespace MjClient
             this.points = points;
         }
 
+        public void Dora(string newDoraMarker)
+        {
+            infoForResults.ForEach(e => e.RegisterDoraMarker(newDoraMarker));
+        }
 
         public void Hora(int actor, int target, string pai, List<string> uradora_markers, List<string> hora_tehais, List<List<object>> yakus, int fu, int fan, int hora_points, List<int> deltas, List<int> scores)
         {
-            throw new NotImplementedException();
+
         }
 
         public void None()
         {
-            throw new NotImplementedException();
         }
 
         public void Ryuukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
@@ -140,13 +146,12 @@ namespace MjClient
           
             return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
             
-            return false;
         }
 
         public bool CanReach(int playerId)
         {
             return ( shantenCalclator.CalcShanten(tehais[playerId]) <= 0) 
-                && ( (infoForResult[playerId].IsDoubleReach || infoForResult[playerId].IsReach) == false );
+                && ( (infoForResults[playerId].IsDoubleReach || infoForResults[playerId].IsReach) == false );
         }
 
         public bool CanTsumoHora()
@@ -172,13 +177,13 @@ namespace MjClient
 
         public void SetReach(int actor)
         {
-            if (yama.GetUsedYamaNum() > 4 && infoForResult.Count(e => e.IsFured) == 0)
+            if (yama.GetUsedYamaNum() > 4 && infoForResults.Count(e => e.IsFured) == 0)
             {
-                infoForResult[actor].IsDoubleReach = true;
+                infoForResults[actor].IsDoubleReach = true;
             }
             else
             {
-                infoForResult[actor].IsReach = true;
+                infoForResults[actor].IsReach = true;
             }
             field.AddKyotaku();
         }

@@ -101,15 +101,15 @@ namespace MjClient
         /// <param name="message">message</param>
         void MessageFromServerHandler(string message)
         {
-            //if (msssageValidater.Validate(message) == false)
-            //{
-            //    clientLogger.Log("invalid message : " + message);
-            //    return;
-            //}
+            // don't verify message because clients can trust messages from server 
             clientLogger.Log(message);
             clientRouter.RouteGetMessage(message);
         }
-        
+
+        /// <summary>
+        /// callback for Hello message which is sent when client connects server.
+        /// clients must send none(no action) message in this function.
+        /// </summary>
         void OnHello()
         {
             var startMessage = new MJsonMessageJoin(playerName, roomName);
@@ -118,6 +118,7 @@ namespace MjClient
 
         /// <summary>
         /// callback for StartGame message.
+        /// clients must send none(no action) message in this function.
         /// </summary>
         /// <param name="id">client's id (0~3)</param>
         /// <param name="names">all player names</param>
@@ -131,6 +132,7 @@ namespace MjClient
 
         /// <summary>
         /// callback for StartKyoku message.
+        /// clients must send none(no action) message in this function.
         /// </summary>
         /// <param name="bakaze">bakaze</param>
         /// <param name="kyoku">kyoku id (1-4)</param>
@@ -148,27 +150,35 @@ namespace MjClient
         
         /// <summary>
         /// callback for Tsumo message
+        /// clients must send dahai, ankan, kakan, reach or none(no action) message in this function.
         /// </summary>
         /// <param name="actor">tsumo player</param>
         /// <param name="pai">tumo pai</param>
         void OnTsumo(int actor, string pai)
-        {   
-            if(actor != myPositionId)
+        {
+            clientMjModel.Tsumo(actor, pai);
+
+            if (actor == myPositionId)
+            {
+                
+                ai.thinkOnTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
+
+            }
+            else
             {
                 clientIO.SendMJsonObject(new MJsonMessageNone());
-                return;
             }
 
-            clientMjModel.Tsumo(myPositionId, pai);
-            ai.thinkOnTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field);
+
         }
 
         /// <summary>
-        /// callback for Dahai
+        /// callback for Dahai message.
+        /// clients must send hora, pon, chi, daiminkan or none(no action) message in this function.
         /// </summary>
         /// <param name="actor">dahai player</param>
         /// <param name="pai">drop pai</param>
-        /// <param name="tsumogiri"></param>
+        /// <param name="tsumogiri">true means discard pai and tumo pai is same</param>
         internal void OnDahai(int actor, string pai, bool tsumogiri)
         {
 
@@ -181,15 +191,20 @@ namespace MjClient
             clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 
+        /// <summary>
+        ///  callback for Pon message.
+        ///  clients must send dahai or none(no action) message in this function.
+        /// </summary>
+        /// <param name="actor">pon player</param>
+        /// <param name="target">poned player</param>
+        /// <param name="pai">pon get pai</param>
+        /// <param name="consumed">pon player show pais</param>
         void OnPon(int actor, int target, string pai, List<string> consumed)
         {
             clientMjModel.Pon(actor, target, pai, consumed);
             if (actor == myPositionId)
             {
-                var tsumogiri = false;
-                ai.thinkOnTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field);
-                var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count - 1];
-                clientIO.SendMJsonObject(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
+                ai.thinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
             }
             else
             {
@@ -197,14 +212,20 @@ namespace MjClient
             }
         }
 
+        /// <summary>
+        /// callback for Chi message.
+        /// clients must send dahai or none(no action) message in this function.
+        /// </summary>
+        /// <param name="actor">chi player</param>
+        /// <param name="target">chied player</param>
+        /// <param name="pai">chi get pai</param>
+        /// <param name="consumed">chi player show pais</param>
         void OnChi(int actor, int target, string pai, List<string> consumed)
         {
             clientMjModel.Chi(actor, target, pai, consumed);
             if (actor == myPositionId)
             {
-                var tsumogiri = false;
-                var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count-1];
-                clientIO.SendMJsonObject(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
+                ai.thinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
             }
             else
             {
@@ -226,25 +247,28 @@ namespace MjClient
 
         void OnDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
+            clientMjModel.Daiminkan(actor, target, pai, consumed);
             clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 
-        void OnDora(string pai)
+        void OnDora(string doraMarker)
         {
+            clientMjModel.Dora(doraMarker);
             clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnReach(int actor)
         {
 
-            //if (actor == myPositionId)
-            //{
-            //    clientIO.SendMJsonObject();
-            //}
-            //else
-            //{
-            //    clientIO.SendNone();
-            //}
+
+            if (actor == myPositionId)
+            {
+                clientIO.SendMJsonObject(ai.MessagebufferForReach);
+            }
+            else
+            {
+                clientIO.SendMJsonObject(new MJsonMessageNone());
+            }
         }
 
         void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
@@ -255,6 +279,7 @@ namespace MjClient
 
         void OnHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, List<List<object>> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
         {
+            clientMjModel.Hora(actor, target, pai, uradoraMarkers, horaTehais, yakus, fu, fan, horaPoints, deltas, scores);
             clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 
@@ -265,7 +290,6 @@ namespace MjClient
 
         void OnEndKyoku()
         {
-
             clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 

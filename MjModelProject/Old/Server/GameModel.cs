@@ -198,10 +198,12 @@ namespace MjServer
             horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
 
 
-            
+
 
             //場況を更新
             //TODO  delta と pointResult
+
+            field = Field.ChangeOnHora(field, actor);
 
 
             return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
@@ -258,7 +260,7 @@ namespace MjServer
 
         public bool CanEndGame()
         {
-            return field.KyokuId == Constants.KYOKU_NUM;
+            return field.KyokuId == 1 && field.Bakaze.PaiString == "S";
         }
 
 

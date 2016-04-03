@@ -15,7 +15,7 @@ namespace MjModelLibrary
         public int Kyotaku { get; private set; }
         public int OyaPlayerId { get; private set; }//0~3
         public Pai Bakaze { get; private set; }
-        private bool[] isReach;
+
 
         private static List<Pai> bakazeTemplate = new List<Pai>() { new Pai("E"), new Pai("S"), new Pai("W"), new Pai("N") };
 
@@ -27,7 +27,6 @@ namespace MjModelLibrary
             Kyotaku = 0;
             OyaPlayerId = getOyaPlayerID(1);//start kyoku id = 1, start oya player id = 0
             Bakaze = bakazeTemplate[0];
-            isReach = new bool[Constants.PLAYER_NUM];
         }
 
         public Field(int kyokuid, int honba, int kyotaku, string bakaze)
@@ -38,7 +37,6 @@ namespace MjModelLibrary
             Kyotaku = kyotaku;
             OyaPlayerId = getOyaPlayerID(kyokuid);
             Bakaze = new Pai(bakaze);
-            isReach = new bool[Constants.PLAYER_NUM];
         }
 
 
@@ -47,6 +45,16 @@ namespace MjModelLibrary
             return (kyokuId-1) % 4;
         }
 
+        public static Field ChangeOnHora(Field fld, int horaActor)
+        {
+
+            var nextKyokuId = horaActor == fld.OyaPlayerId ? fld.KyokuId : (4 + fld.OyaPlayerId + 1) % 4 + 1;
+            var nextHonba = horaActor == fld.OyaPlayerId ? fld.Honba++ : 0;
+            var nextkyotaku = 0;
+            var nextBakaze = nextKyokuId == 1 && fld.KyokuId == 4 ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
+
+            return new Field(nextKyokuId, nextHonba, nextkyotaku, nextBakaze.PaiString);
+        }
 
 
         public static Field ChangeOnRyukyoku(Field fld, List<bool> tenpais)
@@ -54,7 +62,7 @@ namespace MjModelLibrary
             var nextKyokuId = tenpais[fld.OyaPlayerId] ? fld.KyokuId : (4 + fld.OyaPlayerId + 1)%4 + 1;
             var nextHonba = fld.Honba++;
             var nextkyotaku = fld.Kyotaku;
-            var nextBakaze = nextKyokuId == 1 ? fld.Bakaze : getNextBakaze(fld.Bakaze);
+            var nextBakaze = nextKyokuId == 1 && fld.KyokuId == 4 ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
 
             return new Field(nextKyokuId, nextHonba, nextkyotaku, nextBakaze.PaiString);
         }
@@ -64,16 +72,7 @@ namespace MjModelLibrary
             Kyotaku += Constants.REACH_POINT;
         }
 
-        public void SetReach(int playerId)
-        {
-            AssertIdIsInPlayerIdRange(playerId);
-             isReach[playerId] = true;
-        }
-        public bool IsReach(int playerId)
-        {
-            AssertIdIsInPlayerIdRange(playerId);
-            return isReach[playerId];
-        }
+
 
         private static Pai getNextBakaze(Pai bakaze)
         {

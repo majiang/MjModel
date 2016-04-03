@@ -28,7 +28,8 @@ namespace MjClient.AI
 
 
         /// <summary>
-        /// 
+        /// think action after other player.
+        /// this function must send hora, pon, chi, daiminkan or none message.
         /// </summary>
         /// <param name="mypositionId">your ID</param>
         /// <param name="dapaiActor">player ID who doropped pai</param>
@@ -36,15 +37,29 @@ namespace MjClient.AI
         /// <param name="tehais">all player's tehais</param>
         /// <param name="kawas">all player's discards</param>
         /// <param name="field">field infomation</param>
-        public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
+        public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
+                                              List<Kawa> kawas, Field field, List<InfoForResult> ifrs)
         {
-
-
+            if(ifrs[mypositionId].IsReach && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1)
+            {
+                SendHora(new MJsonMessageHora(mypositionId,dapaiActor, pai));
+                return;
+            }
 
             SendNone(new MJsonMessageNone());
         }
 
-        public void thinkOnTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
+        /// <summary>
+        /// think action after my tumo.
+        /// this function must send hora, ankan, kakan, reach or dahai message.
+        /// </summary>
+        /// <param name="mypositionId">my id</param>
+        /// <param name="pai">tsumo pai</param>
+        /// <param name="tehais">my tehai</param>
+        /// <param name="kawas">all player kawa</param>
+        /// <param name="field">field infomation</param>
+        public void thinkOnTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+                                 Field field, List<InfoForResult> ifrs)
         {
             var myTehai = tehais[mypositionId];
         
@@ -57,12 +72,24 @@ namespace MjClient.AI
 
             var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
             
-            if (myTehai.IsTenpai() )
+            if (myTehai.IsTenpai() && ifrs[mypositionId].IsReach == false)
             {
                 MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString,false);
                 SendReach(new MJsonMessageReach(mypositionId));
+                return;
             }
 
+            SendDahai(new MJsonMessageDahai(mypositionId, dahaiPaiString, dahaiPaiString == pai));
+
+        }
+        public void thinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+                                 Field field, List<InfoForResult> ifrs)
+        {
+            var myTehai = tehais[mypositionId];
+
+            var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
+
+            SendDahai(new MJsonMessageDahai(mypositionId, dahaiPaiString, dahaiPaiString == pai));
 
         }
 

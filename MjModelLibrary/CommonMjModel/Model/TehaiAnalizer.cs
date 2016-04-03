@@ -39,14 +39,13 @@ namespace MjModelLibrary.CommonMjModel.Model
             }
             else
             {
-                return false;
-                //                return CanHoraInOtherPlayerDoroped(tehai, ifr, field, dapaiActor, playerId, pai);
+                return CanHoraInRon(tehai, ifr, field, dapaiActor, playerId, pai);
             }
         }
 
         private bool CanHoraIntsumo(Tehai tehai, InfoForResult ifr, Field field, int dapaiActor, int playerId, string pai)
         {
-            if( tehai.GetShanten() == -1)
+            if( tehai.GetShanten() == -1 )
             {
                 var horaResult = ResultCalclator.CalcHoraResult(tehai, ifr, field, pai);
                 if (horaResult.yakuResult.HasYakuExcludeDora)
@@ -57,7 +56,19 @@ namespace MjModelLibrary.CommonMjModel.Model
             return false;
         }
 
-
+        private bool CanHoraInRon(Tehai tehai, InfoForResult ifr, Field field, int dapaiActor, int playerId, string pai)
+        {
+           
+            if (tehai.GetShanten(pai) == -1)
+            {
+                var horaResult = ResultCalclator.CalcHoraResult(tehai, ifr, field, pai);
+                if (horaResult.yakuResult.HasYakuExcludeDora)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
     }
 }

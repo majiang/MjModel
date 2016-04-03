@@ -29,7 +29,7 @@ namespace MjServer
             System.Net.IPAddress ipAdd = IPAddress.Loopback;//LAN
             //System.Net.IPAddress ipAdd = IPAddress.Any;//WAN
 
-            int port = 11452;
+            int port = 11600;
             TcpListener server = new TcpListener(ipAdd, port);
 
             server.Start();

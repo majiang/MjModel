@@ -507,6 +507,7 @@ namespace MjServer
                 
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
+                   
                     serverController.SendEndkyoku();
                     getMsgList.Dispose();
 
