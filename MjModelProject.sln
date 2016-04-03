@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjServer", "MjModelProject\MjServer.csproj", "{B85A34E7-3992-4867-BFC4-B352E820D005}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldMjServer", "MjModelProject\OldMjServer.csproj", "{B85A34E7-3992-4867-BFC4-B352E820D005}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjServerTests", "MjModelProjectTests\MjServerTests.csproj", "{08C47627-2DA1-4690-86D3-54AB37D6DBA3}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjClientTests", "MjClientTest\MjClientTests.csproj", "{E41E0731-F792-4B52-B67F-129734A57F67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjModelLibraryTests", "MjModelLibraryTests\MjModelLibraryTests.csproj", "{DB58E91C-B895-4FAD-A424-41EEEBE860BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjServer", "MjServer\MjServer.csproj", "{2E1D0311-D9E0-4B68-A172-56972B2CF46A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{DB58E91C-B895-4FAD-A424-41EEEBE860BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB58E91C-B895-4FAD-A424-41EEEBE860BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB58E91C-B895-4FAD-A424-41EEEBE860BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

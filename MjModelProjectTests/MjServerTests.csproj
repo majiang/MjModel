@@ -64,9 +64,9 @@
       <Project>{b2cdbbce-0f5c-4b4b-a457-18575c71e85d}</Project>
       <Name>MjModelLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MjModelProject\MjServer.csproj">
+    <ProjectReference Include="..\MjModelProject\OldMjServer.csproj">
       <Project>{B85A34E7-3992-4867-BFC4-B352E820D005}</Project>
-      <Name>MjServer</Name>
+      <Name>OldMjServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
