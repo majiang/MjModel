@@ -94,16 +94,16 @@ namespace MjModelLibrary
         {
             Chi(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
-
+        public void ChiOnlyMakeFuro(int actor, int target, string pai, List<string> consumed)
+        {
+            furos.Add(new Furo(MJUtil.TartsuType.MINSYUN, target, new Pai(pai), ConsumedStringToConsumedPai(consumed)));
+        }
 
 
         public void Pon(int actor, int target, Pai pai, List<Pai> consumed)
         {
-            if (!IsValidConsumed(consumed))
-            {
-                Console.Write("invalied naki! @Tehai_Pon");
-                return;
-            }
+
+
             //remove consumed
             foreach (var consumedPai in consumed)
             {
@@ -117,7 +117,10 @@ namespace MjModelLibrary
         {
             Pon(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
-
+        public void PonOnlyMakeFuro(int actor, int target, string pai, List<string> consumed)
+        {
+            furos.Add(new Furo(MJUtil.TartsuType.MINKO, target, new Pai(pai), ConsumedStringToConsumedPai(consumed)));
+        }
 
         public void Daiminkan(int actor, int target, Pai pai, List<Pai> consumed)
         {
@@ -138,6 +141,10 @@ namespace MjModelLibrary
         public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
             Daiminkan(actor, target, new Pai(pai), ConsumedStringToConsumedPai(consumed));
+        }
+        public void DaiminkanOnlyMakeFuro(int actor, int target, string pai, List<string> consumed)
+        {
+            furos.Add(new Furo(MJUtil.TartsuType.MINKANTSU, target, new Pai(pai), ConsumedStringToConsumedPai(consumed)));
         }
 
 
@@ -161,7 +168,10 @@ namespace MjModelLibrary
         {
             Ankan(actor, ConsumedStringToConsumedPai(consumed));
         }
-
+        public void AnkanOnlyMakeFuro(int actor, List<string> consumed)
+        {
+            furos.Add(new Furo(MJUtil.TartsuType.ANKANTSU, actor, new Pai(), ConsumedStringToConsumedPai(consumed)));//暗槓は牌がすべてconsumedに入る。対象牌は空文字とする
+        }
 
         public void Kakan(int actor, Pai pai, List<Pai> consumed)
         {
@@ -189,7 +199,22 @@ namespace MjModelLibrary
         {
             Kakan(actor,new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
+        public void KakanOnlyMakeFuro(int actor, string paiString, List<string> consumed)
+        {
+            var pai = new Pai(paiString);
+            //change pon to kakan
+            foreach (var furo in furos)
+            {
+                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
+                {
+                    furo.ftype = MJUtil.TartsuType.MINKANTSU;
+                    furo.consumed.Add(pai);
+                    furo.consumed.Sort();
+                    break;
+                }
+            }
 
+        }
 
         private bool IsValidConsumed(List<Pai> consumed)
         {
