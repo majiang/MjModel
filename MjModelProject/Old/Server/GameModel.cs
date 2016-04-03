@@ -171,7 +171,7 @@ namespace MjServer
             //ToDo validate Hora
 
 
-            //actorとtargetが異なる場合はロン和了であり手配にはロン牌が含まれていないためツモ和了とは別の求め方をする
+            
             
             var uradoraMarkers = yama.GetUradoraMarker();
             var ifr = infoForResult[actor];
@@ -183,11 +183,13 @@ namespace MjServer
 
             if (actor == target)
             {
+                // tsumo
                 ifr.IsHaitei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = true;
             }
             else
             {
+                //ron
                 infoForResult[actor].SetLastAddedPai(pai);
                 ifr.IsHoutei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = false;
@@ -252,10 +254,7 @@ namespace MjServer
         }
 
 
-        private Field CreateNextKyokuField(int kyokuID, int honba, int kyotaku)
-        {
-            return new Field(kyokuID, honba, kyotaku);
-        }
+
 
         public bool CanEndGame()
         {
