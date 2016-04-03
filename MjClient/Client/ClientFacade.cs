@@ -65,10 +65,6 @@ namespace MjClient
             clientMjModel = new ClientMjModel();
 
 
-            // messageanalyzer
-            // player
-
-
             //ai
             ai = new MinShantenAI();
             ai.SendPon += clientIO.SendMJsonObject;
@@ -178,7 +174,8 @@ namespace MjClient
 
             clientMjModel.Dahai(actor, pai, tsumogiri);
 
-            ai.thinkOnOtherPlayerDoroped(myPositionId,actor,pai,clientMjModel.tehais,clientMjModel.kawas, clientMjModel.field);
+            // ai think action 
+            //ai.thinkOnOtherPlayerDoroped(myPositionId,actor,pai,clientMjModel.tehais,clientMjModel.kawas, clientMjModel.field);
 
             // do nothing
             clientIO.SendMJsonObject(new MJsonMessageNone());
@@ -190,6 +187,7 @@ namespace MjClient
             if (actor == myPositionId)
             {
                 var tsumogiri = false;
+                ai.thinkOnTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field);
                 var lastPai = clientMjModel.tehais[actor].tehai[clientMjModel.tehais[actor].tehai.Count - 1];
                 clientIO.SendMJsonObject(new MJsonMessageDahai(actor, lastPai.PaiString, tsumogiri));
             }
