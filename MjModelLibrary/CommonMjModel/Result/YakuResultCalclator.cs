@@ -21,6 +21,7 @@ namespace MjModelLibrary
         public bool IsYakuman;
         public bool IsTsumo;
         public bool IsOya;
+        public bool HasYakuExcludeDora;
     }
 
 
@@ -126,6 +127,9 @@ namespace MjModelLibrary
             }
 
             result.Han = CalcHanSum(result.yakus);
+
+            result.HasYakuExcludeDora = CalcHanSumWithoutDora(result.yakus) > 0;
+
             return result;
         }
 
@@ -339,6 +343,8 @@ namespace MjModelLibrary
 
             //飜数計算
             result.Han = CalcHanSum(result.yakus);
+
+            result.HasYakuExcludeDora = CalcHanSumWithoutDora(result.yakus) > 0;
             return result;
         }
 
@@ -588,97 +594,7 @@ namespace MjModelLibrary
             return yakuhaiNum;
         }
 
-
-        //private static bool IsDora(HoraPattern hp, InfoForResult ifr)
-        //{
-            
-        //    foreach (var tartsu in hp.TartsuList)
-        //    {
-        //        if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
-        //        {
-        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
-        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
-        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
-        //            {
-        //                return true;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-        //            {
-        //                return true;
-        //            }
-        //        }
-        //    }
-        //    return false;
-        //}
-
-        //private static bool IsDora(InfoForResult ifr, int[] horaSyu)
-        //{
-        //    return ifr.CalcDoraNum(horaSyu) > 0;
-        //}
-
-
-        //private static int CalcDoraNum(HoraPattern hp, InfoForResult ifr)
-        //{
-        //    //赤ドラはカウントしない
-        //    var doraNum = 0;
-        //    foreach (var tartsu in hp.TartsuList)
-        //    {
-        //        if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN || tartsu.TartsuType == MJUtil.TartsuType.MINSYUN)
-        //        {
-        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu) ||
-        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 1) ||
-        //                 ifr.IsDora(tartsu.TartsuStartPaiSyu + 2))
-        //            {
-        //                doraNum++;
-        //            }
-        //        }
-        //        else if (tartsu.TartsuType == MJUtil.TartsuType.ANKO || tartsu.TartsuType == MJUtil.TartsuType.MINKO)
-        //        {
-        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-        //            {
-        //                doraNum += 3;
-        //            }
-        //        }
-        //        else if (tartsu.TartsuType == MJUtil.TartsuType.HEAD)
-        //        {
-        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-        //            {
-        //                doraNum += 2;
-        //            }
-        //        }
-        //        else if (tartsu.TartsuType == MJUtil.TartsuType.ANKANTSU || tartsu.TartsuType == MJUtil.TartsuType.MINKANTSU)
-        //        {
-        //            if (ifr.IsDora(tartsu.TartsuStartPaiSyu))
-        //            {
-        //                doraNum += 4;
-        //            }
-        //        }
-        //    }
-        //    return doraNum;
-        //}
-
-        //private static int CalcDoraNum(InfoForResult ifr, int[] horaSyu)
-        //{
-        //    var doraNum = 0;
-
-            
-        //    foreach(var syu in horaSyu.Select( (val,index) => new { val,index } ))
-        //    {
-        //        if(syu.val == 0)
-        //        {
-        //            continue;
-        //        }
-
-        //        if (ifr.IsDora(syu.index))
-        //        {
-        //            doraNum += syu.val;
-        //        }
-        //    }
-        //    return doraNum;
-        //}
+        
 
 
 
@@ -1139,6 +1055,20 @@ namespace MjModelLibrary
             }
             return hanSum;
         }
-        
+
+        private static int CalcHanSumWithoutDora(List<List<object>> yakus)
+        {
+            var hanSum = 0;
+            foreach (var yaku in yakus)
+            {
+                if((string)yaku[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DORA])
+                {
+                    continue;
+                }
+                hanSum += (int)yaku[1];
+            }
+            return hanSum;
+        }
+
     }
 }
