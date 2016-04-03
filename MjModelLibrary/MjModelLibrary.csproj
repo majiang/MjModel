@@ -44,6 +44,7 @@
     <Compile Include="CommonMjModel\Model\Kawa.cs" />
     <Compile Include="CommonMjModel\Model\Pai.cs" />
     <Compile Include="CommonMjModel\Model\Tehai.cs" />
+    <Compile Include="CommonMjModel\Model\TehaiAnalizer.cs" />
     <Compile Include="CommonMjModel\Model\Yama.cs" />
     <Compile Include="CommonMjModel\Result\InfoForResult.cs" />
     <Compile Include="CommonMjModel\Result\PointResultCalclator.cs" />

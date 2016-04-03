@@ -50,8 +50,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MjClientsTests.cs" />
-    <Compile Include="MjServerMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Choose>
