@@ -45,7 +45,7 @@ namespace MjClient
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
-            field = new Field(kyoku, honba, kyotaku);
+            field = new Field(kyoku, honba, kyotaku, bakaze);
             currentActor = 0;
             infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, bakaze), new InfoForResult(field.KyokuId, 1, bakaze), new InfoForResult(field.KyokuId, 2, bakaze), new InfoForResult(field.KyokuId, 3, bakaze) };
 
@@ -88,7 +88,7 @@ namespace MjClient
         public void Kakan(int actor, string pai, List<string> consumed)
         {
 
-            throw new NotImplementedException();
+            
         }
 
         public void Ankan(int actor, List<string> consumed)
@@ -132,19 +132,14 @@ namespace MjClient
 
         public bool CanChi(int dapaiActor, int playerId, string pai)
         {
-            if ( (dapaiActor != myPositionId) && ( (dapaiActor + 1) % 4 == myPositionId) )
-            {
-                return tehais[myPositionId].CanChi(dapaiActor, playerId, pai);
-            }
-            return false;
+            return tehais[myPositionId].CanChi(dapaiActor, playerId, pai);
             
         }
         public bool CanPon(int dapaiActor, int playerId, string pai)
         {
-            if (dapaiActor != myPositionId)
-            {
-                return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
-            }
+          
+            return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
+            
             return false;
         }
 
@@ -154,7 +149,7 @@ namespace MjClient
                 && ( (infoForResult[playerId].IsDoubleReach || infoForResult[playerId].IsReach) == false );
         }
 
-        public bool CanTsumoHora(string pai)
+        public bool CanTsumoHora()
         {
             //TODO condsider yaku
             return shantenCalclator.CalcShanten(tehais[myPositionId]) == -1;
@@ -173,14 +168,7 @@ namespace MjClient
 
 
 
-        //public MJsonMessageChi GetChiMessage()
-        //{
-        //    return tehais[myPositionId].GetChiMessage();
-        //}
-        //public MJsonMessagePon GetPonMessage()
-        //{
-        //    return tehais[myPositionId].GetPonMessage();
-        //}
+        
 
         public void SetReach(int actor)
         {
