@@ -14,6 +14,7 @@ namespace MjServer
         public ServerFacade()
         {
             waitingRoom = new WaitingRoom();
+            waitingRoom.StartWaiting();
         }
         
         public void StartServer()
