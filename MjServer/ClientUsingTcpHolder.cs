@@ -38,6 +38,8 @@ namespace MjServer
 
         public event GetMessageFromClient OnGetMessageFromClient;
         public event ConnectionBroken OnConnectionBroken;
+        public event OverResponceTimeLimit OnOverResponceTimeLimit;
+        public event OverWaitingStartGameTimeLimit OnOverWaitingStartGameTimeLimit;
 
         public void Disconnect()
         {
@@ -58,5 +60,18 @@ namespace MjServer
                 OnConnectionBroken();
             }
         }
+
+        public void StartCountResponceTime()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void StartCountWaitingStartGameTime()
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

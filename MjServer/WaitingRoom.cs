@@ -6,9 +6,17 @@ using System.Net.Sockets;
 
 namespace MjServer
 {
+    delegate void StartRoom(
+        ClientHolderInterface client0,
+        ClientHolderInterface client1,
+        ClientHolderInterface client2,
+        ClientHolderInterface client3
+        );
+
     class WaitingRoom
     {
-        List<ClientHolderInterface> clientHolderList;
+        public event StartRoom OnStartRoom;
+        List<ClientHolderInterface> waitingClientHolderList;
         public WaitingRoom() { }
         
 
@@ -25,22 +33,21 @@ namespace MjServer
                 ((System.Net.IPEndPoint)server.LocalEndpoint).Address,
                 ((System.Net.IPEndPoint)server.LocalEndpoint).Port);
 
-            clientHolderList = new List<ClientHolderInterface>();
+            waitingClientHolderList = new List<ClientHolderInterface>();
 
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
                 ClientUsingTcpHolder clientHolder = new ClientUsingTcpHolder(client);
-                clientHolderList.Add(clientHolder);
-                
+                waitingClientHolderList.Add(clientHolder);
                 Task.Run(() => clientHolder.StartWaiting());
             }
         }
 
-
-        public void RegisterClient(ClientUsingTcpHolder client)
+        public void CheckWaitingTime()
         {
 
         }
+
     }
 }
