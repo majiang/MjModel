@@ -43,9 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientUsingTcpHolder.cs" />
+    <Compile Include="ClientHolderInterface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerFacade.cs" />
+    <Compile Include="WaitingRoom.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

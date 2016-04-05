@@ -9,11 +9,37 @@ namespace MjServer
 
     class ServerFacade
     {
-        //-ServerRouter
-        //-ServerMjModel
+        WaitingRoom waitingRoom;
+        
+        public ServerFacade()
+        {
+            waitingRoom = new WaitingRoom();
+        }
+        
+        public void StartServer()
+        {
+            //-WairtingRoom
+            // make waiting room
+            // timer start
+            // start wait for client
+            // register client to waitingList
+            // make GameRoom in waitingroom by time pass or 4 player registerd in same room
+        }
 
-        //-ServerIO
-        //-ServerLogger
+
+
+        //  -GameRoom has 4 tcpClient
+        //  -MessageRouter
+        //  -ServerMjModel
+        //  -ServerLogger
+        //
+        //  send start
+        //
+
+
+
+
+
 
     }
 

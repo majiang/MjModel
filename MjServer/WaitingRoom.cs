@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace MjServer
 {
-    class Program
+    class WaitingRoom
     {
-        static void Main(string[] args)
+        public WaitingRoom() { }
+        //
+        public void RegisterClient(ClientUsingTcpHolder client)
         {
-            var serverFacerde = new ServerFacade();
-            serverFacerde.StartServer();
+
         }
     }
 }
