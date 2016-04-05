@@ -48,7 +48,7 @@ namespace MjNetworkProtocol
         };
     }
 
-    public class MjsonMessageBase {
+    public class MJsonMessageBase {
         public string type;
         public bool IsJOIN()
         {
@@ -122,7 +122,7 @@ namespace MjNetworkProtocol
 
   
 
-    public class MJsonMessageHello : MjsonMessageBase
+    public class MJsonMessageHello : MJsonMessageBase
     {
         public string protocol;
         public int protocol_version;
@@ -135,7 +135,7 @@ namespace MjNetworkProtocol
     }
 
 
-    public class MJsonMessageJoin : MjsonMessageBase
+    public class MJsonMessageJoin : MJsonMessageBase
     {
         public string name;
         public string room;
@@ -146,7 +146,7 @@ namespace MjNetworkProtocol
             this.room = room;
         }
     }
-    public class MJsonMessageStartGame : MjsonMessageBase
+    public class MJsonMessageStartGame : MJsonMessageBase
     {
         public int id;// playerId
         public List<string> names;
@@ -157,7 +157,7 @@ namespace MjNetworkProtocol
             this.names = names; 
         }
     }
-    public class MJsonMessageStartKyoku : MjsonMessageBase
+    public class MJsonMessageStartKyoku : MJsonMessageBase
     {
         public string bakaze;
         public int kyoku;
@@ -179,7 +179,7 @@ namespace MjNetworkProtocol
         }
     }
 
-    public class MJsonMessageTsumo : MjsonMessageBase
+    public class MJsonMessageTsumo : MJsonMessageBase
     {
         public int actor;
         public string pai;
@@ -192,7 +192,7 @@ namespace MjNetworkProtocol
 
     }
 
-    public class MJsonMessageDahai : MjsonMessageBase
+    public class MJsonMessageDahai : MJsonMessageBase
     {
        
         public int actor;
@@ -208,7 +208,7 @@ namespace MjNetworkProtocol
 
     }
 
-    public class MJsonMessagePon : MjsonMessageBase
+    public class MJsonMessagePon : MJsonMessageBase
     {
         public int actor;
         public int target;
@@ -223,7 +223,7 @@ namespace MjNetworkProtocol
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageChi : MjsonMessageBase
+    public class MJsonMessageChi : MJsonMessageBase
     {
         public int actor;
         public int target;
@@ -238,7 +238,7 @@ namespace MjNetworkProtocol
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageKakan : MjsonMessageBase
+    public class MJsonMessageKakan : MJsonMessageBase
     {
         public int actor;
         public string pai;
@@ -250,7 +250,7 @@ namespace MjNetworkProtocol
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageAnkan : MjsonMessageBase
+    public class MJsonMessageAnkan : MJsonMessageBase
     {
         public int actor;
         public string pai;
@@ -263,7 +263,7 @@ namespace MjNetworkProtocol
             this.consumed = consumed;
         }
     }
-    public class MJsonMessageDaiminkan : MjsonMessageBase
+    public class MJsonMessageDaiminkan : MJsonMessageBase
     {
         public int actor;
         public int target;
@@ -279,7 +279,7 @@ namespace MjNetworkProtocol
         }
     }
 
-    public class MJsonMessageReach : MjsonMessageBase
+    public class MJsonMessageReach : MJsonMessageBase
     {
         public int actor;
 
@@ -289,7 +289,7 @@ namespace MjNetworkProtocol
             this.actor = actor;
         }
     }
-    public class MJsonMessageReachAccept : MjsonMessageBase
+    public class MJsonMessageReachAccept : MJsonMessageBase
     {
         public int actor;
         public List<int> deltas;
@@ -304,7 +304,7 @@ namespace MjNetworkProtocol
         }
     }
 
-    public class MJsonMessageHora : MjsonMessageBase
+    public class MJsonMessageHora : MJsonMessageBase
     {
      
         public int actor;
@@ -346,7 +346,7 @@ namespace MjNetworkProtocol
     
 
 
-        public class MJsonMessageRyukyoku : MjsonMessageBase
+        public class MJsonMessageRyukyoku : MJsonMessageBase
     {
         
         public string reason;
@@ -365,7 +365,7 @@ namespace MjNetworkProtocol
             this.scores = scores;
         }
     }
-    public class MJsonMessageDora : MjsonMessageBase
+    public class MJsonMessageDora : MJsonMessageBase
     {
         
         public string dora_marker;
@@ -376,7 +376,7 @@ namespace MjNetworkProtocol
         }
     }
 
-    public class MJsonMessageNone : MjsonMessageBase
+    public class MJsonMessageNone : MJsonMessageBase
     {
         
         public MJsonMessageNone()
@@ -385,7 +385,7 @@ namespace MjNetworkProtocol
         }
     }
 
-    public class MJsonMessageEndkyoku : MjsonMessageBase
+    public class MJsonMessageEndkyoku : MJsonMessageBase
     {
         
         public MJsonMessageEndkyoku()
@@ -394,7 +394,7 @@ namespace MjNetworkProtocol
         }
     }
 
-    public class MJsonMessageEndgame : MjsonMessageBase
+    public class MJsonMessageEndgame : MJsonMessageBase
     {
         public MJsonMessageEndgame()
         {
@@ -406,7 +406,7 @@ namespace MjNetworkProtocol
     /// <summary>
     /// This class is used when Server program parse MessageString to MessageObject. 
     /// </summary>
-    public class MjsonMessageAll : MjsonMessageBase
+    public class MJsonMessageAll : MJsonMessageBase
     {
         
         public string name;
