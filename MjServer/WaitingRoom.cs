@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace MjServer
 {
-    delegate void StartRoom(
+    delegate void StartGameRoom(
         ClientHolderInterface client0,
         ClientHolderInterface client1,
         ClientHolderInterface client2,
@@ -15,12 +15,11 @@ namespace MjServer
 
     class WaitingRoom
     {
-        public event StartRoom OnStartRoom;
+        public event StartGameRoom StartRoomHandler;
         List<ClientHolderInterface> waitingClientHolderList;
+
         public WaitingRoom() { }
         
-
-
         public void StartWaiting()
         {
 
@@ -46,7 +45,7 @@ namespace MjServer
 
         public void CheckWaitingTime()
         {
-
+            
         }
 
     }

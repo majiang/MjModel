@@ -48,7 +48,7 @@ namespace MjServer
 
         public void SendMessage(string message)
         {
-            //message +=
+            message += MjNetworkProtocolLibrary.Constants.NewLineString;
             try
             {
                 NetworkStream stream = tcpClient.GetStream();

@@ -14,13 +14,17 @@ namespace MjServer
         public ServerFacade()
         {
             waitingRoom = new WaitingRoom();
+            waitingRoom.StartRoomHandler += OnStartGameRoom; 
             waitingRoom.StartWaiting();
+
+
         }
-        
+
         public void StartServer()
         {
             //-WairtingRoom
             // make waiting room
+            
             // timer start
             // start wait for client
             // register client to waitingList
@@ -38,7 +42,17 @@ namespace MjServer
         //
 
 
+        
 
+        private void OnStartGameRoom(
+            ClientHolderInterface client0,
+            ClientHolderInterface client1,
+            ClientHolderInterface client2,
+            ClientHolderInterface client3
+        )
+        {
+
+        }
 
 
 
