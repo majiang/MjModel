@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using MjNetworkProtocolLibrary;
 
 namespace MjServer
 {
@@ -13,6 +14,7 @@ namespace MjServer
     class ClientUsingTcpHolder : ClientHolderInterface
     {
         TcpClient tcpClient;
+        
         public ClientUsingTcpHolder(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
@@ -31,13 +33,13 @@ namespace MjServer
 
             while (tcpClient.Connected)
             {
-                string line = await reader.ReadLineAsync() + '\n';
-                OnGetMessageFromClient(line);
+                string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
+                GetMessageFromClientHandler(line);
             }
         }
 
-        public event GetMessageFromClient OnGetMessageFromClient;
-        public event ConnectionBroken OnConnectionBroken;
+        public event GetMessageFromClient GetMessageFromClientHandler;
+        public event ConnectionBroken ConnectionBrokenHandler;
         public event OverResponceTimeLimit OnOverResponceTimeLimit;
         public event OverWaitingStartGameTimeLimit OnOverWaitingStartGameTimeLimit;
 
@@ -48,7 +50,7 @@ namespace MjServer
 
         public void SendMessage(string message)
         {
-            message += MjNetworkProtocolLibrary.Constants.NewLineString;
+            message += NetworkConstants.NewLineString;
             try
             {
                 NetworkStream stream = tcpClient.GetStream();
@@ -57,7 +59,7 @@ namespace MjServer
             catch(Exception e)
             {
                 Console.WriteLine("error! : {0}", e.Message);
-                OnConnectionBroken();
+                ConnectionBrokenHandler();
             }
         }
 

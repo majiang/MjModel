@@ -10,21 +10,21 @@ namespace MjServer
     class ServerFacade
     {
         WaitingRoom waitingRoom;
+        List<GameRoom> gameRooms;
         
         public ServerFacade()
         {
             waitingRoom = new WaitingRoom();
-            waitingRoom.StartRoomHandler += OnStartGameRoom; 
-            waitingRoom.StartWaiting();
-
-
+            waitingRoom.StartRoomHandler += OnStartGameRoom;
+            gameRooms = new List<GameRoom>();
         }
 
         public void StartServer()
         {
             //-WairtingRoom
             // make waiting room
-            
+            waitingRoom.StartWaiting();
+
             // timer start
             // start wait for client
             // register client to waitingList
@@ -51,7 +51,7 @@ namespace MjServer
             ClientHolderInterface client3
         )
         {
-
+            gameRooms.Add(new GameRoom(client0, client1,client2,client3));
         }
 
 

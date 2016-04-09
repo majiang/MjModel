@@ -8,12 +8,11 @@ namespace MjServer
 {
     public class GameState
     {
-
         public GameController serverController;
-        public BlockingCollection<MjsonMessageAll> getMsgList = new BlockingCollection<MjsonMessageAll>();
+        public List<MjsonMessageAll> getMsgList = new List<MjsonMessageAll>();
         public virtual GameState GetMessage(MjsonMessageAll msgobj) { return this; }
 
-        protected MjsonMessageAll GetNearestHoraPlayerMsg(BlockingCollection<MjsonMessageAll> getMsgList)
+        protected MjsonMessageAll GetNearestHoraPlayerMsg(List<MjsonMessageAll> getMsgList)
         {
             return getMsgList.Where(e => e.IsHORA())
                                 .OrderBy(e => (e.actor > e.target ? e.actor - 4 : e.actor))//頭ハネを表現している
@@ -72,7 +71,7 @@ namespace MjServer
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
                     serverController.StartKyoku();
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
                     return new AfterStartKyokuState(this);
                 }
             }
@@ -103,7 +102,7 @@ namespace MjServer
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
                     serverController.Tsumo();
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
                     return new AfterTsumoState(this);
                 }
             }
@@ -144,7 +143,7 @@ namespace MjServer
                     {
                         var horaObj = GetNearestHoraPlayerMsg(getMsgList);
                         serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterHoraState(this);
                     }
 
@@ -161,7 +160,7 @@ namespace MjServer
                         var dahaiObj = getMsgList.Where(e => e.IsDAHAI())
                             .First();
                         serverController.Dahai(dahaiObj.actor, dahaiObj.pai, dahaiObj.tsumogiri);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterDahaiState(this);
                     }
                     else if (getMsgList.Count(e => e.IsREACH()) == 1 &&
@@ -169,7 +168,7 @@ namespace MjServer
                     {
                         var reachObj = getMsgList.First(e => e.IsREACH());
                         serverController.Reach(reachObj.actor);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterReachState(this);
                     }
                     else if (getMsgList.Count(e => e.IsANKAN()) == 1 &&
@@ -177,7 +176,7 @@ namespace MjServer
                     {
                         var kanObj = getMsgList.First(e => e.IsREACH());
                         serverController.Ankan(kanObj.actor, kanObj.pai, kanObj.consumed);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterKanState(this);
                     }
 
@@ -218,7 +217,7 @@ namespace MjServer
                         if (serverController.CanFinishKyoku())
                         {
                             serverController.Ryukyoku();
-                            getMsgList.Dispose();
+                            getMsgList.Clear();
                             return new AfterRyukyokuState(this);
                         }
                         else
@@ -237,28 +236,28 @@ namespace MjServer
                         var horaObj = GetNearestHoraPlayerMsg(getMsgList);
 
                         serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterHoraState(this);
                     }
                     else if (getMsgList.Count(e => e.IsDAIMINKAN()) == 1)
                     {
                         var daiminkanObj = getMsgList.First(e => e.IsDAIMINKAN());
                         serverController.Daiminkan(daiminkanObj.actor, daiminkanObj.target, daiminkanObj.pai, daiminkanObj.consumed);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterKanState(this);
                     }
                     else if (getMsgList.Count(e => e.IsPON()) == 1)
                     {
                         var ponObj = getMsgList.First(e => e.IsPON());
                         serverController.Pon(ponObj.actor, ponObj.target, ponObj.pai, ponObj.consumed);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterTsumoState(this);
                     }
                     else if (getMsgList.Count(e => e.IsCHI()) == 1)
                     {
                         var chiObj = getMsgList.First(e => e.IsCHI());
                         serverController.Chi(chiObj.actor, chiObj.target, chiObj.pai, chiObj.consumed);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterTsumoState(this);
                     }
 
@@ -293,7 +292,7 @@ namespace MjServer
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
                     serverController.OpenDora(); 
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
                     return new AfterOpenDoraState(this);
                 }
             }
@@ -322,7 +321,7 @@ namespace MjServer
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
                     serverController.Rinshan();
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
                     return new AfterTsumoState(this);
                 }
             }
@@ -358,7 +357,7 @@ namespace MjServer
                 {
                     var dahaiObj = getMsgList.First(e => e.IsDAHAI());
                     serverController.Dahai(dahaiObj.actor, dahaiObj.pai, dahaiObj.tsumogiri);
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
                     return new AfterReachDahaiState(this);
                 }
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
@@ -403,9 +402,12 @@ namespace MjServer
                     {
                         var horaObj = GetNearestHoraPlayerMsg(getMsgList);
                         serverController.Hora(horaObj.actor, horaObj.target, horaObj.pai);
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterHoraState(this);
                     }
+
+                    //nakigahaittara ?
+
 
                     serverController.ReachAccept();
                     return new AfterReachAccceptState(this, getMsgList);
@@ -422,9 +424,9 @@ namespace MjServer
 
     class AfterReachAccceptState : GameState
     {
-        BlockingCollection<MjsonMessageAll> prevMsgList = new BlockingCollection<MjsonMessageAll>();
+        List<MjsonMessageAll> prevMsgList = new List<MjsonMessageAll>();
 
-        public AfterReachAccceptState(GameState ss, BlockingCollection<MjsonMessageAll> getMsgList)
+        public AfterReachAccceptState(GameState ss, List<MjsonMessageAll> getMsgList)
         {
             this.serverController = ss.serverController;
             this.prevMsgList = getMsgList;
@@ -447,7 +449,7 @@ namespace MjServer
                     if (serverController.CanFinishKyoku())
                     {
                         serverController.Ryukyoku();
-                        getMsgList.Dispose();
+                        getMsgList.Clear();
                         return new AfterRyukyokuState(this);
                     }
                     else
@@ -463,21 +465,21 @@ namespace MjServer
                 {
                     var daiminkanObj = prevMsgList.First(e => e.IsDAIMINKAN());
                     serverController.Daiminkan(daiminkanObj.actor, daiminkanObj.target, daiminkanObj.pai, daiminkanObj.consumed);
-                    prevMsgList.Dispose();
+                    prevMsgList.Clear();
                     return new AfterKanState(this);
                 }
                 else if (prevMsgList.Count(e => e.IsPON()) == 1)
                 {
                     var ponObj = prevMsgList.First(e => e.IsPON());
                     serverController.Pon(ponObj.actor, ponObj.target, ponObj.pai, ponObj.consumed);
-                    prevMsgList.Dispose();
+                    prevMsgList.Clear();
                     return new AfterTsumoState(this);
                 }
                 else if (prevMsgList.Count(e => e.IsCHI()) == 1)
                 {
                     var chiObj = prevMsgList.First(e => e.IsCHI());
                     serverController.Chi(chiObj.actor, chiObj.target, chiObj.pai, chiObj.consumed);
-                    prevMsgList.Dispose();
+                    prevMsgList.Clear();
                     return new AfterTsumoState(this);
                 }
             }
@@ -509,7 +511,7 @@ namespace MjServer
                 {
                    
                     serverController.SendEndkyoku();
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
 
                     return new AfterEndKyokuState(this);
                 }
@@ -542,7 +544,7 @@ namespace MjServer
                 if ((getMsgList.Count == Constants.PLAYER_NUM))
                 {
                     serverController.SendEndkyoku();
-                    getMsgList.Dispose();
+                    getMsgList.Clear();
 
                     return new AfterEndKyokuState(this);
                 }

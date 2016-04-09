@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using MjClient.Logger;
-using MjNetworkProtocol;
+using MjNetworkProtocolLibrary;
 using System.Threading;
 using System.Diagnostics;
 

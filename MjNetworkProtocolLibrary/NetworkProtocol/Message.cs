@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 
-namespace MjNetworkProtocol
+namespace MjNetworkProtocolLibrary
 {
     public static class MsgType
     {
@@ -24,6 +28,7 @@ namespace MjNetworkProtocol
         public const string END_GAME = "end_game";
         public const string RYUKYOKU = "ryukyoku";
         public const string NONE = "none";
+        public const string ERROR = "error";
 
         public static List<string> MsgTypeList = new List<string>()
         {
@@ -45,6 +50,7 @@ namespace MjNetworkProtocol
             MsgType.END_GAME,
             MsgType.RYUKYOKU,
             MsgType.NONE,
+            MsgType.ERROR
         };
     }
 
@@ -126,7 +132,7 @@ namespace MjNetworkProtocol
     {
         public string protocol;
         public int protocol_version;
-        public MJsonMessageHello(string protocol, int protocol_version)
+        public MJsonMessageHello(string protocol = "mjsonp", int protocol_version =1)
         {
             type = MsgType.HELLO;
             this.protocol = protocol;
@@ -148,7 +154,7 @@ namespace MjNetworkProtocol
     }
     public class MJsonMessageStartGame : MJsonMessageBase
     {
-        public int id;// playerId
+        public int id;//プレーヤid
         public List<string> names;
         public MJsonMessageStartGame(int id, List<string> names)
         {
@@ -402,10 +408,18 @@ namespace MjNetworkProtocol
         }
     }
 
+    public class MJsonMessageError : MJsonMessageBase
+    {
+        string error_message;
+        public MJsonMessageError(string message)
+        {
+            type = MsgType.ERROR;
+            this.error_message = message;
+        }
+    }
 
-    /// <summary>
-    /// This class is used when Server program parse MessageString to MessageObject. 
-    /// </summary>
+
+    //サーバー側での受信メッセージパース用
     public class MJsonMessageAll : MJsonMessageBase
     {
         
@@ -427,8 +441,8 @@ namespace MjNetworkProtocol
         public List<string> consumed;
 
 
-        public List<int> details;
-        public List<int> scores;
+        public List<int> details;//点数移動
+        public List<int> scores;//点数移動結果
         public List<string> uradora_markers;
         public List<string> hora_tehais;
         public List<List<object>> yakus;

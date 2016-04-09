@@ -13,8 +13,8 @@ namespace MjServer
 
     interface ClientHolderInterface
     {
-        event GetMessageFromClient OnGetMessageFromClient;
-        event ConnectionBroken OnConnectionBroken;
+        event GetMessageFromClient GetMessageFromClientHandler;
+        event ConnectionBroken ConnectionBrokenHandler;
         Task StartWaiting();
         void SendMessage(string message);
         void Disconnect();

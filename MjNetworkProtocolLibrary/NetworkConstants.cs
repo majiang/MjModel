@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MjNetworkProtocolLibrary
 {
-    public static class Constants
+    public static class NetworkConstants
     {
         public static readonly string NewLineString = "\r\n";
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MjNetworkProtocol;
+using MjNetworkProtocolLibrary;
 using MjModelLibrary;
 
 namespace MjClient.AI

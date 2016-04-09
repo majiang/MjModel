@@ -28,6 +28,7 @@ namespace MjServer
         public const string END_GAME = "end_game";
         public const string RYUKYOKU = "ryukyoku";
         public const string NONE = "none";
+        public const string ERROR = "error";
 
         public static List<string> MsgTypeList = new List<string>()
         {
@@ -49,6 +50,7 @@ namespace MjServer
             MsgType.END_GAME,
             MsgType.RYUKYOKU,
             MsgType.NONE,
+            MsgType.ERROR
         };
     }
 
@@ -403,6 +405,16 @@ namespace MjServer
         public MJsonMessageEndgame()
         {
             type = MsgType.END_GAME;
+        }
+    }
+
+    public class MJsonMessageError : MjsonMessageBase
+    {
+        string error_message;
+        public MJsonMessageError(string message)
+        {
+            type = MsgType.ERROR;
+            this.error_message = message;
         }
     }
 
