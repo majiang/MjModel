@@ -81,7 +81,6 @@ namespace MjClient
 
         public void StartClient()
         {
-            
             try
             {
                 clientIO.MakeConnection();

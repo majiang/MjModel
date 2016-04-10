@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using MjNetworkProtocolLibrary;
 using Newtonsoft.Json;
-
+using System.Diagnostics;
 namespace MjServer
 {
 
@@ -31,27 +31,32 @@ namespace MjServer
             //SendHello
             var helloMessage = JsonConvert.SerializeObject(new MJsonMessageHello());
             SendMessage(helloMessage);
-            
+
             Console.WriteLine(
-                "Connect to Client ({0}:{1})",
-                ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Address,
+                "Connect to Client ({0}:{1})" ,
+                ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Address ,
                 ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Port
                 );
+
             try
             {
                 NetworkStream stream = tcpClient.GetStream();
                 StreamReader reader = new StreamReader(stream);
+
                 while (tcpClient.Connected)
                 {
                     string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
+                    Console.WriteLine("get:"+ line);
                     GetMessageFromClientHandler(line, this);
                 }
             }
-            catch(Exception e)
+            catch (IOException e)
             {
+                Console.WriteLine("error! : {0}, {1}", e.Message,e.StackTrace);
                 Disconnect();
                 ConnectionBrokenHandler();
             }
+
         }
         
         public void Disconnect()
@@ -66,10 +71,11 @@ namespace MjServer
             {
                 NetworkStream stream = tcpClient.GetStream();
                 stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
+                Console.WriteLine("send:"+ message);
             }
-            catch(Exception e)
+            catch(IOException e)
             {
-                Console.WriteLine("error! : {0}", e.Message);
+                Console.WriteLine("error! : {0}, {1}", e.Message, e.StackTrace);
                 ConnectionBrokenHandler();
             }
         }

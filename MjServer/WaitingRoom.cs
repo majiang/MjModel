@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-
+using System.Diagnostics;
 using Newtonsoft.Json;
 using MjNetworkProtocolLibrary;
 using MjModelLibrary;
 
 namespace MjServer
 {
-    delegate void StartGameRoom(List<ClientHolderInterface> client);
+    delegate void StartGameRoom(Dictionary<ClientHolderInterface,string> client);
 
     class WaitingRoom
     {
         public event StartGameRoom StartRoomHandler;
-        Dictionary<ClientHolderInterface, string> clientRoomNameDictionary;
+        Dictionary<ClientHolderInterface, string> clientHolderRoomNameDictionary;
+        Dictionary<ClientHolderInterface, string> clientHolderClientNameDictionary;
         Dictionary<string, int> roomNameWaitingNumDictionary;
 
         public WaitingRoom() { }
@@ -29,17 +30,18 @@ namespace MjServer
 
             server.Start();
             Console.WriteLine(
-                "Start Listen({0}:{1})",
-                ( (IPEndPoint)server.LocalEndpoint).Address,
+                "Start Listen({0}:{1})" ,
+                ( (IPEndPoint)server.LocalEndpoint).Address ,
                 ( (IPEndPoint)server.LocalEndpoint).Port
                 );
             
-            clientRoomNameDictionary = new Dictionary<ClientHolderInterface, string>();
+            clientHolderRoomNameDictionary = new Dictionary<ClientHolderInterface, string>();
+            clientHolderClientNameDictionary = new Dictionary<ClientHolderInterface, string>();
             roomNameWaitingNumDictionary = new Dictionary<string, int>();
 
             while (true)
             {
-                TcpClient client = await server.AcceptTcpClientAsync();
+                TcpClient client = server.AcceptTcpClient();
                 ClientUsingTcpHolder clientHolder = new ClientUsingTcpHolder(client);
                 clientHolder.GetMessageFromClientHandler += RouteMessage;
                 Task.Run(() => clientHolder.StartWaiting());
@@ -48,9 +50,14 @@ namespace MjServer
 
 
         private System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);
-        void RouteMessage(string message, ClientHolderInterface clientHolder)
+        async void RouteMessage(string message, ClientHolderInterface clientHolder)
         {
-        
+
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
             MJsonMessageAll mjsonObject = null;
             try
             {
@@ -67,16 +74,16 @@ namespace MjServer
                 return;
             }
 
-            semaphore.WaitAsync();
+            await semaphore.WaitAsync();
             if (mjsonObject.IsJOIN())
             {
                 var roomName = mjsonObject.room;
-                clientRoomNameDictionary.Add(clientHolder, roomName);
+                clientHolderRoomNameDictionary.Add(clientHolder, roomName);
+                clientHolderClientNameDictionary.Add(clientHolder, mjsonObject.name);
                 var alreadyWaitingSameRoom = roomNameWaitingNumDictionary.ContainsKey(roomName);
                 var newWaitingNum = alreadyWaitingSameRoom ?
                     roomNameWaitingNumDictionary[roomName] + 1: 1;
-
-                roomNameWaitingNumDictionary.Add(roomName, newWaitingNum);
+                roomNameWaitingNumDictionary[roomName] = newWaitingNum;
             }
 
             foreach( var room in GetStartableRoomList())
@@ -104,19 +111,24 @@ namespace MjServer
 
         void StartGameRoom(string startRoomName)
         {
-            List<ClientHolderInterface> playerList = new List<ClientHolderInterface>();
-            foreach(var map in clientRoomNameDictionary)
+            Dictionary<ClientHolderInterface,string> playerList = new Dictionary<ClientHolderInterface,string>();
+            foreach(var map in clientHolderRoomNameDictionary)
             {
                 if( map.Value == startRoomName)
                 {
-                    playerList.Add(map.Key);
+                    playerList[map.Key] = clientHolderClientNameDictionary[map.Key];
                 }
             }
 
             //remove client from waitingroom
-            playerList.ForEach(e => clientRoomNameDictionary.Remove(e));
+            foreach(var player in playerList)
+            {
+                clientHolderRoomNameDictionary.Remove(player.Key);
+                clientHolderClientNameDictionary.Remove(player.Key);
+                player.Key.GetMessageFromClientHandler -= RouteMessage;
+            }
             roomNameWaitingNumDictionary.Remove(startRoomName);
-            playerList.ForEach(e => e.GetMessageFromClientHandler -= RouteMessage);
+ 
 
             //register client togameroom
             StartRoomHandler(playerList);

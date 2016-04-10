@@ -14,11 +14,16 @@ namespace MjServer
     class GameRoom
     {
         List<ClientHolderInterface> clients = new List<ClientHolderInterface>();
+        List<string> clientNames = new List<string>();
         List<string> messageStack = new List<string>();
-        public GameRoom( List<ClientHolderInterface> inClients )
+        public GameRoom(Dictionary<ClientHolderInterface, string> inClients)
         {
-            clients.AddRange(inClients);
-            clients.ForEach(e => e.GetMessageFromClientHandler += OnGetMessageFromClient);
+            foreach(var client in inClients)
+            {
+                client.Key.GetMessageFromClientHandler += OnGetMessageFromClient;
+                clients.Add(client.Key);
+                clientNames.Add(client.Value);
+            }
         }
         // -Logger
         // -MjModel
@@ -26,10 +31,36 @@ namespace MjServer
         // -message router
         // -validator
 
-         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-         void OnGetMessageFromClient(string message, ClientHolderInterface client)
+        public void StartGame()
         {
-            semaphore.WaitAsync();
+            //shuffle client
+
+
+            //each message has difference in playerID
+            foreach (var client in clients.Select((e,index) => new { e, index}))
+            {
+                var gameStartMessage = JsonConvert.SerializeObject(new MJsonMessageStartGame(client.index,clientNames));
+                SendMessageToOneClient(gameStartMessage, client.index);
+            }
+        }
+
+
+        public void SendSameMessageToClients(string jsonMessage)
+        {
+            clients.ForEach(e => e.SendMessage(jsonMessage));
+        }
+
+        public void SendMessageToOneClient(string message, int targetClientId)
+        {
+            Debug.Assert(0 <= targetClientId && targetClientId < clients.Count);
+            clients[targetClientId].SendMessage(message);
+        }
+
+
+        SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        async void OnGetMessageFromClient(string message, ClientHolderInterface client)
+        {
+            await semaphore.WaitAsync();
 
             // validate message
             // var isValidMessageType = validator.validateMessage()
@@ -42,6 +73,8 @@ namespace MjServer
 
             // if server gets messages from all clients, fire event and send message.
             messageStack.Add(message);
+
+
             if (messageStack.Count < clients.Count)
             {
                 
@@ -73,16 +106,6 @@ namespace MjServer
         }
 
 
-         void SendSameMessageToClientsHandler(string jsonMessage)
-        {
-            clients.ForEach(e => e.SendMessage(jsonMessage));
-        }
-
-         void SendMessageToOneClientHandlers(string message, int targetClientId)
-        {
-            Debug.Assert(0 <= targetClientId && targetClientId < clients.Count);
-            clients[targetClientId].SendMessage(message);
-        }
 
 
         // mj action functions
