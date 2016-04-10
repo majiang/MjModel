@@ -13,21 +13,11 @@ namespace MjServer
 {
     class GameRoom
     {
-        List<ClientHolderInterface> clients;
-        List<string> messageStack;
-
-        public GameRoom(
-            ClientHolderInterface client0,
-            ClientHolderInterface client1,
-            ClientHolderInterface client2,
-            ClientHolderInterface client3
-        )
+        List<ClientHolderInterface> clients = new List<ClientHolderInterface>();
+        List<string> messageStack = new List<string>();
+        public GameRoom( List<ClientHolderInterface> inClients )
         {
-            clients.Add(client0);
-            clients.Add(client1);
-            clients.Add(client2);
-            clients.Add(client3);
-
+            clients.AddRange(inClients);
             clients.ForEach(e => e.GetMessageFromClientHandler += OnGetMessageFromClient);
         }
         // -Logger
@@ -36,8 +26,8 @@ namespace MjServer
         // -message router
         // -validator
 
-        private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-        private void OnGetMessageFromClient(string message)
+         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+         void OnGetMessageFromClient(string message, ClientHolderInterface client)
         {
             semaphore.WaitAsync();
 
@@ -69,7 +59,7 @@ namespace MjServer
         }
 
 
-        private void OnErrorDetected(string jsonEerrorMessage)
+         void OnErrorDetected(string jsonEerrorMessage)
         {
             // log errorMessage
 
@@ -83,12 +73,12 @@ namespace MjServer
         }
 
 
-        private void SendSameMessageToClientsHandler(string jsonMessage)
+         void SendSameMessageToClientsHandler(string jsonMessage)
         {
             clients.ForEach(e => e.SendMessage(jsonMessage));
         }
 
-        private void SendMessageToOneClientHandlers(string message, int targetClientId)
+         void SendMessageToOneClientHandlers(string message, int targetClientId)
         {
             Debug.Assert(0 <= targetClientId && targetClientId < clients.Count);
             clients[targetClientId].SendMessage(message);
@@ -96,7 +86,7 @@ namespace MjServer
 
 
         // mj action functions
-        private void OnTsumo()
+         void OnTsumo()
         {
 
         }

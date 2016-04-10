@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MjServer
 {
-    delegate void GetMessageFromClient(string message);
+    delegate void GetMessageFromClient(string message, ClientHolderInterface clientHolder);
     delegate void ConnectionBroken();
     delegate void OverResponceTimeLimit();
     delegate void OverWaitingStartGameTimeLimit();
@@ -18,7 +18,7 @@ namespace MjServer
         Task StartWaiting();
         void SendMessage(string message);
         void Disconnect();
-        void StartCountResponceTime();
-        void StartCountWaitingStartGameTime();
+        void ResetResponceTimeCount();
+        void ResetWaitingTimeCountForStartGame();
     }
 }

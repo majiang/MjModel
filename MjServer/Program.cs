@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading;
 
 namespace MjServer
 {
@@ -12,6 +8,12 @@ namespace MjServer
         {
             var serverFacerde = new ServerFacade();
             serverFacerde.StartServer();
+
+            while (true)
+            {
+                //continue wait call async function
+                Thread.Sleep(10000);
+            }
         }
     }
 }

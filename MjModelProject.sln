@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldMjServer", "MjModelProject\OldMjServer.csproj", "{B85A34E7-3992-4867-BFC4-B352E820D005}"
 EndProject
@@ -55,6 +55,7 @@ Global
 		{DB58E91C-B895-4FAD-A424-41EEEBE860BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E1D0311-D9E0-4B68-A172-56972B2CF46A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

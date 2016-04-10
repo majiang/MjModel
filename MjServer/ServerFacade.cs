@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MjServer
 {
 
-    class ServerFacade
+    public class ServerFacade
     {
         WaitingRoom waitingRoom;
         List<GameRoom> gameRooms;
@@ -29,6 +29,10 @@ namespace MjServer
             // start wait for client
             // register client to waitingList
             // make GameRoom in waitingroom by time pass or 4 player registerd in same room
+
+
+
+
         }
 
 
@@ -44,14 +48,9 @@ namespace MjServer
 
         
 
-        private void OnStartGameRoom(
-            ClientHolderInterface client0,
-            ClientHolderInterface client1,
-            ClientHolderInterface client2,
-            ClientHolderInterface client3
-        )
+         void OnStartGameRoom( List<ClientHolderInterface> clients )
         {
-            gameRooms.Add(new GameRoom(client0, client1,client2,client3));
+            gameRooms.Add(new GameRoom(clients));
         }
 
 

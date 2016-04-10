@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using MjNetworkProtocolLibrary;
+using Newtonsoft.Json;
 
 namespace MjServer
 {
@@ -14,7 +15,12 @@ namespace MjServer
     class ClientUsingTcpHolder : ClientHolderInterface
     {
         TcpClient tcpClient;
+        public event GetMessageFromClient GetMessageFromClientHandler;
+        public event ConnectionBroken ConnectionBrokenHandler;
+        //public event OverResponceTimeLimit OnOverResponceTimeLimit;
+        //public event OverWaitingStartGameTimeLimit OnOverWaitingStartGameTimeLimit;
         
+
         public ClientUsingTcpHolder(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
@@ -23,29 +29,34 @@ namespace MjServer
         public async Task StartWaiting()
         {
             //SendHello
-
-            Console.WriteLine("Connect to Client ({0}:{1})",
-                ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address,
-                ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port);
-
-            NetworkStream stream = tcpClient.GetStream();
-            StreamReader reader = new StreamReader(stream);
-
-            while (tcpClient.Connected)
+            var helloMessage = JsonConvert.SerializeObject(new MJsonMessageHello());
+            SendMessage(helloMessage);
+            
+            Console.WriteLine(
+                "Connect to Client ({0}:{1})",
+                ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Address,
+                ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Port
+                );
+            try
             {
-                string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
-                GetMessageFromClientHandler(line);
+                NetworkStream stream = tcpClient.GetStream();
+                StreamReader reader = new StreamReader(stream);
+                while (tcpClient.Connected)
+                {
+                    string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
+                    GetMessageFromClientHandler(line, this);
+                }
+            }
+            catch(Exception e)
+            {
+                Disconnect();
+                ConnectionBrokenHandler();
             }
         }
-
-        public event GetMessageFromClient GetMessageFromClientHandler;
-        public event ConnectionBroken ConnectionBrokenHandler;
-        public event OverResponceTimeLimit OnOverResponceTimeLimit;
-        public event OverWaitingStartGameTimeLimit OnOverWaitingStartGameTimeLimit;
-
+        
         public void Disconnect()
         {
-            throw new NotImplementedException();
+           tcpClient.Close();
         }
 
         public void SendMessage(string message)
@@ -63,15 +74,16 @@ namespace MjServer
             }
         }
 
-        public void StartCountResponceTime()
+        DateTime responceTime;
+        public void ResetResponceTimeCount()
         {
-            throw new NotImplementedException();
+            responceTime = DateTime.Now;
         }
 
-
-        public void StartCountWaitingStartGameTime()
+        DateTime waitingTimeForStartGame;
+        public void ResetWaitingTimeCountForStartGame()
         {
-            throw new NotImplementedException();
+            waitingTimeForStartGame = DateTime.Now;
         }
 
 
