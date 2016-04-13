@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace MjServer
+namespace OldMjServer
 {
     public static class MsgType
     {

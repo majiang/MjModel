@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-namespace MjServer
+namespace OldMjServer
 {
     class Program
     {

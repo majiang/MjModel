@@ -9,22 +9,34 @@ namespace MjServer
 {
     public class GameContext
     {
-      //  GameState serverState;
+        GameState gameState;
 
+        int lastActor = 0;
+        bool canExecuteNextAction = false;
+        MJsonMessageAll executedAction;
 
         public GameContext()
         {
-
-      //      serverState = new AfterInitialiseState();
+            gameState = AfterInitialiseState.GetInstance();
         }     
 
 
-
-        //ここからメッセージを受け取った際の状態遷移関数
-        public void GetMessage(MJsonMessageAll msgobj)
+        public bool ValidateMessage()
         {
-    //        serverState = serverState.GetMessage(msgobj);
+            return gameState.ValidateMessage();
         }
 
+        public bool CanExecuteNextAction()
+        {
+            return canExecuteNextAction;
+        }
+
+        public void ChangeState()
+        {
+            gameState = gameState.ChangeState();
+        }
+        
     }
+
+
 }

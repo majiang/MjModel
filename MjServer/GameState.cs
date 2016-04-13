@@ -4,8 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-namespace OldMjServer
+using MjNetworkProtocolLibrary;
+
+namespace MjServer
 {
+
+    //
+
     public class GameState
     {
         public GameController serverController;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-namespace MjServer
+namespace OldMjServer
 {
     public class Packet
     {
