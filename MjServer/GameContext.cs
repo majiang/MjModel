@@ -48,8 +48,9 @@ namespace MjServer
         // follows functions executed in state
         public bool DoGameStart()
         {
-            //gameState = AfterGameStartState.GetInstance();//first
-            return GameStartHandler();
+            var mjModelExecutionStatus = GameStartHandler();
+            //gameState = AfterGameStartState.GetInstance();//change State
+            return mjModelExecutionStatus;
         } 
 
 

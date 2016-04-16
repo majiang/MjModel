@@ -40,18 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonMjModel\Model\Field.cs" />
-    <Compile Include="CommonMjModel\Model\Kawa.cs" />
-    <Compile Include="CommonMjModel\Model\Pai.cs" />
-    <Compile Include="CommonMjModel\Model\Tehai.cs" />
-    <Compile Include="CommonMjModel\Model\TehaiAnalizer.cs" />
-    <Compile Include="CommonMjModel\Model\Yama.cs" />
-    <Compile Include="CommonMjModel\Result\InfoForResult.cs" />
-    <Compile Include="CommonMjModel\Result\PointResultCalclator.cs" />
-    <Compile Include="CommonMjModel\Result\ResultCalclator.cs" />
-    <Compile Include="CommonMjModel\Result\ShantenCalclator.cs" />
-    <Compile Include="CommonMjModel\Result\SplitedTehaiCalclator.cs" />
-    <Compile Include="CommonMjModel\Result\YakuResultCalclator.cs" />
+    <Compile Include="Model\Field.cs" />
+    <Compile Include="Model\Kawa.cs" />
+    <Compile Include="Model\Pai.cs" />
+    <Compile Include="Model\Tehai.cs" />
+    <Compile Include="Model\TehaiAnalizer.cs" />
+    <Compile Include="Model\Yama.cs" />
+    <Compile Include="Result\InfoForResult.cs" />
+    <Compile Include="Result\PointResultCalclator.cs" />
+    <Compile Include="Result\ResultCalclator.cs" />
+    <Compile Include="Result\ShantenCalclator.cs" />
+    <Compile Include="Result\SplitedTehaiCalclator.cs" />
+    <Compile Include="Result\YakuResultCalclator.cs" />
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\DebugUtil.cs" />
     <Compile Include="Constants\MJUtil.cs" />

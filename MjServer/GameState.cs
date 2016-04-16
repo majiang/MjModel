@@ -23,7 +23,6 @@ namespace MjServer
     }
     class AfterInitialiseState : GameState
     {
-        int lastActor = 0;
         private static GameState state = new AfterInitialiseState();
         private AfterInitialiseState() { }
         public static GameState GetInstance()
@@ -33,11 +32,7 @@ namespace MjServer
 
         public bool ValidateMessage(MJsonMessageAll msg, List<MJsonMessageAll> msgList)
         {
-
-            //validate msgtype 
-            //validate use model
-
-
+            
             throw new NotImplementedException();
         }
 
@@ -48,8 +43,6 @@ namespace MjServer
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msg)
         {
-            //execute model by using 4 message
-            //change state
             return context.DoGameStart();
         }
 
