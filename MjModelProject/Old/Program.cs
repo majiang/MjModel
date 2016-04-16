@@ -19,7 +19,7 @@ namespace OldMjServer
 
 
         public static Dictionary<TcpClient, int> clientDict = new Dictionary<TcpClient, int>();
-        public static MjServer.ServerRouter serverRouter = new ServerRouter();
+        public static ServerRouter serverRouter = new ServerRouter();
         
         static void StartServer()
         {

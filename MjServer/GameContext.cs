@@ -7,35 +7,56 @@ using MjNetworkProtocolLibrary;
 
 namespace MjServer
 {
+    public delegate bool GameStart();
+
     public class GameContext
     {
         GameState gameState;
 
-        int lastActor = 0;
-        bool canExecuteNextAction = false;
-        MJsonMessageAll executedAction;
+        List<MJsonMessageAll> messageList;
+        public event GameStart GameStartHandler;
+        MJsonMessageAll ReachActionBuffer;
+
 
         public GameContext()
         {
             gameState = AfterInitialiseState.GetInstance();
+            
         }     
-
-
-        public bool ValidateMessage()
+        
+        public bool ValidateMessage(MJsonMessageAll msg)
         {
-            return gameState.ValidateMessage();
+            return gameState.ValidateMessage(msg, messageList);
+        }
+
+        public void RegisterMessage(MJsonMessageAll msg)
+        {
+            messageList.Add(msg);
         }
 
         public bool CanExecuteNextAction()
         {
-            return canExecuteNextAction;
+            return messageList.Count == MjModelLibrary.Constants.PLAYER_NUM;
         }
 
-        public void ChangeState()
+        public bool ExecuteAction()
         {
-            gameState = gameState.ChangeState();
+            return gameState.ExecuteAction(this, messageList);
         }
         
+
+        // follows functions executed in state
+        public bool DoGameStart()
+        {
+            //gameState = AfterGameStartState.GetInstance();//first
+            return GameStartHandler();
+        } 
+
+
+
+
+
+
     }
 
 

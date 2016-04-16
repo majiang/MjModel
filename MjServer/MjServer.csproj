@@ -61,7 +61,7 @@
     <Compile Include="GameContext.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="GameRoom.cs" />
-    <Compile Include="MessageValidator.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

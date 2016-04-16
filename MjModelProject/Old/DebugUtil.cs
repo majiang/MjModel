@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace MjModelLibrary
+namespace OldMjServer
 {
     public static class DebugUtil
     {

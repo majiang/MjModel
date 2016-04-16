@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MjServer.Util
+namespace MjModelLibrary
 {
     public static class PaiConverter
     {

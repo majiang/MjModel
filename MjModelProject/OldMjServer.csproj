@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Old\Constants.cs" />
+    <Compile Include="Old\DebugUtil.cs" />
     <Compile Include="Server\N_Room\N_RoomController.cs" />
     <Compile Include="Server\IO\ServerIO.cs" />
     <Compile Include="Server\N_Room\N_View\MessageObjectBuffer.cs" />

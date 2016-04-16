@@ -26,7 +26,7 @@ namespace MjServer
             }
         }
         // -Logger
-        // -MjModel
+        // -MjModel modelからのメッセージ送付イベントハンドラに、メッセージ送付用関数をセット
 
         // -message router
         // -validator
@@ -57,36 +57,36 @@ namespace MjServer
         }
 
 
+
         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         async void OnGetMessageFromClient(string message, ClientHolderInterface client)
         {
             await semaphore.WaitAsync();
-
+            MJsonMessageAll messageObj = JsonConvert.DeserializeObject<MJsonMessageAll>(message); 
             // validate message
-            // var isValidMessageType = validator.validateMessage()
-            
-            // if ( isValidMessageType == false )
-            // {
-            //      OnErrorDetected( message );
-            //      return;
-            // }
+            GameContext gc = new GameContext();
+
+
+
+            var isValidMessageType = gc.ValidateMessage(messageObj);
+
+            if ( isValidMessageType == false )
+            {
+                 OnErrorDetected( message );
+                 return;
+            }
 
             // if server gets messages from all clients, fire event and send message.
-            messageStack.Add(message);
 
-
-            if (messageStack.Count < clients.Count)
+            if ( gc.CanExecuteNextAction() )
             {
-                
-                // execute message
-                // var isValidChange = chengeModel()
-                // if( isValidChange == false )
-                // {
-                //      OnErrorDetected( message );
-                //      return;
-                // }
-                // register executed message to validator
-
+                var isValidChange = gc.ExecuteAction();
+                if( isValidChange == false )
+                {
+                     OnErrorDetected( message );
+                     return;
+                }
+                //register executed message to validato
             }
             semaphore.Release();
         }
