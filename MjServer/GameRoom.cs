@@ -8,14 +8,23 @@ using MjModelLibrary;
 using System.Threading;
 using MjNetworkProtocolLibrary;
 using Newtonsoft.Json;
+using MjModelLibrary;
 
 namespace MjServer
 {
+    delegate void StartGameRoom(Dictionary<ClientHolderInterface, string> client);
+
+
     class GameRoom
     {
+        public event AfterErrorHandler OnAfterError;
+        public event AfterGameEndHandler OnAfterGameEnd;
+
         List<ClientHolderInterface> clients = new List<ClientHolderInterface>();
         List<string> clientNames = new List<string>();
-        List<string> messageStack = new List<string>();
+        // List<string> messageStack = new List<string>();
+        GameModel gameModel = new GameModel();
+
         public GameRoom(Dictionary<ClientHolderInterface, string> inClients)
         {
             foreach(var client in inClients)
@@ -24,6 +33,29 @@ namespace MjServer
                 clients.Add(client.Key);
                 clientNames.Add(client.Value);
             }
+
+
+            AfterInitialiseState.OnStartKyoku += StartKyoku;
+
+            AfterStartKyokuState.OnTsumo += Tsumo;
+
+            AfterTsumoState.OnReach += Reach;
+            AfterTsumoState.OnAnkan += Ankan;
+            AfterTsumoState.OnKakan += Kakan;
+            AfterTsumoState.OnHora += Hora;
+            AfterTsumoState.OnDahai += Dahai;
+
+            AfterDahiState.OnTsumo += Tsumo;
+            AfterDahiState.OnPon += Pon;
+            AfterDahiState.OnChi += Chi;
+            AfterDahiState.OnHora += Hora;
+            AfterDahiState.OnDaiminkan += Daiminkan;
+
+
+
+            
+
+
         }
         // -Logger
         // -MjModel modelからのメッセージ送付イベントハンドラに、メッセージ送付用関数をセット
@@ -33,13 +65,15 @@ namespace MjServer
 
         public void StartGame()
         {
+
+            gameModel.StartGame();
             //shuffle client
 
 
             //each message has difference in playerID
             foreach (var client in clients.Select((e,index) => new { e, index}))
             {
-                var gameStartMessage = JsonConvert.SerializeObject(new MJsonMessageStartGame(client.index,clientNames));
+                var gameStartMessage = MjsonObjectToString(new MJsonMessageStartGame(client.index,clientNames));
                 SendMessageToOneClient(gameStartMessage, client.index);
             }
         }
@@ -59,40 +93,44 @@ namespace MjServer
 
 
         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        GameContext gameContext = new GameContext();
         async void OnGetMessageFromClient(string message, ClientHolderInterface client)
         {
-            await semaphore.WaitAsync();
-            MJsonMessageAll messageObj = JsonConvert.DeserializeObject<MJsonMessageAll>(message); 
-            // validate message
-            GameContext gc = new GameContext();
-
-
-
-            var isValidMessageType = gc.ValidateMessage(messageObj);
-
-            if ( isValidMessageType == false )
+            try
             {
-                 OnErrorDetected( message );
-                 return;
-            }
+                await semaphore.WaitAsync();
+                MJsonMessageAll messageObj = JsonConvert.DeserializeObject<MJsonMessageAll>(message);
+                // validate message
+                
 
-            // if server gets messages from all clients, fire event and send message.
-
-            if ( gc.CanExecuteNextAction() )
-            {
-                var isValidChange = gc.ExecuteAction();
-                if( isValidChange == false )
+                if ( gameContext.ValidateMessage(messageObj) == false)
                 {
-                     OnErrorDetected( message );
-                     return;
+                    OnErrorDetected(message);
+                    return;
                 }
-                //register executed message to validato
+                
+                if ( gameContext.HasRecievedMessageFromAllClients() == false)
+                {
+                    return;
+                }
+
+                // if server gets messages from all clients, fire event and send message.
+                if ( gameContext.ExecuteAction() == false)
+                {
+                    var errorMessages = gameContext.GetMessageList();
+                    StringBuilder sb = new StringBuilder();
+                    errorMessages.Select(e => sb.Append(MjsonObjectToString(errorMessages)));
+                    OnErrorDetected( sb.ToString() );
+                }
             }
-            semaphore.Release();
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
 
-         void OnErrorDetected(string jsonEerrorMessage)
+        void OnErrorDetected(string jsonEerrorMessage)
         {
             // log errorMessage
 
@@ -102,20 +140,172 @@ namespace MjServer
             // disconnect client
             clients.ForEach(e => e.Disconnect());
             clients.Clear();
+            OnAfterError(this);
+        }
+
+
+
+
+        // mj action functions called by GameState
+        bool StartKyoku()
+        {
+            // bool = mjmodel evalate 
+            //if false return false;
+
+            // mjsonObj = mjmodel execution 
+            // set action to context(changestate)
+            //gameContext.ChangeState(mjsonObj);
+
+            // send message
+            //return ture
+            throw new NotImplementedException();
             
         }
+        bool Tsumo()
+        {
+            throw new NotImplementedException();
+           // return gameModel.Tsumo();
+        }
 
 
+        ////
 
 
-        // mj action functions
-         void OnTsumo()
+        bool Dahai(int actor, string pai, bool tsumogiri)
+        {
+            
+            throw new NotImplementedException();
+        }
+
+        bool Pon(int actor, int target, string pai, List<string> consumed)
         {
 
+
+            throw new NotImplementedException();
+        }
+
+        bool Chi(int actor, int target, string pai, List<string> consumed)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Kakan(int actor, string pai, List<string> consumed)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Ankan(int actor, List<string> consumed)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Daiminkan(int actor, int target, string pai, List<string> consumed)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Rinshan()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool OpenDora()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Reach(int actor)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Hora(int actor, int target, string pai)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool Ryukyoku()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ReachAccept()
+        {
+            //send reachaccept
+
+            //not clear message stack
+            //gameContext.ChangeState(mjsonObj);
+
+            throw new NotImplementedException();
+        }
+        bool OnKyokuEnd()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool OnGameEnd()
+        {
+            throw new NotImplementedException();
         }
 
 
 
+
+
+
+
+
+
+
+
+
+
+        private string MjsonObjectToString(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public void SendMJsonObject(MJsonMessageJoin jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessagePon jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageChi jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageDaiminkan jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageNone jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+
+        public void SendMJsonObject(MJsonMessageHora jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageDahai jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageAnkan jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageKakan jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
+        public void SendMJsonObject(MJsonMessageReach jsonmsg)
+        {
+            clients.ForEach(e => e.SendMessage(MjsonObjectToString(jsonmsg)));
+        }
 
     }
 

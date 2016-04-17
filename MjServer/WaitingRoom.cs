@@ -10,8 +10,7 @@ using MjModelLibrary;
 
 namespace MjServer
 {
-    delegate void StartGameRoom(Dictionary<ClientHolderInterface,string> client);
-
+    
     class WaitingRoom
     {
         public event StartGameRoom StartRoomHandler;
@@ -130,7 +129,7 @@ namespace MjServer
             roomNameWaitingNumDictionary.Remove(startRoomName);
  
 
-            //register client togameroom
+            //register client to Gameroom
             StartRoomHandler(playerList);
         }
 

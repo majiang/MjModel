@@ -7,26 +7,44 @@ using MjNetworkProtocolLibrary;
 
 namespace MjServer
 {
-    public delegate bool GameStart();
+    // server action is decisioned by clients action
+    public delegate bool StartKyokuHandler();
+    public delegate bool TsumoHandler();
+    public delegate bool DahaiHandler(int actor, string pai, bool tsumogiri);
+    public delegate bool ChiHandler(int actor, int target, string pai, List<string> consumed);
+    public delegate bool PonHandler(int actor, int target, string pai, List<string> consumed);
+    public delegate bool KakanHandler(int actor, string pai, List<string> consumed);
+    public delegate bool DaiminkanHandler(int actor, int target, string pai, List<string> consumed);
+    public delegate bool AnkanHandler(int actor, List<string> consumed);
+    public delegate bool OpenDoraHandler();
+    public delegate bool RinshanHandler();
+    public delegate bool ReachHandler(int actor);
+    public delegate bool ReachDahaiHandler(int actor, string pai, bool tsumogiri);
+    public delegate bool ReachAcceptHandler();
+    public delegate bool HoraHandler(int actor, int target, string pai);
+    public delegate bool RyukyokuHandler();
+    public delegate bool EndKyokuHandler();
+    public delegate bool EndGameHandler();
 
     public class GameContext
     {
+
+
         GameState gameState;
 
         List<MJsonMessageAll> messageList;
-        public event GameStart GameStartHandler;
+//        public event GameStart GameStartHandler;
         MJsonMessageAll ReachActionBuffer;
 
 
         public GameContext()
         {
             gameState = AfterInitialiseState.GetInstance();
-            
         }     
         
         public bool ValidateMessage(MJsonMessageAll msg)
         {
-            return gameState.ValidateMessage(msg, messageList);
+            return gameState.ValidateMessage(msg);
         }
 
         public void RegisterMessage(MJsonMessageAll msg)
@@ -34,7 +52,7 @@ namespace MjServer
             messageList.Add(msg);
         }
 
-        public bool CanExecuteNextAction()
+        public bool HasRecievedMessageFromAllClients()
         {
             return messageList.Count == MjModelLibrary.Constants.PLAYER_NUM;
         }
@@ -45,19 +63,46 @@ namespace MjServer
         }
         
 
-        // follows functions executed in state
-        public bool DoGameStart()
+
+
+        public List<MJsonMessageAll> GetMessageList()
         {
-            var mjModelExecutionStatus = GameStartHandler();
-            //gameState = AfterGameStartState.GetInstance();//change State
-            return mjModelExecutionStatus;
-        } 
-
-
-
-
-
-
+            return messageList;
+        }
+ 
+        // overrode
+        /*
+        public void ChangeState(MJsonMessageTsumo msg)
+        {
+            gameState = AfterTsumoState.GetInstance();
+            gameState.SetLastActor(msg.actor);
+        }
+        public void ChangeState(MJsonMessageTsumo msg)
+        {
+            gameState = AfterTsumoState.GetInstance();
+            gameState.SetLastActor(msg.actor);
+        }
+        public void ChangeState(MJsonMessageTsumo msg)
+        {
+            gameState = AfterTsumoState.GetInstance();
+            gameState.SetLastActor(msg.actor);
+        }
+        public void ChangeState(MJsonMessageTsumo msg)
+        {
+            gameState = AfterTsumoState.GetInstance();
+            gameState.SetLastActor(msg.actor);
+        }
+        public void ChangeState(MJsonMessageTsumo msg)
+        {
+            gameState = AfterTsumoState.GetInstance();
+            gameState.SetLastActor(msg.actor);
+        }
+        public void ChangeState(MJsonMessageTsumo msg)
+        {
+            gameState = AfterTsumoState.GetInstance();
+            gameState.SetLastActor(msg.actor);
+        }
+        */
     }
 
 

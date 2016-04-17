@@ -28,7 +28,7 @@ namespace MjServer
 
         public GameModel()
         {
-            Init();
+           
         }
 
         private void Init()
