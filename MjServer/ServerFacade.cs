@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MjNetworkProtocolLibrary;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+
 
 namespace MjServer
 {
@@ -26,10 +22,7 @@ namespace MjServer
 
         public void StartServer()
         {
-            //-WairtingRoom
-            // make waiting room
             waitingRoom.StartWaiting();
-
         }
 
 
@@ -45,9 +38,10 @@ namespace MjServer
 
         void testStartGameRoom()
         {
+
         }
 
-        void OnStartGameRoom(Dictionary<ClientHolderInterface, string> clients )
+        void OnStartGameRoom( Dictionary<ClientHolderInterface, string> clients )
         {
             var gameRoom = new GameRoom(clients);
             RegisterGameRoom(gameRoom);

@@ -26,10 +26,7 @@ namespace MjServer
         public List<int> points { get; set; }
         public string LastMadeMessage { get; private set; } = String.Empty;
 
-        public GameModel()
-        {
-           
-        }
+        public GameModel(){}
 
         private void Init()
         {
@@ -88,8 +85,6 @@ namespace MjServer
         //ここからクライアントからの命令を受けてモデル内情報を更新する関数群
         public MJsonMessageTsumo Tsumo()
         {
-
-
             var tsumoPai = yama.DoTsumo();
             tehais[currentActor].Tsumo(tsumoPai);
             infoForResult[currentActor].SetLastAddedPai(tsumoPai);
@@ -230,10 +225,8 @@ namespace MjServer
             var tenpais = new List<bool>() { tehais[0].IsTenpai(), tehais[1].IsTenpai(), tehais[2].IsTenpai(), tehais[3].IsTenpai() };
             var deltas = CalcRyukyokuDeltaPoint(tenpais);
             
-            //点数を更新
             points = AddPoints(points, deltas);
 
-            //場況を更新
             field = Field.ChangeOnRyukyoku(field, tenpais);
 
             return new MJsonMessageRyukyoku("fanpai", tehaisString, tenpais, deltas, points);
@@ -254,6 +247,25 @@ namespace MjServer
 
 
         //以下Validater
+        public bool CanChi(int dapaiActor, int playerId, string pai)
+        {
+            if ((dapaiActor != playerId) && ((dapaiActor + 1) % 4 == playerId))
+            {
+                return tehais[playerId].CanChi(dapaiActor, playerId, pai);
+            }
+            return false;
+
+        }
+        public bool CanPon(int dapaiActor, int playerId, string pai)
+        {
+            if (dapaiActor != playerId)
+            {
+                return tehais[playerId].CanPon(dapaiActor, playerId, pai);
+            }
+            return false;
+        }
+
+
         public bool CanFinishKyoku()
         {
             return (yama != null) && (yama.GetRestYamaNum() == 0);
@@ -307,6 +319,12 @@ namespace MjServer
             }
             field.AddKyotaku();
         }
+
+
+
+
+
+
 
     }
 }

@@ -8,11 +8,33 @@ using MjModelLibrary;
 using System.Threading;
 using MjNetworkProtocolLibrary;
 using Newtonsoft.Json;
-using MjModelLibrary;
+
 
 namespace MjServer
 {
     delegate void StartGameRoom(Dictionary<ClientHolderInterface, string> client);
+
+
+    // server action is decided by clients action
+    delegate bool StartKyokuHandler();
+    delegate bool TsumoHandler();
+    delegate bool DahaiHandler(int actor, string pai, bool tsumogiri);
+    delegate bool ChiHandler(int actor, int target, string pai, List<string> consumed);
+    delegate bool PonHandler(int actor, int target, string pai, List<string> consumed);
+    delegate bool KakanHandler(int actor, string pai, List<string> consumed);
+    delegate bool DaiminkanHandler(int actor, int target, string pai, List<string> consumed);
+    delegate bool AnkanHandler(int actor, List<string> consumed);
+    delegate bool OpenDoraHandler();
+    delegate bool RinshanHandler();
+    delegate bool ReachHandler(int actor);
+    delegate bool ReachDahaiHandler(int actor, string pai, bool tsumogiri);
+    delegate bool ReachAcceptHandler();
+    delegate bool HoraHandler(int actor, int target, string pai);
+    delegate bool RyukyokuHandler();
+    delegate bool EndKyokuHandler();
+    delegate bool EndGameHandler();
+
+    delegate bool CheckEndGameHandler();
 
 
     class GameRoom
@@ -57,11 +79,8 @@ namespace MjServer
 
 
         }
-        // -Logger
-        // -MjModel modelからのメッセージ送付イベントハンドラに、メッセージ送付用関数をセット
 
-        // -message router
-        // -validator
+
 
         public void StartGame()
         {
@@ -70,10 +89,10 @@ namespace MjServer
             //shuffle client
 
 
-            //each message has difference in playerID
+            //send start messages which have different playerID
             foreach (var client in clients.Select((e,index) => new { e, index}))
             {
-                var gameStartMessage = MjsonObjectToString(new MJsonMessageStartGame(client.index,clientNames));
+                var gameStartMessage = MjsonObjectToString(new MJsonMessageStartGame(client.index, clientNames));
                 SendMessageToOneClient(gameStartMessage, client.index);
             }
         }
@@ -100,22 +119,25 @@ namespace MjServer
             {
                 await semaphore.WaitAsync();
                 MJsonMessageAll messageObj = JsonConvert.DeserializeObject<MJsonMessageAll>(message);
-                // validate message
                 
-
+                
+                // validate message
                 if ( gameContext.ValidateMessage(messageObj) == false)
                 {
                     OnErrorDetected(message);
                     return;
                 }
                 
+                // check all clients has sent message
                 if ( gameContext.HasRecievedMessageFromAllClients() == false)
                 {
                     return;
                 }
 
                 // if server gets messages from all clients, fire event and send message.
-                if ( gameContext.ExecuteAction() == false)
+                var isSuccesseded = gameContext.ExecuteAction();
+
+                if ( isSuccesseded == false)
                 {
                     var errorMessages = gameContext.GetMessageList();
                     StringBuilder sb = new StringBuilder();
@@ -146,10 +168,17 @@ namespace MjServer
 
 
 
+        // mj status check functions called by GameState
+        bool CanEndKyoku()
+        {
+            throw new NotImplementedException();
+        }
+
+
         // mj action functions called by GameState
         bool StartKyoku()
         {
-            // bool = mjmodel evalate 
+            // bool = mjmodel evalate
             //if false return false;
 
             // mjsonObj = mjmodel execution 
@@ -166,10 +195,6 @@ namespace MjServer
             throw new NotImplementedException();
            // return gameModel.Tsumo();
         }
-
-
-        ////
-
 
         bool Dahai(int actor, string pai, bool tsumogiri)
         {
