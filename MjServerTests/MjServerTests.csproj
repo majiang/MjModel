@@ -85,8 +85,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ChihoTestData.txt" />
+    <Content Include="ChiTestData.txt" />
     <Content Include="StartKyokuTestData.txt" />
     <Content Include="TenhoTestData.txt" />
+    <Content Include="TenhoTestData2.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
