@@ -384,7 +384,6 @@ namespace MjNetworkProtocolLibrary
 
     public class MJsonMessageNone : MJsonMessageBase
     {
-        
         public MJsonMessageNone()
         {
             type = MsgType.NONE;
@@ -434,7 +433,7 @@ namespace MjNetworkProtocolLibrary
         public int oya;
         public string dora_marker;
 
-        public int actor;
+        public int actor = -1;// -1 means initialized
         public bool tsumogiri;
         public int target;
         public string pai;

@@ -175,7 +175,7 @@ namespace OldMjServer
             
             var uradoraMarkers = yama.GetUradoraMarker();
             var ifr = infoForResult[actor];
-            ifr.PassedTurn = yama.GetUsedYamaNum();
+            ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
             ifr.IsFured = !ifr.IsMenzen;
 
@@ -293,7 +293,7 @@ namespace OldMjServer
 
         public void SetReach(int actor)
         {
-            if (yama.GetUsedYamaNum() < 4 && infoForResult.Count(e => e.IsFuredOnField) == 0)
+            if (yama.GetTsumoedYamaNum() < 4 && infoForResult.Count(e => e.IsFuredOnField) == 0)
             {
                 infoForResult[actor].IsDoubleReach = true;
             }

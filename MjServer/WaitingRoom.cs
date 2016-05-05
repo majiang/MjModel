@@ -41,7 +41,7 @@ namespace MjServer
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
-                ClientUsingTcpHolder clientHolder = new ClientUsingTcpHolder(client);
+                ClientHolderUsingTcpHolder clientHolder = new ClientHolderUsingTcpHolder(client);
                 clientHolder.GetMessageFromClientHandler += RouteMessage;
                 Task.Run(() => clientHolder.StartWaiting());
             }
@@ -67,7 +67,7 @@ namespace MjServer
                 if (mjsonObject != null)
                 {
                     var errorMessasge = JsonConvert.SerializeObject(new MJsonMessageError(message));
-                    clientHolder.SendMessage(errorMessasge);
+                    clientHolder.SendMessageToClient(errorMessasge);
                     clientHolder.Disconnect();
                 }
                 return;

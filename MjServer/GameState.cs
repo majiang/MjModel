@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MjNetworkProtocolLibrary;
+using System.Diagnostics;
+
 namespace MjServer
 {
     interface GameState
@@ -23,11 +25,11 @@ namespace MjServer
         protected MJsonMessageAll SelectHighPriorityMessage(List<MJsonMessageAll> msgList)
         {
             // priority is as follows.
-            // hora > daiminkan > pon > chi > none
+            // hora > daiminkan > pon > chi > others > none
             if (msgList.Exists(e => e.IsHORA()))
             {
                 return msgList.Where(e => e.IsHORA())
-                              .OrderBy(e => (e.actor > e.target ? e.actor - 4 : e.actor))// sort by ATAMAHANE
+                              .OrderBy(e => (e.actor > e.target ? e.actor - 4 : e.actor))// nearest player hora is selected 
                               .First();
             }
             else if (msgList.Exists(e => e.IsDAIMINKAN()))
@@ -42,6 +44,10 @@ namespace MjServer
             {
                 return msgList.First(e => e.IsCHI());
             }
+            else if (msgList.Exists(e=> e.IsNONE() == false))
+            {
+                return msgList.First(e => e.IsNONE() == false);
+            }
 
             return msgList.First(e => e.IsNONE());
 
@@ -50,9 +56,6 @@ namespace MjServer
 
     class AfterInitialiseState : StateBase, GameState
     {
-        public static event StartKyokuHandler OnStartKyoku;
-
-
         static AfterInitialiseState state = new AfterInitialiseState();
         private AfterInitialiseState() { }
         public static GameState GetInstance()
@@ -67,7 +70,7 @@ namespace MjServer
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msg)
         {
-            return OnStartKyoku();
+            return context.OnStartKyoku();
         }
 
     }
@@ -91,18 +94,13 @@ namespace MjServer
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msg)
         {
-            return OnTsumo();
+            return context.OnTsumo();
         }
 
     }
 
     class AfterTsumoState : StateBase, GameState
     {
-        public static event ReachHandler OnReach;
-        public static event AnkanHandler OnAnkan;
-        public static event KakanHandler OnKakan;
-        public static event HoraHandler OnHora;
-        public static event DahaiHandler OnDahai;
 
         static AfterTsumoState state = new AfterTsumoState();
         private AfterTsumoState() { }
@@ -132,27 +130,28 @@ namespace MjServer
 
             if (nextAction.IsREACH())
             {
-                return OnReach(nextAction.actor);
+                return context.OnReach(nextAction.actor);
             }
             else if (nextAction.IsANKAN())
             {
-                return OnAnkan(nextAction.actor, nextAction.consumed);
+                return context.OnAnkan(nextAction.actor, nextAction.consumed);
             }
             else if (nextAction.IsKAKAN())
             {
-                return OnKakan(nextAction.actor, nextAction.pai, nextAction.consumed);
+                return context.OnKakan(nextAction.actor, nextAction.pai, nextAction.consumed);
             }
             else if (nextAction.IsHORA())
             {
-                return OnHora(nextAction.actor, nextAction.target, nextAction.pai);
+                return context.OnHora(nextAction.actor, nextAction.target, nextAction.pai);
             }
             else if (nextAction.IsDAHAI())
             {
-                return OnDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
+                return context.OnDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
             }
             else
             {
                 // it is error if this line executed;
+                Debug.Assert(false);
                 return false;
             }
 
@@ -165,14 +164,6 @@ namespace MjServer
 
     class AfterDahiState : StateBase, GameState
     {
-        public static event TsumoHandler OnTsumo;
-        public static event PonHandler OnPon;
-        public static event ChiHandler OnChi;
-        public static event HoraHandler OnHora;
-        public static event DaiminkanHandler OnDaiminkan;
-
-
-
         static AfterDahiState state = new AfterDahiState();
         private AfterDahiState() { }
 
@@ -196,31 +187,40 @@ namespace MjServer
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
-
+            
             var nextAction = SelectHighPriorityMessage(msgList);
 
-            if (nextAction.IsNONE())
+            // check hora
+            if (nextAction.IsHORA())
             {
-                return OnTsumo();
+                return context.OnHora(nextAction.actor, nextAction.target, nextAction.pai);
             }
-            else if (nextAction.IsPON())
+            // check kyokuend
+            if ( context.OnCheckIsEndKyoku() )
             {
-                return OnPon(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
+                return context.OnRyukyoku();
+            }
+            
+            // execute action
+            if (nextAction.IsPON())
+            {
+                return context.OnPon(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
             }
             else if (nextAction.IsCHI())
             {
-                return OnChi(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
-            }
-            else if (nextAction.IsHORA())
-            {
-                return OnHora(nextAction.actor, nextAction.target, nextAction.pai);
+                return context.OnChi(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
             }
             else if (nextAction.IsDAIMINKAN())
             {
-                return OnDaiminkan(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
+                return context.OnDaiminkan(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
+            }
+            else if (nextAction.IsNONE())
+            {
+                return context.OnTsumo();
             }
             else
             {
+                Debug.Assert(false);
                 return false;  // If this line executed, It is Error ;
             }
 
@@ -229,12 +229,15 @@ namespace MjServer
 
     }
 
-    class AfterAnKanState : StateBase, GameState
+    class AfterAnkanState : StateBase, GameState
     {
-        public static event OpenDoraHandler OnOpenDora;
 
-        static AfterAnKanState state = new AfterAnKanState();
-        private AfterAnKanState() { }
+        static AfterAnkanState state = new AfterAnkanState();
+        private AfterAnkanState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
 
         public bool ValidateMessage(MJsonMessageAll msg)
         {
@@ -242,17 +245,18 @@ namespace MjServer
         }
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
-            return OnOpenDora();
+            return context.OnOpenDora();
         }
     }
 
-    class AfterKaKanState : StateBase, GameState
+    class AfterKakanState : StateBase, GameState
     {
-        public static event OpenDoraHandler OnOpenDora;
-        public static event HoraHandler OnHora;
-
-        static AfterKaKanState state = new AfterKaKanState();
-
+        static AfterKakanState state = new AfterKakanState();
+        private AfterKakanState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             if (msg.actor == lastActor)
@@ -270,14 +274,15 @@ namespace MjServer
 
             if (nextAction.IsNONE())
             {
-                return OnOpenDora();
+                return context.OnOpenDora();
             }
             else if (nextAction.IsHORA())
             {
-                return OnHora(nextAction.actor, nextAction.target, nextAction.pai);
+                return context.OnHora(nextAction.actor, nextAction.target, nextAction.pai);
             }
             else
             {
+                Debug.Assert(false);
                 return false;  // If this line executed, It is Error ;
             }
         }
@@ -285,20 +290,78 @@ namespace MjServer
 
     }
 
-    class AfterDaiminKanState : StateBase, GameState
+
+    class AfterPonState : StateBase, GameState
     {
-        public static event OpenDoraHandler OnOpenDora;
 
-        static AfterDaiminKanState state = new AfterDaiminKanState();
-        private AfterDaiminKanState() { }
+        static AfterPonState state = new AfterPonState();
+        private AfterPonState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
+        public bool ValidateMessage(MJsonMessageAll msg)
+        {
+            if (msg.actor == lastActor)
+            {
+                return msg.IsDAHAI();
+            }
+            else
+            {
+                return msg.IsNONE();
+            }
+        }
+        public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
+        {
+            var nextAction = SelectHighPriorityMessage(msgList);
+            return context.OnDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
+        }
+    }
 
+
+    class AfterChiState : StateBase, GameState
+    {
+
+        static AfterChiState state = new AfterChiState();
+        private AfterChiState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
+        public bool ValidateMessage(MJsonMessageAll msg)
+        {
+            if (msg.actor == lastActor)
+            {
+                return msg.IsDAHAI();
+            }
+            else
+            {
+                return msg.IsNONE();
+            }
+        }
+        public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
+        {
+            var nextAction = SelectHighPriorityMessage(msgList);
+            return context.OnDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
+        }
+    }
+
+    class AfterDaiminkanState : StateBase, GameState
+    {
+
+        static AfterDaiminkanState state = new AfterDaiminkanState();
+        private AfterDaiminkanState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             return msg.IsNONE();
         }
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
-            return OnOpenDora();
+            return context.OnOpenDora();
         }
     }
 
@@ -306,26 +369,32 @@ namespace MjServer
 
     class AfterOpenDoraState : StateBase, GameState
     {
-        public static event RinshanHandler OnRinshan;
 
         static AfterOpenDoraState state = new AfterOpenDoraState();
-
+        private AfterOpenDoraState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             return msg.IsNONE();
         }
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
-            return OnRinshan();
+            return context.OnRinshan();
         }
     }
 
     class AfterReachState : StateBase, GameState
     {
-        public static event ReachDahaiHandler OnReachDahai;
 
         static AfterReachState state = new AfterReachState();
-
+        private AfterReachState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             if (msg.actor == lastActor)
@@ -340,18 +409,19 @@ namespace MjServer
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
             var nextAction = msgList.First(e => e.IsDAHAI());
-            return OnReachDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
+            return context.OnReachDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
         }
     }
 
     class AfterReachDahaiState : StateBase, GameState
     {
-        public static event ReachAcceptHandler OnReachAccept;
-        public static event HoraHandler OnHora;
 
         static AfterReachDahaiState state = new AfterReachDahaiState();
-        private AfterReachDahaiState(){}
-
+        private AfterReachDahaiState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             if (msg.actor == lastActor)
@@ -367,34 +437,32 @@ namespace MjServer
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
-            if ( msgList.Exists(e => e.IsHORA()) )
+            if (msgList.Exists(e => e.IsHORA()))
             {
                 var nextAction = msgList.First(e => e.IsHORA());
-                return OnHora(nextAction.actor, nextAction.target, nextAction.pai);
+                return context.OnHora(nextAction.actor, nextAction.target, nextAction.pai);
             }
             else
             {
-                return OnReachAccept();
+                return context.OnReachAccept();
             }
         }
 
     }
 
-    class AfterReachAccept : StateBase, GameState
+    class AfterReachAcceptState : StateBase, GameState
     {
-        public static event TsumoHandler OnTsumo;
-        public static event PonHandler OnPon;
-        public static event ChiHandler OnChi;
-        public static event DaiminkanHandler OnDaiminkan;
-
-        static AfterReachAccept state = new AfterReachAccept();
-        private AfterReachAccept() { }
-
+        static AfterReachAcceptState state = new AfterReachAcceptState();
+        private AfterReachAcceptState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             return msg.IsNONE();
         }
-        
+
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
 
@@ -402,22 +470,23 @@ namespace MjServer
 
             if (nextAction.IsNONE())
             {
-                return OnTsumo();
+                return context.OnTsumo();
             }
             else if (nextAction.IsPON())
             {
-                return OnPon(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
+                return context.OnPon(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
             }
             else if (nextAction.IsCHI())
             {
-                return OnChi(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
+                return context.OnChi(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
             }
             else if (nextAction.IsDAIMINKAN())
             {
-                return OnDaiminkan(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
+                return context.OnDaiminkan(nextAction.actor, nextAction.target, nextAction.pai, nextAction.consumed);
             }
             else
             {
+                Debug.Assert(false);
                 return false;  // If this line executed, It is Error ;
             }
 
@@ -426,13 +495,12 @@ namespace MjServer
 
     class AfterHoraState : StateBase, GameState
     {
-        public static event EndKyokuHandler OnEndKyoku;
-        public static event EndGameHandler OnEndGame;
-        public static event CheckEndGameHandler OnCheckEndGame;
-
         static AfterHoraState state = new AfterHoraState();
         private AfterHoraState() { }
-
+        public static GameState GetInstance()
+        {
+            return state;
+        }
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             return msg.IsNONE();
@@ -440,21 +508,75 @@ namespace MjServer
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
         {
-            if ( OnCheckEndGame() )
+            return context.OnEndKyoku();
+        }
+    }
+
+    class AfterRyukyokuState : StateBase, GameState
+    {
+        static AfterRyukyokuState state = new AfterRyukyokuState();
+        private AfterRyukyokuState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
+        public bool ValidateMessage(MJsonMessageAll msg)
+        {
+            return msg.IsNONE();
+        }
+
+        public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
+        {
+            return context.OnEndKyoku();
+        }
+    }
+
+    class AfterEndKyokuState : StateBase, GameState
+    {
+        static AfterEndKyokuState state = new AfterEndKyokuState();
+        private AfterEndKyokuState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
+        public bool ValidateMessage(MJsonMessageAll msg)
+        {
+            return msg.IsNONE();
+        }
+
+        public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
+        {
+            if (context.OnCheckIsEndGame())
             {
-                return OnEndGame();
+                return context.OnEndGame();
             }
             else
             {
-                return OnEndKyoku();
+                return context.OnStartKyoku();
             }
         }
     }
 
-    class EndState : StateBase
+    class EndState : StateBase, GameState
     {
         static EndState state = new EndState();
         private EndState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
+
+        public bool ValidateMessage(MJsonMessageAll msg)
+        {
+            Debug.Assert(false);
+            return false;
+        }
+
+        public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
+        {
+            Debug.Assert(false);
+            return false;
+        }
     }
 
 }

@@ -18,7 +18,7 @@ namespace MjModelLibrary
         public List<List<object>> yakus = new List<List<object>>();
         public int Han = 0;
         public int Fu = 0;
-        public bool IsYakuman;
+        public int YakumanMultiple;
         public bool IsTsumo;
         public bool IsOya;
         public bool HasYakuExcludeDora;
@@ -124,6 +124,7 @@ namespace MjModelLibrary
             if (HasYakuman(result.yakus))
             {
                 result.yakus = SelectYakuman(result.yakus);
+                result.YakumanMultiple = result.yakus.Count;
             }
 
             result.Han = CalcHanSum(result.yakus);
@@ -338,7 +339,7 @@ namespace MjModelLibrary
             if (HasYakuman(result.yakus))
             {
                 result.yakus = SelectYakuman(result.yakus);
-                result.IsYakuman = true;
+                result.YakumanMultiple = result.yakus.Count;
             }
 
             //飜数計算
@@ -371,7 +372,7 @@ namespace MjModelLibrary
             if (ifpc.IsJifuu(headSyuId)) {
                 fuSum += 2;
             }
-            if (MJUtil.IsDragonPai(headSyuId)) {
+            if (MJUtil.IsDragonPaiId(headSyuId)) {
                 fuSum += 2;
             }
 
@@ -455,7 +456,7 @@ namespace MjModelLibrary
             int headSyu = hp.Head.TartsuStartPaiSyu;
 
             //頭が役牌でないか判定
-            if (ifr.Isbakaze(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPai(headSyu))
+            if (ifr.Isbakaze(headSyu) || ifr.IsJifuu(headSyu) || MJUtil.IsDragonPaiId(headSyu))
             {
                 return false;
             }
@@ -563,7 +564,7 @@ namespace MjModelLibrary
             {
                 if (ifr.IsJifuu(tartsu.TartsuStartPaiSyu) 
                     || ifr.Isbakaze(tartsu.TartsuStartPaiSyu)
-                    || MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu)
+                    || MJUtil.IsDragonPaiId(tartsu.TartsuStartPaiSyu)
                     )
                 {
                     return true;
@@ -586,7 +587,7 @@ namespace MjModelLibrary
                 {
                     yakuhaiNum++;
                 }
-                if (MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu))
+                if (MJUtil.IsDragonPaiId(tartsu.TartsuStartPaiSyu))
                 {
                     yakuhaiNum++;
                 }
@@ -674,7 +675,7 @@ namespace MjModelLibrary
         }
         private static bool IsShosangen(HoraPattern hp)
         {
-            if (MJUtil.IsDragonPai(hp.Head.TartsuStartPaiSyu) == false)
+            if (MJUtil.IsDragonPaiId(hp.Head.TartsuStartPaiSyu) == false)
             {
                 return false;
             }
@@ -682,7 +683,7 @@ namespace MjModelLibrary
             var doragonCount = 0;
             foreach (var tartsu in hp.WithoutHeadTartsuList)
             {
-                if (MJUtil.IsDragonPai(tartsu.TartsuStartPaiSyu))
+                if (MJUtil.IsDragonPaiId(tartsu.TartsuStartPaiSyu))
                 {
                     doragonCount++;
                 }
@@ -812,7 +813,7 @@ namespace MjModelLibrary
 
             foreach (var tartsu in hp.TartsuList)
             {
-                if( MJUtil.IsJihaiPai(tartsu.TartsuStartPaiSyu))
+                if( MJUtil.IsJihaiPaiId(tartsu.TartsuStartPaiSyu))
                 {
                     hasJi |= true;
                 }
@@ -844,7 +845,7 @@ namespace MjModelLibrary
                 {
                     continue;
                 }
-                if (MJUtil.IsJihaiPai(syu.index))
+                if (MJUtil.IsJihaiPaiId(syu.index))
                 {
                     hasJi |= true;
                     continue;
@@ -869,7 +870,7 @@ namespace MjModelLibrary
 
             foreach (var tartsu in hp.TartsuList)
             {
-                if (MJUtil.IsJihaiPai(tartsu.TartsuStartPaiSyu))
+                if (MJUtil.IsJihaiPaiId(tartsu.TartsuStartPaiSyu))
                 {
                     return false;
                 }
@@ -895,7 +896,7 @@ namespace MjModelLibrary
                 {
                     continue;
                 }
-                if (MJUtil.IsJihaiPai(syu.index))
+                if (MJUtil.IsJihaiPaiId(syu.index))
                 {
                     return false;
                 }
@@ -920,29 +921,29 @@ namespace MjModelLibrary
 
         private static bool IsDaisangen(HoraPattern hp)
         {
-            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsDragonPai( e.TartsuStartPaiSyu ) ) == 3;
+            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsDragonPaiId( e.TartsuStartPaiSyu ) ) == 3;
         }
 
         private static bool IsShosushi(HoraPattern hp)
         {
-            return MJUtil.IsWindPai(hp.Head.TartsuStartPaiSyu)
-                && hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWindPai(e.TartsuStartPaiSyu)) == 3;
+            return MJUtil.IsWindPaiId(hp.Head.TartsuStartPaiSyu)
+                && hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWindPaiId(e.TartsuStartPaiSyu)) == 3;
         }
 
         private static bool IsDaisushi(HoraPattern hp)
         {
-            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWindPai(e.TartsuStartPaiSyu)) == 4;
+            return hp.WithoutHeadTartsuList.Count(e => MJUtil.IsWindPaiId(e.TartsuStartPaiSyu)) == 4;
         }
 
         private static bool IsTsuiso(HoraPattern hp)
         {
-            return hp.TartsuList.Count(e => MJUtil.IsJihaiPai(e.TartsuStartPaiSyu)) == 5;
+            return hp.TartsuList.Count(e => MJUtil.IsJihaiPaiId(e.TartsuStartPaiSyu)) == 5;
         }
         private static bool IsTsuiso(int[] horaSyu)
         {
             foreach(var syu in horaSyu.Select( (val,index) => new {val,index }).Where( syu => syu.val > 0))
             {
-                if(MJUtil.IsJihaiPai(syu.index) == false)
+                if(MJUtil.IsJihaiPaiId(syu.index) == false)
                 {
                     return false;
                 }
@@ -1025,7 +1026,7 @@ namespace MjModelLibrary
 
         private static bool IsTenho(InfoForResult ifr)
         {
-            return ifr.PassedTurn == 0;
+            return ifr.UseYamaPaiNum == 1;
         }
 
         private static bool IsChiho(InfoForResult ifr)

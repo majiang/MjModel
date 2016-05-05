@@ -25,15 +25,18 @@ public class MJUtil {
 	public static readonly int HORAMENTSU_TYPE = 0;
 	public static readonly int HORAMENTSU_SYU = 1;
 	
-	public static readonly int LENGTH_ID = 144;
+	public static readonly int LENGTH_ID = 34*4;
 	public static readonly int LENGTH_SYU_ALL = 34;
     public static readonly int LENGTH_SYU_NUMBERS = 9;
+
+
     public static readonly int LENGTH_HAIPAI = 13;
 	public static readonly int LENGTH_TEHAI = 14;
-	
+    public static readonly int LENGTH_WANPAI = 14;
 
 
-	public static readonly int YAKUMANSTART = (int)Yaku.SUUANKO;
+
+    public static readonly int YAKUMANSTART = (int)Yaku.SUUANKO;
 
         
 
@@ -341,13 +344,13 @@ public class MJUtil {
 
 
 
-	public static bool IsDragonPai(int syuIdx) {
+	public static bool IsDragonPaiId(int syuIdx) {
 		return (syuIdx == 31)||(syuIdx == 32)||(syuIdx == 33);
 	}
-	public static bool IsJihaiPai(int syuIdx) {
+	public static bool IsJihaiPaiId(int syuIdx) {
 		return (27 <= syuIdx)&&(syuIdx < LENGTH_SYU_ALL);//0~26は数牌
 	}
-	public static bool IsWindPai(int syuIdx) {
+	public static bool IsWindPaiId(int syuIdx) {
 		return (27 <= syuIdx)&&(syuIdx <= 30);//27~30は風牌
 	}
 	public static bool IsGreenPai(int syuIdx) {

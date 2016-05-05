@@ -136,17 +136,17 @@ namespace MjClient
 
 
 
-        public bool CanChi(int dapaiActor, int playerId, string pai)
-        {
-            return tehais[myPositionId].CanChi(dapaiActor, playerId, pai);
+        //public bool CanChi(int dapaiActor, int playerId, string pai)
+        //{
+        //    return tehais[myPositionId].CanChi(pai, consumed);
             
-        }
-        public bool CanPon(int dapaiActor, int playerId, string pai)
-        {
+        //}
+        //public bool CanPon(int dapaiActor, int playerId, string pai)
+        //{
           
-            return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
+        //    return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
             
-        }
+        //}
 
         public bool CanReach(int playerId)
         {
@@ -177,7 +177,7 @@ namespace MjClient
 
         public void SetReach(int actor)
         {
-            if (yama.GetUsedYamaNum() > 4 && infoForResults.Count(e => e.IsFured) == 0)
+            if (yama.GetTsumoedYamaNum() > 4 && infoForResults.Count(e => e.IsFured) == 0)
             {
                 infoForResults[actor].IsDoubleReach = true;
             }

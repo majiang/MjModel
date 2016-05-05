@@ -9,23 +9,24 @@ namespace MjModelLibrary
 {
     public class Yama
     {
-        private bool USE_RED_DORA = true;
-        private const int YAMA_LENGTH = 34*4;
-        private const int WANPAI_LENGTH = 14;
-        private const int DORA_START_POS = YAMA_LENGTH - WANPAI_LENGTH + 4;
-        private const int WANPAI_START_POS = YAMA_LENGTH - WANPAI_LENGTH;
+        bool USE_RED_DORA = true;
+        const int YAMA_LENGTH = 34 * 4;
+        const int WANPAI_LENGTH = 14;
+        const int DORA_START_POS = YAMA_LENGTH - WANPAI_LENGTH + 4;
+        const int WANPAI_START_POS = YAMA_LENGTH - WANPAI_LENGTH;
 
         private int HAIPAI_LENGTH = 13;
 
         public List<Pai> doraMarkers;
-         
 
-        private List<Pai> mYama;
-        private int yamaPointer;
-        private int rinshanPointer;
-        private int doraPointer;
-        
-        public Yama() {
+
+        List<Pai> mYama;
+        int yamaPointer;
+        int rinshanPointer;
+        int doraPointer;
+
+        public Yama()
+        {
             Init();
         }
 
@@ -42,7 +43,14 @@ namespace MjModelLibrary
             OpenDoraOmote();
         }
 
-        private List<Pai> MakeYama()
+        public void ReplaceYamaForTest(List<string> pais)
+        {
+            var tsumoStartIndex = MJUtil.LENGTH_HAIPAI * 4;
+            mYama.RemoveRange(tsumoStartIndex, pais.Count);
+            mYama.InsertRange(tsumoStartIndex, pais.Select(e => new Pai(e)));
+        }
+
+        List<Pai> MakeYama()
         {
             //牌作成
             var ym = new Pai[YAMA_LENGTH];
@@ -81,14 +89,14 @@ namespace MjModelLibrary
             return YAMA_LENGTH - WANPAI_LENGTH - yamaPointer - rinshanPointer;
         }
 
-        public int GetUsedYamaNum()
+        public int GetTsumoedYamaNum()
         {
-            return yamaPointer + rinshanPointer;
+            return yamaPointer + rinshanPointer - HAIPAI_LENGTH * 4;
         }
 
         public bool CanKan()
         {
-            return (GetRestYamaNum() > 0) && ( rinshanPointer < 4);
+            return (GetRestYamaNum() > 0) && (rinshanPointer < 4);
         }
 
 
@@ -108,7 +116,8 @@ namespace MjModelLibrary
         {
             var haipais = new List<List<Pai>>() { new List<Pai>(), new List<Pai>(), new List<Pai>(), new List<Pai>(), };
 
-            for (int i = 0; i < HAIPAI_LENGTH; i++ ){
+            for (int i = 0; i < HAIPAI_LENGTH; i++)
+            {
                 haipais[0].Add(DoTsumo());
                 haipais[1].Add(DoTsumo());
                 haipais[2].Add(DoTsumo());
@@ -124,7 +133,7 @@ namespace MjModelLibrary
 
             for (int i = 0; i < doraPointer; i++)
             {
-                uradoraMarkers.Add( mYama[DORA_START_POS + doraPointer + i].ToString() );
+                uradoraMarkers.Add(mYama[DORA_START_POS + doraPointer + i].ToString());
             }
 
             return uradoraMarkers;

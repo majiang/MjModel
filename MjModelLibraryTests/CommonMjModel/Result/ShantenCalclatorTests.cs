@@ -16,12 +16,11 @@ namespace MjModelLibrary.Tests
         public void シャンテン数計算テスト()
         {
             var ss = ShantenCalclator.GetInstance();
+            ss.UseChitoitsu = false;
+            ss.UseKokushi = false;
 
             using (StreamReader sr = new StreamReader(@"../../shanten_benchmark_data.num.txt", System.Text.Encoding.GetEncoding("shift_jis")))
             {
-                ss.UseChitoitsu = false;
-                ss.UseKokushi = false;
-
                 while (true)
                 {
                     string line = sr.ReadLine();

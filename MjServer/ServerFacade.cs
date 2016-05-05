@@ -3,8 +3,8 @@
 
 namespace MjServer
 {
-    delegate void AfterErrorHandler(GameRoom gm);
-    delegate void AfterGameEndHandler(GameRoom gm);
+    public delegate void AfterErrorHandler(GameRoom gm);
+    public delegate void AfterGameEndHandler(GameRoom gm);
 
     public class ServerFacade
     {
@@ -27,13 +27,7 @@ namespace MjServer
 
 
 
-        //  -GameRoom has 4 tcpClient
-        //  -MessageRouter
-        //  -ServerMjModel
-        //  -ServerLogger
-        //
-        //  send start
-        //
+
 
 
         void testStartGameRoom()
@@ -50,12 +44,12 @@ namespace MjServer
 
         void AfterErrorDetected(GameRoom gameRoom)
         {
-            TerminateGameRoom(gameRoom);
+            RemoveGameRoom(gameRoom);
         }
 
         void AfterGameEnd(GameRoom gameRoom)
         {
-            TerminateGameRoom(gameRoom);
+            RemoveGameRoom(gameRoom);
         }
 
         
@@ -66,7 +60,7 @@ namespace MjServer
             gameRooms.Add(gameRoom);
         }
 
-        void TerminateGameRoom(GameRoom gameRoom)
+        void RemoveGameRoom(GameRoom gameRoom)
         {
             gameRoom.OnAfterError -= AfterErrorDetected;
             gameRoom.OnAfterGameEnd -= AfterGameEnd;

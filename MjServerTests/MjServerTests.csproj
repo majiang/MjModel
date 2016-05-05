@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -51,6 +55,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="GameModelTests.cs" />
+    <Compile Include="GameRoomTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerFacadeTests.cs" />
   </ItemGroup>
@@ -59,10 +65,28 @@
       <Project>{dd24cbea-66c4-4b34-ae68-7de476c91062}</Project>
       <Name>MjClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MjModelLibrary\MjModelLibrary.csproj">
+      <Project>{b2cdbbce-0f5c-4b4b-a457-18575c71e85d}</Project>
+      <Name>MjModelLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MjNetworkProtocolLibrary\MjNetworkProtocolLibrary.csproj">
+      <Project>{1e51814c-227e-4c73-90e0-38c9310ca03a}</Project>
+      <Name>MjNetworkProtocolLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MjServer\MjServer.csproj">
       <Project>{2E1D0311-D9E0-4B68-A172-56972B2CF46A}</Project>
       <Name>MjServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="StartKyokuTestData.txt" />
+    <Content Include="TenhoTestData.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

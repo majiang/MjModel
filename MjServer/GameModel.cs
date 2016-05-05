@@ -14,7 +14,7 @@ namespace MjServer
 
     public class GameModel
     {
-       
+        
         public Yama yama { get; set; }
         public List<Kawa> kawas { get; set; }
         public List<Tehai> tehais { get; set; }
@@ -24,7 +24,6 @@ namespace MjServer
         public List<InfoForResult> infoForResult { get; set; }
 
         public List<int> points { get; set; }
-        public string LastMadeMessage { get; private set; } = String.Empty;
 
         public GameModel(){}
 
@@ -71,10 +70,17 @@ namespace MjServer
                     );
         }
 
+        
+
+
+        public int CalcNextActor(int currentActor)
+        {
+            return (currentActor + 1) % 4;
+        }
 
         public void GoNextActor()
         {
-            currentActor = (currentActor + 1) % 4;
+            currentActor = CalcNextActor(currentActor);
         }
         public void SetCurrentActor(int i)
         {
@@ -165,49 +171,14 @@ namespace MjServer
             return new MJsonMessageReach(actor);
         }
 
+
+        private MJsonMessageHora calclatedHoraMessage;
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
-            //ToDo validate Hora
-
-
-            
-            
-            var uradoraMarkers = yama.GetUradoraMarker();
-            var ifr = infoForResult[actor];
-            ifr.PassedTurn = yama.GetUsedYamaNum();
-            ifr.IsMenzen = tehais[actor].IsMenzen();
-            ifr.IsFured = !ifr.IsMenzen;
-
-
-
-            if (actor == target)
-            {
-                // tsumo
-                ifr.IsHaitei = yama.GetRestYamaNum() == 0;
-                ifr.IsTsumo = true;
-            }
-            else
-            {
-                //ron
-                infoForResult[actor].SetLastAddedPai(pai);
-                ifr.IsHoutei = yama.GetRestYamaNum() == 0;
-                ifr.IsTsumo = false;
-            }
-            HoraResult horaResult;
-            horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
-
-
-
-
-            //場況を更新
-            //TODO  delta と pointResult
-
-            field = Field.ChangeOnHora(field, actor);
-
-
-            return new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
-                horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 });
+            return calclatedHoraMessage;
         }
+
+
 
         public void None()
         {
@@ -247,40 +218,90 @@ namespace MjServer
 
 
         //以下Validater
-        public bool CanChi(int dapaiActor, int playerId, string pai)
+        public bool CanTsumo()
         {
-            if ((dapaiActor != playerId) && ((dapaiActor + 1) % 4 == playerId))
+            return true;
+        }
+        public bool CanDahai()
+        {
+            return true;
+        }
+
+        public bool CanChi(int actor , int  target, string pai, List<string> consumed)
+        {
+            if ((target != actor) && ((target + 1) % 4 == actor))
             {
-                return tehais[playerId].CanChi(dapaiActor, playerId, pai);
+                return tehais[actor].CanChi(pai,consumed);
             }
             return false;
 
         }
-        public bool CanPon(int dapaiActor, int playerId, string pai)
+        public bool CanPon(int actor, int  target, string pai, List< string > consumed)
         {
-            if (dapaiActor != playerId)
+            if (target != actor)
             {
-                return tehais[playerId].CanPon(dapaiActor, playerId, pai);
+                return tehais[actor].CanPon(pai,consumed);
             }
             return false;
         }
 
+        public bool CanHora(int actor, int target, string pai)
+        {
+            var uradoraMarkers = yama.GetUradoraMarker();
+            var ifr = infoForResult[actor];
+            ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
+            ifr.IsMenzen = tehais[actor].IsMenzen();
+            ifr.IsFured = !ifr.IsMenzen;
+            
+            if (actor == target)
+            {
+                // tsumo hora
+                ifr.IsHaitei = yama.GetRestYamaNum() == 0;
+                ifr.IsTsumo = true;
+            }
+            else
+            {
+                //ron hora
+                infoForResult[actor].SetLastAddedPai(pai);
+                ifr.IsHoutei = yama.GetRestYamaNum() == 0;
+                ifr.IsTsumo = false;
+            }
+            HoraResult horaResult;
+            horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
 
-        public bool CanFinishKyoku()
+            // if hora contains any yaku, return false. 
+            if (horaResult.yakuResult.HasYakuExcludeDora == false)
+            {
+                return false;
+            }
+
+
+            // change field
+            field = Field.ChangeOnHora(field, actor);
+
+            //TODO  modifie delta and pointResult.
+
+            // save calclated horaresult
+            calclatedHoraMessage = new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
+                horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 });
+            
+            return true;
+            
+        }
+
+        public bool CanEndKyoku()
         {
             return (yama != null) && (yama.GetRestYamaNum() == 0);
         }
-
-
-
-
+        
         public bool CanEndGame()
         {
             return field.KyokuId == 1 && field.Bakaze.PaiString == "S";
         }
 
 
-        private static int DELTA_POINT_BASE = 3000;
+        // model change functions 
+        private readonly int DELTA_POINT_BASE = 3000;
         private List<int> CalcRyukyokuDeltaPoint(List<bool> tenpais)
         {
             var tenpaiNum = tenpais.Count(e => e == true);
@@ -309,7 +330,7 @@ namespace MjServer
 
         public void SetReach(int actor)
         {
-            if (yama.GetUsedYamaNum() < 4 && infoForResult.Count(e => e.IsFuredOnField) == 0)
+            if (yama.GetTsumoedYamaNum() < 4 && infoForResult.Count(e => e.IsFuredOnField) == 0)
             {
                 infoForResult[actor].IsDoubleReach = true;
             }

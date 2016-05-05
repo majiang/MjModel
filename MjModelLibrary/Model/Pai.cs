@@ -12,6 +12,7 @@ namespace MjModelLibrary
         public int PaiNumber { get; set; }
         public string PaiString { get; set; }
         public bool IsRedDora { get; set; }
+        public static readonly string UNKNOWN_PAI_STRING = "?";
 
         public Pai(int paiNum)
         {
@@ -20,14 +21,12 @@ namespace MjModelLibrary
             IsRedDora = false;
         }
 
-        public Pai(string paiStr)
+        public Pai(string paiStr = "?")
         {
             PaiNumber = PaiConverter.STRING_TO_ID[paiStr];
             PaiString = paiStr;
             IsRedDora = PaiConverter.RED_DORA_STRING_ID.ContainsKey(paiStr);
         }
-
-        public Pai() { }
 
 
 

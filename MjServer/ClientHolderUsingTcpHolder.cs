@@ -12,7 +12,7 @@ using System.Diagnostics;
 namespace MjServer
 {
 
-    class ClientUsingTcpHolder : ClientHolderInterface
+    class ClientHolderUsingTcpHolder : ClientHolderInterface
     {
         TcpClient tcpClient;
         public event GetMessageFromClient GetMessageFromClientHandler;
@@ -21,7 +21,7 @@ namespace MjServer
         //public event OverWaitingStartGameTimeLimit OnOverWaitingStartGameTimeLimit;
         
 
-        public ClientUsingTcpHolder(TcpClient tcpClient)
+        public ClientHolderUsingTcpHolder(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
         }
@@ -30,7 +30,7 @@ namespace MjServer
         {
             //SendHello
             var helloMessage = JsonConvert.SerializeObject(new MJsonMessageHello());
-            SendMessage(helloMessage);
+            SendMessageToClient(helloMessage);
 
             Console.WriteLine(
                 "Connect to Client ({0}:{1})" ,
@@ -64,7 +64,7 @@ namespace MjServer
            tcpClient.Close();
         }
 
-        public void SendMessage(string message)
+        public void SendMessageToClient(string message)
         {
             message += NetworkConstants.NewLineString;
             try

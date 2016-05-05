@@ -31,7 +31,7 @@ namespace MjModelLibrary
         {
             PointResult pointResult = new PointResult();
 
-            int bp = calcBasicPoint(yakuResult.Fu, yakuResult.Han, yakuResult.IsYakuman);
+            int bp = calcBasicPoint(yakuResult.Fu, yakuResult.Han, yakuResult.YakumanMultiple);
 
 
             if (yakuResult.IsTsumo)
@@ -67,12 +67,12 @@ namespace MjModelLibrary
         {
             return (int)(Math.Ceiling(basicPoint / 100.0) * 100);
         }
-        private static int calcBasicPoint(int fu, int han, bool isYakuman)
+        private static int calcBasicPoint(int fu, int han, int yakumanMultiple)
         {
             
-            if (isYakuman)
+            if (yakumanMultiple > 0)
             {
-                return BASE_POINT_YAKUMAN;
+                return BASE_POINT_YAKUMAN * yakumanMultiple;
             }
             //数え役満
             if (han >= 13)

@@ -56,7 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientUsingTcpHolder.cs" />
+    <Compile Include="ClientHolderForTest.cs" />
+    <Compile Include="ClientHolderUsingTcpHolder.cs" />
     <Compile Include="ClientHolderInterface.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameModel.cs" />

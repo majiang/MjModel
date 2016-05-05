@@ -21,7 +21,7 @@ namespace MjModelLibrary
         public bool IsReach;
         public bool IsDoubleReach;
         public bool IsOya;
-        public int PassedTurn;
+        public int UseYamaPaiNum;
         public bool IsFured;//for player 
         public bool IsFuredOnField;
         private int gameId;
@@ -142,7 +142,7 @@ namespace MjModelLibrary
 
         public bool IsFirstTurn()
         {
-            return (0 <= PassedTurn && PassedTurn <= 3) && IsFuredOnField == false;
+            return (1 <= UseYamaPaiNum && UseYamaPaiNum <= 4) && IsFuredOnField == false;
         }
 
 

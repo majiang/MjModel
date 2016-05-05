@@ -15,20 +15,27 @@ namespace MjServer
 
         GameState gameState;
 
-        List<MJsonMessageAll> messageList;
-//        public event GameStart GameStartHandler;
+        List<MJsonMessageAll> messageList = new List<MJsonMessageAll>();
         MJsonMessageAll ReachActionBuffer;
 
 
         public GameContext()
         {
             gameState = AfterInitialiseState.GetInstance();
+
         }     
         
         public bool ValidateMessage(MJsonMessageAll msg)
         {
             return gameState.ValidateMessage(msg);
         }
+
+
+        public bool ExecuteAction()
+        {
+            return gameState.ExecuteAction(this, messageList);
+        }
+
 
         public void RegisterMessage(MJsonMessageAll msg)
         {
@@ -39,53 +46,158 @@ namespace MjServer
         {
             return messageList.Count == MjModelLibrary.Constants.PLAYER_NUM;
         }
-
-        public bool ExecuteAction()
-        {
-            return gameState.ExecuteAction(this, messageList);
-        }
         
-
-
-
         public List<MJsonMessageAll> GetMessageList()
         {
             return messageList;
         }
- 
-        // overrode
-        /*
-        public void ChangeState(MJsonMessageTsumo msg)
+
+        
+        public void ChangeState(MJsonMessageStartKyoku sentMessage)
+        {
+            gameState = AfterStartKyokuState.GetInstance();
+            messageList.Clear();
+        }
+        public void ChangeState(MJsonMessageTsumo sentMessage)
         {
             gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(msg.actor);
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
         }
-        public void ChangeState(MJsonMessageTsumo msg)
+        public void ChangeState(MJsonMessageDahai sentMessage)
         {
-            gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(msg.actor);
+            gameState = AfterDahiState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
         }
-        public void ChangeState(MJsonMessageTsumo msg)
+        public void ChangeState(MJsonMessagePon sentMessage)
         {
-            gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(msg.actor);
+            gameState = AfterPonState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
         }
-        public void ChangeState(MJsonMessageTsumo msg)
+        public void ChangeState(MJsonMessageChi sentMessage)
         {
-            gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(msg.actor);
+            gameState = AfterChiState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
         }
-        public void ChangeState(MJsonMessageTsumo msg)
+        public void ChangeState(MJsonMessageDaiminkan sentMessage)
         {
-            gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(msg.actor);
+            gameState = AfterDaiminkanState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
         }
-        public void ChangeState(MJsonMessageTsumo msg)
+        public void ChangeState(MJsonMessageAnkan sentMessage)
         {
-            gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(msg.actor);
+            gameState = AfterAnkanState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
         }
-        */
+        public void ChangeState(MJsonMessageHora sentMessage)
+        {
+            gameState = AfterHoraState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
+        }
+
+        public event StartKyokuHandler StartKyoku;
+        public event TsumoHandler Tsumo;
+        public event DahaiHandler Dahai;
+        public event ChiHandler Chi;
+        public event PonHandler Pon;
+        public event KakanHandler Kakan;
+        public event DaiminkanHandler Daiminkan;
+        public event AnkanHandler Ankan;
+        public event OpenDoraHandler OpenDora;
+        public event RinshanHandler Rinshan;
+        public event ReachHandler Reach;
+        public event ReachDahaiHandler ReachDahai;
+        public event ReachAcceptHandler ReachAccept;
+        public event HoraHandler Hora;
+        public event RyukyokuHandler Ryukyoku;
+        public event EndKyokuHandler Endkyoku;
+        public event EndGameHandler EndGame;
+        public event CheckIsEndGameHandler CheckIsEndGame;
+        public event CheckIsEndKyokuHandler CheckIsEndKyoku;
+
+
+        public bool OnStartKyoku()
+        {
+            return StartKyoku();
+        }
+        public bool OnTsumo()
+        {
+            return Tsumo();
+        }
+        public bool OnDahai(int actor, string pai, bool tsumogiri)
+        {
+            return Dahai(actor, pai, tsumogiri);
+        }
+        public bool OnChi(int actor, int target, string pai, List<string> consumed)
+        {
+            return Chi(actor, target, pai, consumed);
+        }
+        public bool OnPon(int actor, int target, string pai, List<string> consumed)
+        {
+            return Pon(actor, target, pai, consumed);
+        }
+        public bool OnKakan(int actor, string pai, List<string> consumed)
+        {
+            return Kakan(actor, pai, consumed);
+        }
+        public bool OnDaiminkan(int actor, int target, string pai, List<string> consumed)
+        {
+            return Daiminkan(actor, target, pai, consumed);
+        }
+        public bool OnAnkan(int actor,List<string> consumed)
+        {
+            return Ankan(actor, consumed);
+        }
+        public bool OnOpenDora()
+        {
+            return OpenDora();
+        }
+        public bool OnRinshan()
+        {
+            return Rinshan();
+        }
+        public bool OnReach(int actor)
+        {
+            return Reach(actor);
+        }
+        public bool OnReachDahai(int actor, string pai, bool tsumogiri)
+        {
+            return ReachDahai(actor, pai, tsumogiri);
+        }
+        public bool OnReachAccept()
+        {
+            return ReachAccept();
+        }
+        public bool OnHora(int actor, int target, string pai)
+        {
+            return Hora(actor, target, pai);
+        }
+        public bool OnRyukyoku()
+        {
+            return Ryukyoku();
+        }
+        public bool OnEndKyoku()
+        {
+            return Endkyoku();
+        }
+        public bool OnEndGame()
+        {
+            return EndGame();
+        }
+        public bool OnCheckIsEndKyoku()
+        {
+            return CheckIsEndKyoku();
+        }
+        public bool OnCheckIsEndGame()
+        {
+            return CheckIsEndGame();
+        }
     }
 
 

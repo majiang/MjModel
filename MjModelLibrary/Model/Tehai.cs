@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 
 namespace MjModelLibrary
@@ -11,8 +12,8 @@ namespace MjModelLibrary
     {
         private ShantenCalclator shantenCanclator = ShantenCalclator.GetInstance();
 
-        public List<Pai> tehai { get; set; }
-        public List<Furo> furos { get; set; }
+        public List<Pai> tehai;
+        public List<Furo> furos;
         public static readonly List<Pai> UNKNOWN_TEHAI_PAI = new List<Pai> 
         {
             new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"),
@@ -21,27 +22,29 @@ namespace MjModelLibrary
         };
         public static readonly List<string> UNKNOWN_TEHAI_STRING = new List<string> 
         {
+            
            "?","?","?","?","?","?","?","?","?","?","?","?","?"
         };
+        
 
         public Tehai() { }
         public Tehai(List<Pai> tehai)
         {
-            this.tehai = new List<Pai>(tehai);//コピーを作成。
+            this.tehai = new List<Pai>(tehai);
             this.furos = new List<Furo>();
         }
 
         public Tehai(List<string> tehai)
         {
             var paiTehai = from hai in tehai select new Pai(hai);
-            this.tehai = new List<Pai>(paiTehai);//コピーを作成。
+            this.tehai = new List<Pai>(paiTehai);
             this.furos = new List<Furo>();
         }
 
 
         public List<string> GetTehaiStringList()
         {
-            //表示する前にソートする
+            // sort before display
             tehai = tehai.OrderBy(e => e.PaiNumber).ToList();
             return tehai.Select(e => e.PaiString).ToList();
         }
@@ -64,6 +67,7 @@ namespace MjModelLibrary
             else
             {
                 Console.Write("tehai doesn't contains {0}! @Tehai_Da", dapai);
+                Debug.Assert(false);
                 return;
             }
         }
@@ -77,6 +81,7 @@ namespace MjModelLibrary
             if ( !IsValidConsumed(consumed) )
             {
                 Console.Write("invalied naki! @Tehai_Chi");
+                Debug.Assert(false);
                 return;
             }
 
@@ -127,6 +132,7 @@ namespace MjModelLibrary
             if (!IsValidConsumed(consumed))
             {
                 Console.Write("invalied naki! @Tehai_Daiminkan");
+                Debug.Assert(false);
                 return;
             }
             //remove consumed
@@ -153,6 +159,7 @@ namespace MjModelLibrary
             if (!IsValidAnkan(consumed))
             {
                 Console.Write("invalied naki! @Tehai_Ankan");
+                Debug.Assert(false);
                 return;
             }
             //remove consumed
@@ -178,6 +185,7 @@ namespace MjModelLibrary
             if (!IsValidKakan(pai, consumed))
             {
                 Console.Write("invalied naki! @Tehai_kakan");
+                Debug.Assert(false);
                 return;
             }
             //remove pai
@@ -274,14 +282,46 @@ namespace MjModelLibrary
             return consumedPai;
         }
 
-        public bool CanChi(int actor, int playerId, string pai)
+        public bool CanChi(string pai, List <string> consumed)
         {
-            return false;
+            foreach(var furopai in consumed)
+            {
+                if (tehai.Contains(new Pai(furopai)) == false)
+                {
+                    return false;
+                }
+            }
+
+            var ids = consumed.Select(e => PaiConverter.STRING_TO_ID[e]);
+
+            // chi consumed pais don't contains jihai.
+            if( ids.Any( e => MJUtil.IsJihaiPaiId(e) ))
+            {
+                return false;
+            }
+
+            // chi pais must contains one type ( Characters, Circles, Bamboos )
+            var type = ids.First() / 9;
+            if (ids.Any(e => (e/9) != type))
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public bool CanPon(int actor, int playerId, string pai)
+        public bool CanPon(string pai, List<string> consumed)
         {
-            return false;
+
+            foreach (var furopai in consumed)
+            {
+                if (tehai.Contains(new Pai(furopai)) == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
 

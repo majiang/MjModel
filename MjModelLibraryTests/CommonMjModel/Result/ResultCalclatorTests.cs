@@ -87,7 +87,7 @@ namespace MjModelLibrary.Tests
                         var ankantsuCount = obj.hora_furos.Count(e => e[0] == "ankantsu");
                         ifr.IsMenzen = obj.hora_furos.Count - ankantsuCount == 0;
                         ifr.IsFured = !ifr.IsMenzen;
-                        ifr.PassedTurn = 4;
+                        ifr.UseYamaPaiNum = 4;
                         ifr.SetLastAddedPai(lastAddedPai);
 
                         ifr.IsIppatsu = yakuContains(obj, "ippatsu");
@@ -170,7 +170,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = true;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.PassedTurn = 4;
+                    ifr.UseYamaPaiNum = 4;
                     ifr.SetLastAddedPai(lastAddedPai);
                     var fd = new Field();
 
@@ -191,7 +191,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = true;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.PassedTurn = 4;
+                    ifr.UseYamaPaiNum = 4;
                     ifr.SetLastAddedPai(lastAddedPai);
                     var fd = new Field();
 
@@ -212,7 +212,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = false;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.PassedTurn = 4;
+                    ifr.UseYamaPaiNum = 4;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -233,7 +233,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = false;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.PassedTurn = 4;
+                    ifr.UseYamaPaiNum = 4;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -253,7 +253,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = true;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.PassedTurn = 4;
+                    ifr.UseYamaPaiNum = 4;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -273,7 +273,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = false;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.PassedTurn = 4;
+                    ifr.UseYamaPaiNum = 4;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -309,7 +309,7 @@ namespace MjModelLibrary.Tests
                 ifr.IsTsumo = false;
                 ifr.IsFured = false;
                 ifr.IsMenzen = isMenzen;
-                ifr.PassedTurn = 4;
+                ifr.UseYamaPaiNum = 4;
                 var fd = new Field();
                 ifr.SetLastAddedPai(lastAddedPai);
                 return ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -327,7 +327,7 @@ namespace MjModelLibrary.Tests
                 ifr.IsTsumo = true;
                 ifr.IsFured = false;
                 ifr.IsMenzen = isMenzen;
-                ifr.PassedTurn = 4;
+                ifr.UseYamaPaiNum = 4;
                 var fd = new Field();
                 ifr.SetLastAddedPai(lastAddedPai);
                 return ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -382,7 +382,7 @@ namespace MjModelLibrary.Tests
                     testIfr.IsMenzen = true;
                     testIfr.IsOya = true;
                     testIfr.IsTsumo = true;
-                    testIfr.PassedTurn = 10;
+                    testIfr.UseYamaPaiNum = 10;
                     testIfr.SetLastAddedPai(lastAdded);
                     var result = new HoraResult();
                     result = ResultCalclator.CalcHoraResult(testTehai, testIfr, new Field(), lastAdded);
