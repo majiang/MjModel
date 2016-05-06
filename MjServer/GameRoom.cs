@@ -101,9 +101,10 @@ namespace MjServer
             var haipais = msg.tehais;
             gameModel.tehais = haipais.Select(e => new Tehai(e)).ToList();
         }
-        public void ReplaceYamaForTest(List<string> tsumopais)
+        public void ReplaceYamaForTest(List<string> tsumopais,List<string> rinshanpais)
         {
-            gameModel.yama.ReplaceYamaForTest(tsumopais);
+            gameModel.yama.ReplaceTsumoForTest(tsumopais);
+            gameModel.yama.ReplaceRinshanForTest(rinshanpais);
         }
 
 
@@ -249,7 +250,14 @@ namespace MjServer
 
         bool Kakan(int actor, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            if (gameModel.CanKakan(actor, pai, consumed))
+            {
+                var msgobj = gameModel.Kakan(actor, pai, consumed);
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
         bool Ankan(int actor, List<string> consumed)
@@ -259,17 +267,38 @@ namespace MjServer
 
         bool Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            throw new NotImplementedException();
+            if (gameModel.CanDaiminkan(actor, target, pai, consumed))
+            {
+                var msgobj = gameModel.Daiminkan(actor, target, pai, consumed);
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
         bool Rinshan()
         {
-            throw new NotImplementedException();
+            if (gameModel.CanRinshan())
+            {
+                var msgobj = gameModel.Rinshan();
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
         bool OpenDora()
         {
-            throw new NotImplementedException();
+            if (gameModel.CanOpenDora())
+            {
+                var msgobj = gameModel.OpenDora();
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
         bool Reach(int actor)
@@ -320,10 +349,6 @@ namespace MjServer
 
 
         // hide tsumopai and haipai in messages by follow functions
-        public void SendMJsonObject(MJsonMessageJoin jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
         public void SendMJsonObject(MJsonMessageStartKyoku jsonmsg)
         {
             var opentehais = jsonmsg.tehais;
@@ -342,8 +367,6 @@ namespace MjServer
                 clients[i].SendMessageToClient(MjsonObjectToString(sendMessage));
             }
         }
-
-
         public void SendMJsonObject(MJsonMessageTsumo jsonmsg)
         {
             for (int i = 0; i < clients.Count; i++)
@@ -356,52 +379,7 @@ namespace MjServer
                 clients[i].SendMessageToClient(MjsonObjectToString(sendMsssage));
             }
         }
-
-        public void SendMJsonObject(MJsonMessagePon jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageChi jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageDaiminkan jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageNone jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageHora jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageDahai jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageAnkan jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageKakan jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageReach jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageRyukyoku jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageEndkyoku jsonmsg)
-        {
-            clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
-        }
-        public void SendMJsonObject(MJsonMessageEndgame jsonmsg)
+        public void SendMJsonObject(object jsonmsg)
         {
             clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
         }

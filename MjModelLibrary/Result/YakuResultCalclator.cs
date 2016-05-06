@@ -269,7 +269,7 @@ namespace MjModelLibrary
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.SANKANTSU], yakuHanNum[(int)MJUtil.Yaku.SANKANTSU] });
             }
 
-            //混一色と清一色は同時に成立しないためif elseで判定する
+            //混一色と清一色は同時に成立しない
             if (IsHonnitsu(horaMentsu))
             {
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.HONNITSU], yakuHanNum[(int)MJUtil.Yaku.HONNITSU] });

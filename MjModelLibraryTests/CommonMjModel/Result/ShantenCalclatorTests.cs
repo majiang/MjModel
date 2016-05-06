@@ -13,7 +13,7 @@ namespace MjModelLibrary.Tests
     public class ShantenCalclatorTests
     {
         [TestMethod]
-        public void シャンテン数計算テスト()
+        public void Unit_ShantenCalclatorTest()
         {
             var ss = ShantenCalclator.GetInstance();
             ss.UseChitoitsu = false;

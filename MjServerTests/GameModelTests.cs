@@ -18,7 +18,7 @@ namespace MjServer.Tests
         }
 
         [TestMethod()]
-        public void StartKyokuTest()
+        public void Unit_StartKyokuTest()
         {
             SetUp();
             Assert.AreEqual(MJUtil.LENGTH_ID - MJUtil.LENGTH_HAIPAI*4  - MJUtil.LENGTH_WANPAI, model.yama.GetRestYamaNum());
@@ -26,7 +26,7 @@ namespace MjServer.Tests
         }
 
         [TestMethod()]
-        public void TsumoTest()
+        public void Unit_TsumoTest()
         {
             SetUp();
             var restpainum = MJUtil.LENGTH_ID - MJUtil.LENGTH_HAIPAI * 4 - MJUtil.LENGTH_WANPAI;
@@ -40,7 +40,7 @@ namespace MjServer.Tests
         }
 
         [TestMethod()]
-        public void RinshanTest()
+        public void Unit_RinshanTest()
         {
             SetUp();
             var restpainum = MJUtil.LENGTH_ID - MJUtil.LENGTH_HAIPAI * 4 - MJUtil.LENGTH_WANPAI;
@@ -52,7 +52,7 @@ namespace MjServer.Tests
         }
 
         [TestMethod()]
-        public void DahaiTest()
+        public void Unit_DahaiTest()
         {
             SetUp();
             var firstActor = model.currentActor;
@@ -64,109 +64,109 @@ namespace MjServer.Tests
         }
 
         [TestMethod()]
-        public void PonTest()
+        public void Unit_PonTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void ChiTest()
+        public void Unit_ChiTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void KakanTest()
+        public void Unit_KakanTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void AnkanTest()
+        public void Unit_AnkanTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void DaiminkanTest()
+        public void Unit_DaiminkanTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void OpenDoraTest()
+        public void Unit_OpenDoraTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void ReachTest()
+        public void Unit_ReachTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void HoraTest()
+        public void Unit_HoraTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void NoneTest()
+        public void Unit_NoneTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void RyukyokuTest()
+        public void Unit_RyukyokuTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void ReachAcceptTest()
+        public void Unit_ReachAcceptTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void CanTsumoTest()
+        public void Unit_CanTsumoTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void CanDahaiTest()
+        public void Unit_CanDahaiTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void CanChiTest()
+        public void Unit_CanChiTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void CanPonTest()
+        public void Unit_CanPonTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void CanFinishKyokuTest()
+        public void Unit_CanFinishKyokuTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void CanEndGameTest()
+        public void Unit_CanEndGameTest()
         {
             Assert.Fail();
         }
 
         [TestMethod()]
-        public void SetReachTest()
+        public void Unit_SetReachTest()
         {
             Assert.Fail();
         }

@@ -21,7 +21,7 @@ namespace MjServer
         public Field field { get; set; }
         
         public int currentActor;
-        public List<InfoForResult> infoForResult { get; set; }
+        public List<InfoForResult> infoForResultList { get; set; }
 
         public List<int> points { get; set; }
 
@@ -34,7 +34,7 @@ namespace MjServer
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
             currentActor = 0;
-            infoForResult = new List<InfoForResult>() {new InfoForResult(field.KyokuId,0), new InfoForResult(field.KyokuId,1), new InfoForResult(field.KyokuId,2), new InfoForResult(field.KyokuId,3) };
+            infoForResultList = new List<InfoForResult>() {new InfoForResult(field.KyokuId,0), new InfoForResult(field.KyokuId,1), new InfoForResult(field.KyokuId,2), new InfoForResult(field.KyokuId,3) };
             points = new List<int> { 25000, 25000, 25000, 25000 };
         }
 
@@ -52,7 +52,7 @@ namespace MjServer
             var haipais = yama.MakeHaipai();
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
             SetCurrentActor(0);
-            infoForResult = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
 
             return new MJsonMessageStartKyoku(
                         field.Bakaze.PaiString,
@@ -93,7 +93,7 @@ namespace MjServer
         {
             var tsumoPai = yama.DoTsumo();
             tehais[currentActor].Tsumo(tsumoPai);
-            infoForResult[currentActor].SetLastAddedPai(tsumoPai);
+            infoForResultList[currentActor].SetLastAddedPai(tsumoPai);
 
             return new MJsonMessageTsumo(
                 currentActor,
@@ -105,7 +105,7 @@ namespace MjServer
         {
             var tsumoPai = yama.DoRinshan();
             tehais[currentActor].Tsumo(tsumoPai);
-            infoForResult[currentActor].SetLastAddedPai(tsumoPai);
+            infoForResultList[currentActor].SetLastAddedPai(tsumoPai);
 
             return new MJsonMessageTsumo(
                 currentActor,
@@ -172,17 +172,10 @@ namespace MjServer
         }
 
 
-        private MJsonMessageHora calclatedHoraMessage;
+        
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
             return calclatedHoraMessage;
-        }
-
-
-
-        public void None()
-        {
-       
         }
 
         public MJsonMessageRyukyoku Ryukyoku()
@@ -229,26 +222,38 @@ namespace MjServer
 
         public bool CanChi(int actor , int  target, string pai, List<string> consumed)
         {
-            if ((target != actor) && ((target + 1) % 4 == actor))
+            if ( ( (target != actor) && ((target + 1) % 4 == actor) ) == false)
             {
-                return tehais[actor].CanChi(pai,consumed);
+                return false;
             }
-            return false;
+            if (pai != kawas[target].discards.Last().PaiString)
+            {
+                return false;
+            }
+
+            return tehais[actor].CanChi(pai,consumed);
 
         }
         public bool CanPon(int actor, int  target, string pai, List< string > consumed)
         {
-            if (target != actor)
+            if ((target != actor) == false)
             {
-                return tehais[actor].CanPon(pai,consumed);
+                return false;
             }
-            return false;
+
+            if (pai != kawas[target].discards.Last().PaiString)
+            {
+                return false;
+            }
+
+            return tehais[actor].CanPon(pai, consumed);
         }
 
+        private MJsonMessageHora calclatedHoraMessage;
         public bool CanHora(int actor, int target, string pai)
         {
             var uradoraMarkers = yama.GetUradoraMarker();
-            var ifr = infoForResult[actor];
+            var ifr = infoForResultList[actor];
             ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
             ifr.IsFured = !ifr.IsMenzen;
@@ -262,12 +267,12 @@ namespace MjServer
             else
             {
                 //ron hora
-                infoForResult[actor].SetLastAddedPai(pai);
+                infoForResultList[actor].SetLastAddedPai(pai);
                 ifr.IsHoutei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = false;
             }
             HoraResult horaResult;
-            horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResult[actor], field, pai);
+            horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResultList[actor], field, pai);
 
             // if hora contains any yaku, return false. 
             if (horaResult.yakuResult.HasYakuExcludeDora == false)
@@ -289,6 +294,33 @@ namespace MjServer
             
         }
 
+        public bool CanOpenDora()
+        {
+            return true;
+        }
+
+        public bool CanRinshan()
+        {
+            return yama.CanKan();
+        }
+
+        public bool CanKakan(int actor, string pai, List<string> consumed)
+        {
+            return tehais[actor].CanKakan(pai, consumed) && yama.CanKan();
+        }
+        public bool CanDaiminkan(int actor, int target, string pai, List<string> consumed)
+        {
+            if(actor == target)
+            {
+                return false;
+            }
+            if(pai != kawas[target].discards.Last().PaiString)
+            {
+                return false;
+            }
+
+            return tehais[actor].CanDaiminkan(pai, consumed) && yama.CanKan();
+        }
         public bool CanEndKyoku()
         {
             return (yama != null) && (yama.GetRestYamaNum() == 0);
@@ -330,13 +362,13 @@ namespace MjServer
 
         public void SetReach(int actor)
         {
-            if (yama.GetTsumoedYamaNum() < 4 && infoForResult.Count(e => e.IsFuredOnField) == 0)
+            if (yama.GetTsumoedYamaNum() < 4 && infoForResultList.Count(e => e.IsFuredOnField) == 0)
             {
-                infoForResult[actor].IsDoubleReach = true;
+                infoForResultList[actor].IsDoubleReach = true;
             }
             else
             {
-                infoForResult[actor].IsReach = true;
+                infoForResultList[actor].IsReach = true;
             }
             field.AddKyotaku();
         }

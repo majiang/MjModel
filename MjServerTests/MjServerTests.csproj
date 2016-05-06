@@ -87,6 +87,7 @@
   <ItemGroup>
     <Content Include="ChihoTestData.txt" />
     <Content Include="ChiTestData.txt" />
+    <Content Include="DaiminkanTestData.txt" />
     <Content Include="StartKyokuTestData.txt" />
     <Content Include="TenhoTestData.txt" />
     <Content Include="TenhoTestData2.txt" />

@@ -265,7 +265,7 @@ namespace MjServer
             }
             else
             {
-                return msg.IsNONE() || msg.IsHORA();
+                return msg.IsNONE() || msg.IsHORA();// for chankan hora
             }
         }
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)

@@ -312,18 +312,68 @@ namespace MjModelLibrary
 
         public bool CanPon(string pai, List<string> consumed)
         {
-
-            foreach (var furopai in consumed)
+            var tehaiStrings = tehai.Select(e => e.PaiString).ToList();
+            foreach( var consumedOne in consumed)
             {
-                if (tehai.Contains(new Pai(furopai)) == false)
+                if (tehaiStrings.Contains(consumedOne) == false)
                 {
                     return false;
                 }
+                tehaiStrings.Remove(consumedOne);
             }
 
             return true;
         }
 
+        public bool CanKakan(string pai, List<string> consumed)
+        {
+            if(tehai.Any(e => e.PaiString == pai) == false)
+            {
+                return false;
+            }
+
+            foreach (var furo in furos)
+            {
+                if (furo.ftype == MJUtil.TartsuType.MINKO && IsSameConsumed(furo.consumed,consumed) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool CanDaiminkan(string pai, List<string> consumed)
+        {
+            var tehaiStrings = tehai.Select(e => e.PaiString).ToList();
+            foreach (var consumedOne in consumed)
+            {
+                if (tehaiStrings.Contains(consumedOne) == false)
+                {
+                    return false;
+                }
+                tehaiStrings.Remove(consumedOne);
+            }
+
+            return true;
+        }
+
+        bool IsSameConsumed(List<Pai> paiConsumed, List<string> stringConsumed)
+        {
+            if(paiConsumed.Count != stringConsumed.Count)
+            {
+                return false;
+            }
+            paiConsumed.Sort();
+            stringConsumed.Sort();
+            for(int i = 0; i < paiConsumed.Count; i++)
+            {
+                if( paiConsumed[i].PaiString != stringConsumed[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
 
         public int GetShanten()

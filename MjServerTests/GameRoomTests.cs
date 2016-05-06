@@ -65,8 +65,59 @@ namespace MjServer.Tests
             var serverToClientMessages = msgList.Where((e, index) => index % 2 == 0).ToList().Select( e => JsonConvert.DeserializeObject<MJsonMessageAll>(e) ).ToList();
             var startKyokuMessage = serverToClientMessages.First(e => e.IsSTART_KYOKU());
             room.ReplaceStartKyokuForTest(startKyokuMessage);
-            var tsumopais = serverToClientMessages.Where(e => e.IsTSUMO()).Select(e => e.pai).ToList();
-            room.ReplaceYamaForTest(tsumopais);
+            
+            var tsumopais = FilterTsumo(serverToClientMessages);
+            var rinshanpais = FilterRinshan(serverToClientMessages);
+
+            room.ReplaceYamaForTest(tsumopais,rinshanpais);
+
+        }
+
+        List<string> FilterRinshan(List<MJsonMessageAll> msgobjList)
+        {
+            var tsumoAndKanList = msgobjList.Where(e => e.IsTSUMO() || e.IsKAKAN() || e.IsDAIMINKAN() || e.IsANKAN()).ToList();
+            return RecursiveFilterRinshan(tsumoAndKanList).Select(e => e.pai).ToList();
+        }
+
+        List<MJsonMessageAll> RecursiveFilterRinshan(List<MJsonMessageAll> msgobjList)
+        {
+            var lastKanIndex = msgobjList.FindLastIndex(e => e.IsKAKAN() || e.IsDAIMINKAN() || e.IsANKAN());
+            
+            if ( lastKanIndex == -1)
+            {
+                return new List<MJsonMessageAll>();
+            }
+
+            var rinshanIndex = lastKanIndex + 1;
+
+            if ( rinshanIndex >= msgobjList.Count)
+            {
+                return new List<MJsonMessageAll>();
+            }
+            var rinshanObj = msgobjList[rinshanIndex];
+
+            var rinshanList = RecursiveFilterRinshan(msgobjList.GetRange(0, lastKanIndex - 1));
+            rinshanList.Add(rinshanObj);
+            return rinshanList;
+        }
+
+        List<string> FilterTsumo(List<MJsonMessageAll> msgobjList)
+        {
+            var tsumoAndKanList = msgobjList.Where(e => e.IsTSUMO() || e.IsKAKAN() || e.IsDAIMINKAN() || e.IsANKAN()).ToList();
+            return RecursiveFilterTsumo(tsumoAndKanList).Select(e => e.pai).ToList();
+        }
+
+        List<MJsonMessageAll> RecursiveFilterTsumo(List<MJsonMessageAll> msgobjList)
+        {
+            var lastKanIndex = msgobjList.FindIndex(e => e.IsKAKAN() || e.IsDAIMINKAN() || e.IsANKAN());
+
+            if (lastKanIndex == -1)
+            {
+                return msgobjList;
+            }
+
+            msgobjList.RemoveRange(lastKanIndex, 2);
+            return RecursiveFilterTsumo(msgobjList);
         }
 
         List<string> ReadTestFile( string filepath)
@@ -77,7 +128,7 @@ namespace MjServer.Tests
                 while (true)
                 {
                     string line = sr.ReadLine();
-                    if (line == null) break;
+                    if (line == null || line == string.Empty) break;
                     lines.Add(line);
                 }
             }
@@ -107,59 +158,68 @@ namespace MjServer.Tests
 
         // action test
         [TestMethod()]
-        public void ChiTest()
+        public void E2E_ChiTest()
         {
-            SetUp(@"C:\Users\rick_\Source\Repos\MjModel\MjServerTests\ChiTestData.txt");
+            SetUp(@"../../ChiTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsCHI()));
         }
         [TestMethod()]
-        public void PonTest()
+        public void E2E_PonTest()
         {
+            Assert.Fail();
         }
         [TestMethod()]
-        public void AnkanTest()
+        public void E2E_AnkanTest()
         {
+            Assert.Fail();
         }
         [TestMethod()]
-        public void KakanTest()
+        public void E2E_KakanTest()
         {
+            Assert.Fail();
         }
         [TestMethod()]
-        public void DaiminkanTest()
+        public void E2E_DaiminkanTest()
         {
-        }
-        [TestMethod()]
-        public void RyukyokuTest()
-        {
-        }
-        [TestMethod()]
-        public void SukaikanRyukyokuTest()
-        {
-        }
-        [TestMethod()]
-        public void SanchahoRyukyokuTest()
-        {
+            SetUp(@"../../DaiminkanTestData.txt");
+            Assert.IsTrue(clients[1].ReceivedMessageList.Any(e => e.IsDAIMINKAN()));
+            Assert.IsTrue(clients[1].ReceivedMessageList.Any(e => e.IsDORA()));
 
         }
         [TestMethod()]
-        public void EndGameTest()
+        public void E2E_RyukyokuTest()
         {
-
+            Assert.Fail();
+        }
+        [TestMethod()]
+        public void E2E_SukaikanRyukyokuTest()
+        {
+            Assert.Fail();
+        }
+        [TestMethod()]
+        public void E2E_SanchahoRyukyokuTest()
+        {
+            Assert.Fail();
+        }
+        [TestMethod()]
+        public void E2E_EndGameTest()
+        {
+            Assert.Fail();
         }
     
 
 
         // Accidental Hands Test
         [TestMethod()]
-        public void TenhouTest()
+        public void E2E_TenhouTest()
         {
-            SetUp(@"C:\Users\rick_\Source\Repos\MjModel\MjServerTests\TenhoTestData.txt");
+            SetUp(@"../../TenhoTestData.txt");
             var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
 
-            SetUp(@"C:\Users\rick_\Source\Repos\MjModel\MjServerTests\TenhoTestData2.txt");
+            SetUp(@"../../TenhoTestData2.txt");
             var horaMessage2 = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
             Assert.IsTrue(horaMessage2.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
@@ -169,17 +229,18 @@ namespace MjServer.Tests
 
 
         [TestMethod()]
-        public void ChihouTest()
+        public void E2E_ChihouTest()
         {
-            SetUp(@"C:\Users\rick_\Source\Repos\MjModel\MjServerTests\ChihoTestData.txt");
+            SetUp(@"../../ChihoTestData.txt");
             var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHIHO]));
         }
 
         [TestMethod()]
-        public void ChankanTest()
+        public void E2E_ChankanTest()
         {
+            Assert.Fail();
         }
 
 

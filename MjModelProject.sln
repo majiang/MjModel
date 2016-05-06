@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldMjServer", "MjModelProject\OldMjServer.csproj", "{B85A34E7-3992-4867-BFC4-B352E820D005}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjClient", "MjClient\MjClient.csproj", "{DD24CBEA-66C4-4B34-AE68-7DE476C91062}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MjNetworkProtocolLibrary", "MjNetworkProtocolLibrary\MjNetworkProtocolLibrary.csproj", "{1E51814C-227E-4C73-90E0-38C9310CA03A}"
@@ -25,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B85A34E7-3992-4867-BFC4-B352E820D005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B85A34E7-3992-4867-BFC4-B352E820D005}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B85A34E7-3992-4867-BFC4-B352E820D005}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B85A34E7-3992-4867-BFC4-B352E820D005}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD24CBEA-66C4-4B34-AE68-7DE476C91062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD24CBEA-66C4-4B34-AE68-7DE476C91062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD24CBEA-66C4-4B34-AE68-7DE476C91062}.Release|Any CPU.ActiveCfg = Release|Any CPU

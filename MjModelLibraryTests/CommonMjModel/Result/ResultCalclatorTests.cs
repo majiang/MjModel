@@ -60,7 +60,7 @@ namespace MjModelLibrary.Tests
         public class PointTest
         {
             [TestMethod]
-            public void テストデータ使用テスト()
+            public void Unit_HoraResultTestUseHoraPatternExamples()
             {
                 using (StreamReader sr = new StreamReader(@"../../HoraPatternOutputSmall.txt", Encoding.GetEncoding("shift_jis")))
                 {
@@ -87,7 +87,7 @@ namespace MjModelLibrary.Tests
                         var ankantsuCount = obj.hora_furos.Count(e => e[0] == "ankantsu");
                         ifr.IsMenzen = obj.hora_furos.Count - ankantsuCount == 0;
                         ifr.IsFured = !ifr.IsMenzen;
-                        ifr.UseYamaPaiNum = 4;
+                        ifr.UseYamaPaiNum = 5;
                         ifr.SetLastAddedPai(lastAddedPai);
 
                         ifr.IsIppatsu = yakuContains(obj, "ippatsu");
@@ -155,7 +155,7 @@ namespace MjModelLibrary.Tests
 
 
             [TestMethod]
-            public void 点数算出テスト()
+            public void Unit_HoraResultTest()
             {
                 //親40符3翻 ダブ東 ツモ 7800点
                 {
@@ -170,7 +170,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = true;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.UseYamaPaiNum = 4;
+                    ifr.UseYamaPaiNum = 5;
                     ifr.SetLastAddedPai(lastAddedPai);
                     var fd = new Field();
 
@@ -191,7 +191,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = true;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.UseYamaPaiNum = 4;
+                    ifr.UseYamaPaiNum = 5;
                     ifr.SetLastAddedPai(lastAddedPai);
                     var fd = new Field();
 
@@ -212,7 +212,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = false;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.UseYamaPaiNum = 4;
+                    ifr.UseYamaPaiNum = 5;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -233,7 +233,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = false;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.UseYamaPaiNum = 4;
+                    ifr.UseYamaPaiNum = 5;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -253,7 +253,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = true;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.UseYamaPaiNum = 4;
+                    ifr.UseYamaPaiNum = 5;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -273,7 +273,7 @@ namespace MjModelLibrary.Tests
                     ifr.IsTsumo = false;
                     ifr.IsFured = false;
                     ifr.IsMenzen = true;
-                    ifr.UseYamaPaiNum = 4;
+                    ifr.UseYamaPaiNum = 5;
                     var fd = new Field();
                     ifr.SetLastAddedPai(lastAddedPai);
                     var result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
@@ -281,57 +281,11 @@ namespace MjModelLibrary.Tests
                 }
 
 
-                //Test
-                {
-                    var expected = 5200;
-                    var tehai = new Tehai(new List<string>() { "1p", "2p", "3p", "7p", "8p", "9p", "1s", "2s", "3s", "W", "W", "W", "P", "P" });
 
-                    var lastAddedPai = "3p";
-                    var isOya = false;
-                    var isMenzen = true;
-
-                    var result = CalcTsumo(tehai, lastAddedPai, isOya, isMenzen);
-                    Assert.AreEqual(expected, result.pointResult.HoraPlayerIncome);
-                }
 
             }
 
 
-            HoraResult CalcRon(Tehai tehai, string ronPai, bool isOya, bool isMenzen)
-            {
-                Assert.AreEqual(13, tehai.tehai.Count);
-
-                var gameId = 1;
-                var playerPosition = isOya ? 0 : 1;
-                var lastAddedPai = ronPai;
-
-                var ifr = new InfoForResult(gameId, playerPosition);
-                ifr.IsTsumo = false;
-                ifr.IsFured = false;
-                ifr.IsMenzen = isMenzen;
-                ifr.UseYamaPaiNum = 4;
-                var fd = new Field();
-                ifr.SetLastAddedPai(lastAddedPai);
-                return ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
-            }
-
-            HoraResult CalcTsumo(Tehai tehai, string tsumoPai, bool isOya, bool isMenzen)
-            {
-                Assert.AreEqual(14, tehai.tehai.Count);
-
-                var gameId = 1;
-                var playerPosition = isOya ? 0 : 1;
-                var lastAddedPai = tsumoPai;
-
-                var ifr = new InfoForResult(gameId, playerPosition);
-                ifr.IsTsumo = true;
-                ifr.IsFured = false;
-                ifr.IsMenzen = isMenzen;
-                ifr.UseYamaPaiNum = 4;
-                var fd = new Field();
-                ifr.SetLastAddedPai(lastAddedPai);
-                return ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);
-            }
 
         }
 
@@ -344,7 +298,7 @@ namespace MjModelLibrary.Tests
         public class TehaiAnalizerTest
         {
             [TestMethod]
-            public void 和了時構成分割テスト()
+            public void Unit_HoraMentsuPatternResultTest()
             {
                 Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "1m", "2m", "2m", "3m" });
 
@@ -370,7 +324,7 @@ namespace MjModelLibrary.Tests
         public class YakuiAnalizerTest
         {
             [TestMethod]
-            public void 役算出テスト()
+            public void Unit_YakuResultTest()
             {
 
                 //清一色ピンフ一盃口

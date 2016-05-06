@@ -12,7 +12,7 @@ namespace MjModelLibrary.Tests
     public class TehaiTests
     {
         [TestMethod()]
-        public void 手配ツモテスト()
+        public void Unit_TehaiTsumoTest()
         {
             Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
             Assert.IsFalse(testTehai.tehai.Contains(new Pai("5s")));
@@ -21,7 +21,7 @@ namespace MjModelLibrary.Tests
         }
 
         [TestMethod()]
-        public void 手配チーテスト()
+        public void Unit_TehaiChiTest()
         {
             Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
             testTehai.Tsumo(new Pai("5s"));
@@ -52,7 +52,7 @@ namespace MjModelLibrary.Tests
         }
 
         [TestMethod()]
-        public void 手配ポンテスト()
+        public void Unit_TehaiPonTest()
         {
             Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
             testTehai.Tsumo(new Pai("1m"));
@@ -82,7 +82,7 @@ namespace MjModelLibrary.Tests
         }
 
         [TestMethod()]
-        public void 手配大明槓テスト()
+        public void Unit_TehaiDaiminkanTest()
         {
             Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "1m" });
             testTehai.Tsumo(new Pai("1m"));
@@ -111,7 +111,7 @@ namespace MjModelLibrary.Tests
         }
 
         [TestMethod()]
-        public void 手配暗槓テスト()
+        public void Unit_TehaiAnkanTest()
         {
             Tehai testTehai = new Tehai(new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") });
 
@@ -135,7 +135,7 @@ namespace MjModelLibrary.Tests
         }
 
         [TestMethod()]
-        public void 手牌加槓テスト()
+        public void Unit_TehaiKakanTest()
         {
             Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "1s", "2s", "3s", "4s" });
             testTehai.Tsumo(new Pai("1m"));

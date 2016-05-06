@@ -14,7 +14,7 @@ namespace MjModelLibrary.Tests
     {
         private const int FIRST_YAMA_LENGTH = 4 * 34 - 14;
         [TestMethod]
-        public void 山ツモテスト()
+        public void Unit_YamaTsumoTest()
         {
             Yama testYama = new Yama();
 
@@ -34,7 +34,7 @@ namespace MjModelLibrary.Tests
 
 
         [TestMethod]
-        public void 山リンシャンテスト()
+        public void Unit_YamaRinshanTest()
         {
             Yama testYama = new Yama();
 

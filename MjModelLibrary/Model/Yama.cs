@@ -43,12 +43,20 @@ namespace MjModelLibrary
             OpenDoraOmote();
         }
 
-        public void ReplaceYamaForTest(List<string> pais)
+        public void ReplaceTsumoForTest(List<string> pais)
         {
             var tsumoStartIndex = MJUtil.LENGTH_HAIPAI * 4;
             mYama.RemoveRange(tsumoStartIndex, pais.Count);
             mYama.InsertRange(tsumoStartIndex, pais.Select(e => new Pai(e)));
         }
+
+        public void ReplaceRinshanForTest(List<string> pais)
+        {
+            var rinshanStartIndex = WANPAI_START_POS;
+            mYama.RemoveRange(rinshanStartIndex, pais.Count);
+            mYama.InsertRange(rinshanStartIndex, pais.Select(e => new Pai(e)));
+        }
+
 
         List<Pai> MakeYama()
         {

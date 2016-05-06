@@ -16,7 +16,6 @@ namespace MjServer
         GameState gameState;
 
         List<MJsonMessageAll> messageList = new List<MJsonMessageAll>();
-        MJsonMessageAll ReachActionBuffer;
 
 
         public GameContext()
@@ -94,6 +93,18 @@ namespace MjServer
             gameState.SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
+        public void ChangeState(MJsonMessageKakan sentMessage)
+        {
+            gameState = AfterKakanState.GetInstance();
+            gameState.SetLastActor(sentMessage.actor);
+            messageList.Clear();
+        }
+        public void ChangeState(MJsonMessageDora sentMessage)
+        {
+            gameState = AfterOpenDoraState.GetInstance();
+            messageList.Clear();
+        }
+        
         public void ChangeState(MJsonMessageHora sentMessage)
         {
             gameState = AfterHoraState.GetInstance();
