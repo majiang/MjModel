@@ -262,7 +262,14 @@ namespace MjServer
 
         bool Ankan(int actor, List<string> consumed)
         {
-            throw new NotImplementedException();
+            if (gameModel.CanAnkan(actor, consumed))
+            {
+                var msgobj = gameModel.Ankan(actor, consumed);
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
         bool Daiminkan(int actor, int target, string pai, List<string> consumed)

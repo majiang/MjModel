@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MjClient.Logger
 {
@@ -25,7 +26,7 @@ namespace MjClient.Logger
         /// <param name="message">log message</param>
         public void Log(string message)
         {
-            Console.WriteLine("clientLog:{0}",message);
+            Debug.WriteLine("clientLog:{0}",message);
         }
     }
 }

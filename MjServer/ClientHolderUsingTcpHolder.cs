@@ -32,7 +32,7 @@ namespace MjServer
             var helloMessage = JsonConvert.SerializeObject(new MJsonMessageHello());
             SendMessageToClient(helloMessage);
 
-            Console.WriteLine(
+            Debug.WriteLine(
                 "Connect to Client ({0}:{1})" ,
                 ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Address ,
                 ( (IPEndPoint)tcpClient.Client.RemoteEndPoint ).Port
@@ -46,13 +46,13 @@ namespace MjServer
                 while (tcpClient.Connected)
                 {
                     string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
-                    Console.WriteLine("get:"+ line);
+                    Debug.WriteLine("get:"+ line);
                     GetMessageFromClientHandler(line, this);
                 }
             }
             catch (IOException e)
             {
-                Console.WriteLine("error! : {0}, {1}", e.Message,e.StackTrace);
+                Debug.WriteLine("error! : {0}, {1}", e.Message,e.StackTrace);
                 Disconnect();
                 ConnectionBrokenHandler();
             }
@@ -71,11 +71,11 @@ namespace MjServer
             {
                 NetworkStream stream = tcpClient.GetStream();
                 stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
-                Console.WriteLine("send:"+ message);
+                Debug.WriteLine("send:"+ message);
             }
             catch(IOException e)
             {
-                Console.WriteLine("error! : {0}, {1}", e.Message, e.StackTrace);
+                Debug.WriteLine("error! : {0}, {1}", e.Message, e.StackTrace);
                 ConnectionBrokenHandler();
             }
         }

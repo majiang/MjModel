@@ -13,11 +13,7 @@ namespace MjClient.AI
         public event SendDaiminkanHandler SendDaiminkan;
         public event SendNoneHandler SendNone;
 
-        public event SendHoraHandler SendHora;
-        public event SendDahaiHandler SendDahai;
-        public event SendAnkanHandler SendAnkan;
-        public event SendKakanHandler SendKakan;
-        public event SendReachHandler SendReach;
+
 
         public MJsonMessageDahai MessagebufferForReach;
 
@@ -28,8 +24,8 @@ namespace MjClient.AI
 
 
         /// <summary>
-        /// think action after other player.
-        /// this function must send hora, pon, chi, daiminkan or none message.
+        /// think action is called when other player discard pai.
+        /// AI must send hora, pon, chi, daiminkan or none message in this function.
         /// </summary>
         /// <param name="mypositionId">your ID</param>
         /// <param name="dapaiActor">player ID who doropped pai</param>
@@ -49,8 +45,17 @@ namespace MjClient.AI
             SendNone(new MJsonMessageNone());
         }
 
+
+
+
+
+        public event SendHoraHandler SendHora;
+        public event SendDahaiHandler SendDahai;
+        public event SendAnkanHandler SendAnkan;
+        public event SendKakanHandler SendKakan;
+        public event SendReachHandler SendReach;
         /// <summary>
-        /// think action after my tumo.
+        /// think action is called when player tumo pai.
         /// this function must send hora, ankan, kakan, reach or dahai message.
         /// </summary>
         /// <param name="mypositionId">my id</param>
@@ -58,7 +63,7 @@ namespace MjClient.AI
         /// <param name="tehais">my tehai</param>
         /// <param name="kawas">all player kawa</param>
         /// <param name="field">field infomation</param>
-        public void thinkOnTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+        public void thinkOnMyTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
                                  Field field, List<InfoForResult> ifrs)
         {
             var myTehai = tehais[mypositionId];
@@ -105,7 +110,6 @@ namespace MjClient.AI
             var resultDict = new Dictionary<int, int>();
             foreach (var paiId in syu.Select((value, index) => new { value, index }))
             {
-                // if pai num is 0, go next pai
                 if (paiId.value == 0)
                 {
                     continue;

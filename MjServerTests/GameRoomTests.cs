@@ -160,30 +160,35 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_ChiTest()
         {
-            SetUp(@"../../ChiTestData.txt");
+            SetUp(@"../../E2E_TestData/ChiTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsCHI()));
         }
         [TestMethod()]
         public void E2E_PonTest()
         {
-            Assert.Fail();
+            SetUp(@"../../E2E_TestData/PonTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsPON()));
         }
         [TestMethod()]
         public void E2E_AnkanTest()
         {
-            Assert.Fail();
+            SetUp(@"../../E2E_TestData/AnkanTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsANKAN()));
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDORA()));
         }
         [TestMethod()]
         public void E2E_KakanTest()
         {
-            Assert.Fail();
+            SetUp(@"../../E2E_TestData/KakanTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsKAKAN()));
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDORA()));
         }
         [TestMethod()]
         public void E2E_DaiminkanTest()
         {
-            SetUp(@"../../DaiminkanTestData.txt");
-            Assert.IsTrue(clients[1].ReceivedMessageList.Any(e => e.IsDAIMINKAN()));
-            Assert.IsTrue(clients[1].ReceivedMessageList.Any(e => e.IsDORA()));
+            SetUp(@"../../E2E_TestData/DaiminkanTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDAIMINKAN()));
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDORA()));
 
         }
         [TestMethod()]
@@ -206,24 +211,28 @@ namespace MjServer.Tests
         {
             Assert.Fail();
         }
-    
 
+
+
+        int yakuNamepos = 0;
+        int yakuHanpos = 1;
 
         // Accidental Hands Test
         [TestMethod()]
         public void E2E_TenhouTest()
         {
-            SetUp(@"../../TenhoTestData.txt");
+            SetUp(@"../../E2E_TestData/TenhoTestData.txt");
             var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
-            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
-            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
 
-            SetUp(@"../../TenhoTestData2.txt");
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
+
+            SetUp(@"../../E2E_TestData/TenhoTestData2.txt");
             var horaMessage2 = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
-            Assert.IsTrue(horaMessage2.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
-            Assert.IsFalse(horaMessage2.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
+            Assert.IsTrue(horaMessage2.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
+            Assert.IsFalse(horaMessage2.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
         }
 
 
@@ -231,10 +240,10 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_ChihouTest()
         {
-            SetUp(@"../../ChihoTestData.txt");
+            SetUp(@"../../E2E_TestData/ChihoTestData.txt");
             var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
-            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[0] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHIHO]));
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHIHO]));
         }
 
         [TestMethod()]
@@ -243,7 +252,32 @@ namespace MjServer.Tests
             Assert.Fail();
         }
 
+        [TestMethod()]
+        public void E2E_IppatsuTest()
+        {
+            Assert.Fail();
+        }
+        [TestMethod()]
+        public void E2E_DoubleReachTest()
+        {
+            Assert.Fail();
+        }
+        public void E2E_RinshanTest()
+        {
+            Assert.Fail();
+        }
 
-
+        public void E2E_UradoraTest()
+        {
+            Assert.Fail();
+        }
+        public void E2E_HaiteiTest()
+        {
+            Assert.Fail();
+        }
+        public void E2E_HouteiTest()
+        {
+            Assert.Fail();
+        }
     }
 } 

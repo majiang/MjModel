@@ -66,7 +66,7 @@ namespace MjModelLibrary
             }
             else
             {
-                Console.Write("tehai doesn't contains {0}! @Tehai_Da", dapai);
+                Debug.Write("tehai doesn't contains {0}! @Tehai_Da", dapai.PaiString);
                 Debug.Assert(false);
                 return;
             }
@@ -80,7 +80,7 @@ namespace MjModelLibrary
         {
             if ( !IsValidConsumed(consumed) )
             {
-                Console.Write("invalied naki! @Tehai_Chi");
+                Debug.Write("invalied naki! @Tehai_Chi");
                 Debug.Assert(false);
                 return;
             }
@@ -131,7 +131,7 @@ namespace MjModelLibrary
         {
             if (!IsValidConsumed(consumed))
             {
-                Console.Write("invalied naki! @Tehai_Daiminkan");
+                Debug.Write("invalied naki! @Tehai_Daiminkan");
                 Debug.Assert(false);
                 return;
             }
@@ -156,9 +156,9 @@ namespace MjModelLibrary
 
         public void Ankan(int actor, List<Pai> consumed)
         {
-            if (!IsValidAnkan(consumed))
+            if (!IsValidConsumed(consumed))
             {
-                Console.Write("invalied naki! @Tehai_Ankan");
+                Debug.WriteLine("invalied naki! @Tehai_Ankan");
                 Debug.Assert(false);
                 return;
             }
@@ -184,7 +184,7 @@ namespace MjModelLibrary
         {
             if (!IsValidKakan(pai, consumed))
             {
-                Console.Write("invalied naki! @Tehai_kakan");
+                Debug.Write("invalied naki! @Tehai_kakan");
                 Debug.Assert(false);
                 return;
             }
@@ -224,33 +224,8 @@ namespace MjModelLibrary
 
         }
 
-        private bool IsValidConsumed(List<Pai> consumed)
-        {
-            //check consumed;
-            foreach (var consumedPai in consumed)
-            {
-                if (!tehai.Contains(consumedPai))
-                {
-                    return false;
-                }
-            }
 
-            return true;
-        }
 
-        private bool IsValidAnkan(List<Pai> consumed)
-        {
-            //check consumed;
-            foreach (var consumedPai in consumed)
-            {
-                if (!tehai.Contains(consumedPai))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         private bool IsValidKakan(Pai pai, List<Pai> consumed)
         {
@@ -344,6 +319,16 @@ namespace MjModelLibrary
 
         public bool CanDaiminkan(string pai, List<string> consumed)
         {
+            return IsValidConsumed(consumed);
+        }
+
+        public bool CanAnkan(List<string> consumed)
+        {
+            return IsValidConsumed(consumed);
+        }
+
+        bool IsValidConsumed(List<string> consumed)
+        {
             var tehaiStrings = tehai.Select(e => e.PaiString).ToList();
             foreach (var consumedOne in consumed)
             {
@@ -352,6 +337,20 @@ namespace MjModelLibrary
                     return false;
                 }
                 tehaiStrings.Remove(consumedOne);
+            }
+
+            return true;
+        }
+        bool IsValidConsumed(List<Pai> consumed)
+        {
+            var tehaiStrings = tehai.Select(e => e.PaiString).ToList();
+            foreach (var consumedOne in consumed)
+            {
+                if (tehaiStrings.Contains(consumedOne.PaiString) == false)
+                {
+                    return false;
+                }
+                tehaiStrings.Remove(consumedOne.PaiString);
             }
 
             return true;

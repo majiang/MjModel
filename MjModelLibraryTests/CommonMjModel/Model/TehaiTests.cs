@@ -113,7 +113,7 @@ namespace MjModelLibrary.Tests
         [TestMethod()]
         public void Unit_TehaiAnkanTest()
         {
-            Tehai testTehai = new Tehai(new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m") });
+            Tehai testTehai = new Tehai(new List<Pai> { new Pai("1m"), new Pai("1m"), new Pai("1m"), new Pai("1m") });
 
             //ankan
             var actor = 0;

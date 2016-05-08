@@ -17,7 +17,7 @@ namespace MjModelLibrary
 
         private int HAIPAI_LENGTH = 13;
 
-        public List<Pai> doraMarkers;
+        List<Pai> doraMarkers;
 
 
         List<Pai> mYama;

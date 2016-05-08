@@ -78,7 +78,6 @@ namespace MjServer
 
     class AfterStartKyokuState : StateBase, GameState
     {
-        public static event TsumoHandler OnTsumo;
         static GameState state = new AfterStartKyokuState();
         private AfterStartKyokuState() { }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MjModelLibrary;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 
@@ -55,9 +56,10 @@ namespace MjServer.Tests
         public void Unit_DahaiTest()
         {
             SetUp();
-            var firstActor = model.currentActor;
             var tsumoMsg = model.Tsumo();
-            model.Dahai(tsumoMsg.actor, tsumoMsg.pai, false);
+            var firstActor = model.currentActor;
+
+            model.Dahai(tsumoMsg.actor, tsumoMsg.pai, true);
             
             Assert.AreEqual(model.CalcNextActor(firstActor), model.currentActor);
 
@@ -66,37 +68,167 @@ namespace MjServer.Tests
         [TestMethod()]
         public void Unit_PonTest()
         {
-            Assert.Fail();
+             
+            SetUp();
+
+            var furopai = "1m";
+            var furoConsumed = new List<string>() { furopai, furopai };
+
+            var actor = 2;
+            var target = 0;
+
+            model.tehais[target] = new Tehai(new List<string>() { furopai });
+            model.tehais[actor] = new Tehai(new List<string>() { furopai, furopai, "2m", "E" });
+
+            model.Tsumo();
+            model.Dahai(target, furopai, false);
+            Assert.IsTrue(model.CanPon(actor, 0, furopai, furoConsumed));
+            model.Pon(actor, target, furopai, furoConsumed);
+
+            Assert.AreEqual(1, model.tehais[actor].furos.Count);
+
+            Assert.AreEqual(MJUtil.TartsuType.MINKO, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
+        
         }
 
         [TestMethod()]
         public void Unit_ChiTest()
         {
-            Assert.Fail();
+            SetUp();
+
+            var furopai = "1m";
+            var furoConsumed = new List<string>() { "2m", "3m" };
+            var beforeChiTehai = new List<string>() { "2m", "3m", "4m", "5m" };
+
+            var actor = 1;
+            var target = 0;
+
+
+            model.tehais[target] = new Tehai(new List<string>() { furopai });
+            model.tehais[actor] = new Tehai(new List<string>(beforeChiTehai) );
+
+
+            model.Tsumo();
+            model.Dahai(target, furopai, false);
+            model.Chi(actor, target, furopai, furoConsumed);
+
+            Assert.AreEqual(1, model.tehais[actor].furos.Count);
+            Assert.AreEqual(MJUtil.TartsuType.MINSYUN, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
         }
 
         [TestMethod()]
         public void Unit_KakanTest()
         {
-            Assert.Fail();
+
+            SetUp();
+
+            var furopai = "1m";
+            var ponConsumed = new List<string>() { "1m", "1m" };
+            var kakanConsumed = new List<string>() { "1m", "1m" };
+            var actorTehai = new List<string>() { "1m", "1m", "1m", "2m", "3m", "4m", "5m" };
+
+            var actor = 1;
+            var target = 0;
+
+
+            model.tehais[target] = new Tehai(new List<string>() { furopai });
+            model.tehais[actor] = new Tehai(new List<string>(actorTehai));
+
+            
+
+            //player0 discard pai is poned by player1
+            model.Tsumo();
+            model.Dahai(target, furopai, false);
+
+            //player1 pon
+            model.Pon(actor, target, furopai, ponConsumed);
+            model.Dahai(actor, "5m", false);
+
+            //player2 tsumogiri
+            var tsumoObj2 = model.Tsumo();
+            model.Dahai(tsumoObj2.actor, tsumoObj2.pai, true);
+
+            //player3 tsumogiri
+            var tsumoObj3 = model.Tsumo();
+            model.Dahai(tsumoObj3.actor, tsumoObj3.pai, true);
+
+            //player0 tsumogiri
+            var tsumoObj0 = model.Tsumo();
+            model.Dahai(tsumoObj0.actor, tsumoObj0.pai, true);
+
+            //player1 kakan
+            model.Tsumo();
+            Assert.IsTrue(model.CanKakan(actor, furopai, kakanConsumed));
+            model.Kakan(actor, furopai, kakanConsumed);
+            model.OpenDora();
+
+
+            Assert.AreEqual(1, model.tehais[actor].furos.Count);
+            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
+            
         }
 
         [TestMethod()]
         public void Unit_AnkanTest()
         {
-            Assert.Fail();
+            SetUp();
+
+            var furopai = "2m";
+            var beforeAnjkanTehai = new List<string>() { furopai , furopai , furopai , furopai };
+
+            var actor = 0; 
+
+
+            model.tehais[actor] = new Tehai(new List<string>(beforeAnjkanTehai));
+
+
+            model.Tsumo();
+            Assert.IsTrue(model.CanAnkan(actor, beforeAnjkanTehai));
+            model.Ankan(actor, beforeAnjkanTehai);
+
+            Assert.AreEqual(1, model.tehais[actor].furos.Count);
+            Assert.AreEqual(MJUtil.TartsuType.ANKANTSU, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(furopai, model.tehais[actor].furos[0].consumed[0].PaiString);
+            
+
         }
 
         [TestMethod()]
         public void Unit_DaiminkanTest()
         {
-            Assert.Fail();
+
+            SetUp();
+
+            var furopai = "1m";
+            var furoConsumed = new List<string>() { furopai, furopai, furopai };
+
+            var actor = 2;
+            var target = 0;
+
+            model.tehais[target] = new Tehai(new List<string>() { furopai });
+            model.tehais[actor] = new Tehai(new List<string>() { furopai, furopai, furopai, "2m", "E" });
+
+            model.Tsumo();
+            model.Dahai(target, furopai, false);
+            Assert.IsTrue(model.CanDaiminkan(actor, 0, furopai, furoConsumed));
+            model.Daiminkan(actor, target, furopai, furoConsumed);
+
+            Assert.AreEqual(1, model.tehais[actor].furos.Count);
+
+            Assert.AreEqual(MJUtil.TartsuType.MINKO, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
+
         }
 
         [TestMethod()]
         public void Unit_OpenDoraTest()
         {
-            Assert.Fail();
+            SetUp();
+            var doraNum = 1;
+            Assert.AreEqual(doraNum, model.yama.GetDoraMarkers());
         }
 
         [TestMethod()]
@@ -111,11 +243,7 @@ namespace MjServer.Tests
             Assert.Fail();
         }
 
-        [TestMethod()]
-        public void Unit_NoneTest()
-        {
-            Assert.Fail();
-        }
+
 
         [TestMethod()]
         public void Unit_RyukyokuTest()

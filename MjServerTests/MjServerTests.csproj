@@ -85,12 +85,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ChihoTestData.txt" />
-    <Content Include="ChiTestData.txt" />
-    <Content Include="DaiminkanTestData.txt" />
-    <Content Include="StartKyokuTestData.txt" />
-    <Content Include="TenhoTestData.txt" />
-    <Content Include="TenhoTestData2.txt" />
+    <Content Include="E2E_TestData\AnkanTestData.txt" />
+    <Content Include="E2E_TestData\ChihoTestData.txt" />
+    <Content Include="E2E_TestData\ChiTestData.txt" />
+    <Content Include="E2E_TestData\DaiminkanTestData.txt" />
+    <Content Include="E2E_TestData\KakanTestData.txt" />
+    <Content Include="E2E_TestData\PonTestData.txt" />
+    <Content Include="E2E_TestData\StartKyokuTestData.txt" />
+    <Content Include="E2E_TestData\TenhoTestData.txt" />
+    <Content Include="E2E_TestData\TenhoTestData2.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

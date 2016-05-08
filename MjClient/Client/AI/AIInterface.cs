@@ -38,7 +38,7 @@ namespace MjClient.AI
         event SendAnkanHandler SendAnkan;
         event SendKakanHandler SendKakan;
         event SendReachHandler SendReach;
-        void thinkOnTsumo(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs);
+        void thinkOnMyTsumo(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs);
 
 
 

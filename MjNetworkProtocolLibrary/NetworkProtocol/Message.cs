@@ -259,13 +259,11 @@ namespace MjNetworkProtocolLibrary
     public class MJsonMessageAnkan : MJsonMessageBase
     {
         public int actor;
-        public string pai;
         public List<string> consumed;
-        public MJsonMessageAnkan(int actor, string pai, List<string> consumed)
+        public MJsonMessageAnkan(int actor, List<string> consumed)
         {
             type = MsgType.ANKAN;
             this.actor = actor;
-            this.pai = pai;
             this.consumed = consumed;
         }
     }

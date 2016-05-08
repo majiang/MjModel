@@ -160,7 +160,7 @@ namespace MjClient
             if (actor == myPositionId)
             {
                 
-                ai.thinkOnTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
+                ai.thinkOnMyTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
 
             }
             else

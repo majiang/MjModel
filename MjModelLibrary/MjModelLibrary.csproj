@@ -46,6 +46,7 @@
     <Compile Include="Model\Tehai.cs" />
     <Compile Include="Model\TehaiAnalizer.cs" />
     <Compile Include="Model\Yama.cs" />
+    <Compile Include="Result\ForAIStructs.cs" />
     <Compile Include="Result\InfoForResult.cs" />
     <Compile Include="Result\PointResultCalclator.cs" />
     <Compile Include="Result\ResultCalclator.cs" />

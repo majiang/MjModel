@@ -28,7 +28,7 @@ namespace MjServer
             TcpListener server = new TcpListener(ipAdd, port);
 
             server.Start();
-            Console.WriteLine(
+            Debug.WriteLine(
                 "Start Listen({0}:{1})" ,
                 ( (IPEndPoint)server.LocalEndpoint).Address ,
                 ( (IPEndPoint)server.LocalEndpoint).Port
@@ -66,6 +66,8 @@ namespace MjServer
             {
                 if (mjsonObject != null)
                 {
+                    Debug.WriteLine("Json Deserialize Error! "+e.Message);
+                    Debug.Assert(false);
                     var errorMessasge = JsonConvert.SerializeObject(new MJsonMessageError(message));
                     clientHolder.SendMessageToClient(errorMessasge);
                     clientHolder.Disconnect();

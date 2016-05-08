@@ -21,14 +21,15 @@ namespace MjModelLibrary.Tests
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
             foreach (var omote in testYama.GetDoraMarkers())
             {
-                Console.WriteLine("Dora = " + omote.PaiString);
+                Debug.WriteLine("Dora = " + omote.PaiString);
             }
 
 
 
             while (testYama.GetRestYamaNum() > 0)
             {
-                Console.WriteLine(testYama.DoTsumo().PaiString);
+                var tsumoObj = testYama.DoTsumo();
+                Debug.WriteLine(tsumoObj.PaiString);
             }
         }
 
@@ -40,17 +41,21 @@ namespace MjModelLibrary.Tests
 
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
 
-            Console.WriteLine(testYama.DoRinshan().PaiString);
+            var rinshanObj = testYama.DoRinshan();
+            Debug.WriteLine(rinshanObj.PaiString);
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH - 1);
             Assert.IsTrue(testYama.CanKan());
 
-            Console.WriteLine(testYama.DoRinshan().PaiString);
+            rinshanObj = testYama.DoRinshan();
+            Debug.WriteLine(rinshanObj.PaiString);
             Assert.IsTrue(testYama.CanKan());
 
-            Console.WriteLine(testYama.DoRinshan().PaiString);
+            rinshanObj = testYama.DoRinshan();
+            Debug.WriteLine(rinshanObj.PaiString);
             Assert.IsTrue(testYama.CanKan());
 
-            Console.WriteLine(testYama.DoRinshan().PaiString);
+            rinshanObj = testYama.DoRinshan();
+            Debug.WriteLine(rinshanObj.PaiString);
             Assert.IsFalse(testYama.CanKan());
 
         }

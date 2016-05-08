@@ -60,7 +60,7 @@ namespace MjServer
                         field.Honba,
                         field.Kyotaku,
                         field.OyaPlayerId,
-                        yama.doraMarkers[0].PaiString,
+                        yama.GetDoraMarkers()[0].PaiString,
                         new List<List<string>> { 
                             tehais[0].GetTehaiStringList(),
                             tehais[1].GetTehaiStringList(),
@@ -145,11 +145,11 @@ namespace MjServer
             return new MJsonMessageKakan(actor, pai, consumed);
         }
 
-        public MJsonMessageAnkan Ankan(int actor, string pai, List<string> consumed)
+        public MJsonMessageAnkan Ankan(int actor, List<string> consumed)
         {
             tehais[actor].Ankan(actor, consumed);
             SetCurrentActor(actor);
-            return new MJsonMessageAnkan(actor, pai, consumed);
+            return new MJsonMessageAnkan(actor, consumed);
         }
 
         public MJsonMessageDaiminkan Daiminkan(int actor, int target, string pai, List<string> consumed)
@@ -195,6 +195,7 @@ namespace MjServer
 
             return new MJsonMessageRyukyoku("fanpai", tehaisString, tenpais, deltas, points);
         }
+
 
 
         public MJsonMessageReachAccept ReachAccept()
@@ -249,24 +250,23 @@ namespace MjServer
             return tehais[actor].CanPon(pai, consumed);
         }
 
-        private MJsonMessageHora calclatedHoraMessage;
+        MJsonMessageHora calclatedHoraMessage;
         public bool CanHora(int actor, int target, string pai)
         {
             var uradoraMarkers = yama.GetUradoraMarker();
             var ifr = infoForResultList[actor];
-            ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
+            ifr.UseYamaPaiNum = 
+                yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
             ifr.IsFured = !ifr.IsMenzen;
             
             if (actor == target)
             {
-                // tsumo hora
                 ifr.IsHaitei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = true;
             }
             else
             {
-                //ron hora
                 infoForResultList[actor].SetLastAddedPai(pai);
                 ifr.IsHoutei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = false;
@@ -310,16 +310,18 @@ namespace MjServer
         }
         public bool CanDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            if(actor == target)
+            if(IsDifferentPlayer(actor, target) && IsRightSutehai(target, pai) == false)
             {
                 return false;
             }
-            if(pai != kawas[target].discards.Last().PaiString)
-            {
-                return false;
-            }
-
+            
+            
             return tehais[actor].CanDaiminkan(pai, consumed) && yama.CanKan();
+        }
+
+        public bool CanAnkan(int actor, List<string> consumed)
+        {
+            return tehais[actor].CanAnkan(consumed) && yama.CanKan();
         }
         public bool CanEndKyoku()
         {
@@ -375,9 +377,15 @@ namespace MjServer
 
 
 
+        bool IsDifferentPlayer(int actor, int target)
+        {
+            return actor == target;
+        }
 
-
-
+        bool IsRightSutehai(int target, string sutehai)
+        {
+            return sutehai == kawas[target].discards.Last().PaiString;
+        }
 
     }
 }
