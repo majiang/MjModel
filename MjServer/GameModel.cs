@@ -88,7 +88,7 @@ namespace MjServer
         }
 
 
-        //ここからクライアントからの命令を受けてモデル内情報を更新する関数群
+        // model change functions
         public MJsonMessageTsumo Tsumo()
         {
             var tsumoPai = yama.DoTsumo();
@@ -171,10 +171,24 @@ namespace MjServer
             return new MJsonMessageReach(actor);
         }
 
+        public MJsonMessageReachAccept ReachAccept()
+        {
+            var reachedActor = ((currentActor - 1) + 4) % 4;
+            var deltas = new List<int> { 0, 0, 0, 0 };
+            deltas[reachedActor] = -Constants.REACH_POINT;
+            points = AddPoints(points, deltas);
 
+            SetReach(reachedActor);
+
+            return new MJsonMessageReachAccept(reachedActor, deltas, points);
+        }
+
+
+        
         
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
+            // CanHora
             return calclatedHoraMessage;
         }
 
@@ -197,28 +211,61 @@ namespace MjServer
         }
 
 
-
-        public MJsonMessageReachAccept ReachAccept()
+        public  MJsonMessageEndkyoku EndKyoku()
         {
-            var reachedActor = ((currentActor - 1) + 4) % 4;
-            var deltas = new List<int> { 0, 0, 0, 0 };
-            deltas[reachedActor] = -Constants.REACH_POINT;
-            points = AddPoints(points, deltas);
-
-            SetReach(reachedActor);
-
-            return new MJsonMessageReachAccept(reachedActor, deltas, points);
+            return new MJsonMessageEndkyoku();
         }
 
 
-        //以下Validater
+        public MJsonMessageEndgame EndGame()
+        {
+            return new MJsonMessageEndgame();
+        }
+
+
+        // action validate functions
         public bool CanTsumo()
         {
             return true;
         }
-        public bool CanDahai()
+        public bool CanDahai(int actor,string pai, bool tsumogiri)
         {
-            return true;
+            return isValidTsumogiri(actor, pai, tsumogiri)
+                && tehais[actor].tehai.Any(e => e.PaiString == pai);
+        }
+
+        bool isValidTsumogiri(int actor, string pai, bool tsumogiri)
+        {
+            if ( tsumogiri == false )
+            {
+                if ((pai == infoForResultList[actor].LastAddedPai.PaiString))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if ((pai == infoForResultList[actor].LastAddedPai.PaiString))
+                {
+                    return true;
+                }
+                else
+                {
+                    if(tehais[actor].tehai.Count(e => e.PaiString == pai) >= 2)
+                    {
+                        // karagiri 
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
         }
 
         public bool CanChi(int actor , int  target, string pai, List<string> consumed)
@@ -253,13 +300,29 @@ namespace MjServer
         MJsonMessageHora calclatedHoraMessage;
         public bool CanHora(int actor, int target, string pai)
         {
+            var horaResult = PreCalcHoraResult(actor, target, pai);
+            // if hora contains any yaku, return false. 
+            if (horaResult.yakuResult.HasYakuExcludeDora == false)
+            {
+                return false;
+            }
+
+
+            // change field
+            field = Field.ChangeOnHora(field, actor);
+
+            return true;
+            
+        }
+        HoraResult PreCalcHoraResult(int actor, int target, string pai)
+        {
             var uradoraMarkers = yama.GetUradoraMarker();
             var ifr = infoForResultList[actor];
-            ifr.UseYamaPaiNum = 
+            ifr.UseYamaPaiNum =
                 yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
             ifr.IsFured = !ifr.IsMenzen;
-            
+
             if (actor == target)
             {
                 ifr.IsHaitei = yama.GetRestYamaNum() == 0;
@@ -271,36 +334,36 @@ namespace MjServer
                 ifr.IsHoutei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = false;
             }
-            HoraResult horaResult;
-            horaResult = ResultCalclator.CalcHoraResult(tehais[actor], infoForResultList[actor], field, pai);
-
-            // if hora contains any yaku, return false. 
-            if (horaResult.yakuResult.HasYakuExcludeDora == false)
-            {
-                return false;
-            }
 
 
-            // change field
-            field = Field.ChangeOnHora(field, actor);
-
+            var horaResult =  ResultCalclator.CalcHoraResult(tehais[actor], infoForResultList[actor], field, pai);
             //TODO  modifie delta and pointResult.
 
             // save calclated horaresult
             calclatedHoraMessage = new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
                 horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 });
-            
-            return true;
-            
+
+            return horaResult;
+        }
+
+
+        public bool CanReach(int actor)
+        {
+            return infoForResultList[actor].IsReach == false
+                && infoForResultList[actor].IsDoubleReach == false;
         }
 
         public bool CanOpenDora()
         {
+            // This function always return true 
+            // because already validated in Can[*]kan.
             return true;
         }
 
         public bool CanRinshan()
-        {
+        { 
+            // This function always return true 
+            // because already validated in Can[*]kan.
             return yama.CanKan();
         }
 
@@ -308,6 +371,12 @@ namespace MjServer
         {
             return tehais[actor].CanKakan(pai, consumed) && yama.CanKan();
         }
+
+        public bool CanReachDahai(int actor, string pai, bool tsumogiri)
+        {
+            return CanDahai(actor, pai, tsumogiri);
+        }
+
         public bool CanDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
             if(IsDifferentPlayer(actor, target) && IsRightSutehai(target, pai) == false)
@@ -319,11 +388,22 @@ namespace MjServer
             return tehais[actor].CanDaiminkan(pai, consumed) && yama.CanKan();
         }
 
+
+
+        public bool CanReachAccept()
+        {
+            // This function always return true 
+            // because already validated in CanReach.
+            return true;
+        }
+
+
+
         public bool CanAnkan(int actor, List<string> consumed)
         {
             return tehais[actor].CanAnkan(consumed) && yama.CanKan();
         }
-        public bool CanEndKyoku()
+        public bool CanRyukyoku()
         {
             return (yama != null) && (yama.GetRestYamaNum() == 0);
         }

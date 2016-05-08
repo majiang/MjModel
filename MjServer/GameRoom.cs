@@ -162,7 +162,11 @@ namespace MjServer
             }
         }
 
-
+        void CloseRoom()
+        {
+            clients.ForEach(e => e.Disconnect());
+            clients.Clear();
+        }
 
         void OnErrorDetected(string jsonEerrorMessage)
         {
@@ -183,7 +187,7 @@ namespace MjServer
         // mj status check functions called by GameState
         bool CheckIsEndKyoku()
         {
-            return gameModel.CanEndKyoku();
+            return gameModel.CanRyukyoku();
         }
         bool CheckIsEndGame()
         {
@@ -214,11 +218,12 @@ namespace MjServer
 
         bool Dahai(int actor, string pai, bool tsumogiri)
         {
-            if (gameModel.CanDahai())
+            if (gameModel.CanDahai(actor,pai, tsumogiri))
             {
                 var msgobj = gameModel.Dahai(actor, pai, tsumogiri);
                 SendMJsonObject(msgobj);
-                gameContext.ChangeState(msgobj);
+                var isReachDahai = false;
+                gameContext.ChangeState(msgobj, isReachDahai);
                 return true;
             }
             return false;
@@ -310,12 +315,39 @@ namespace MjServer
 
         bool Reach(int actor)
         {
-            throw new NotImplementedException();
+            if (gameModel.CanReach(actor))
+            {
+                var msgobj = gameModel.Reach(actor);
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
         bool ReachDahai(int actor, string pai, bool tsumogiri)
         {
-            throw new NotImplementedException();
+            if (gameModel.CanReachDahai(actor, pai, tsumogiri))
+            {
+                var msgobj = gameModel.Dahai(actor, pai, tsumogiri);
+                SendMJsonObject(msgobj);
+                var isReachDahai = true;
+                gameContext.ChangeState(msgobj, isReachDahai);
+                return true;
+            }
+            return false;
+        }
+
+        bool ReachAccept()
+        {
+            if (gameModel.CanReachAccept())
+            {
+                var msgobj = gameModel.ReachAccept();
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
         bool Hora(int actor, int target, string pai)
         {
@@ -331,26 +363,31 @@ namespace MjServer
 
         bool Ryukyoku()
         {
-            throw new NotImplementedException();
+            if (gameModel.CanRyukyoku())
+            {
+                var msgobj = gameModel.Ryukyoku();
+                SendMJsonObject(msgobj);
+                gameContext.ChangeState(msgobj);
+                return true;
+            }
+            return false;
         }
 
-        bool ReachAccept()
-        {
-            //send reachaccept
-
-            // do not clear message stack
-            //gameContext.ChangeState(mjsonObj);
-
-            throw new NotImplementedException();
-        }
         bool EndKyoku()
         {
-            throw new NotImplementedException();
+            var msgobj = gameModel.EndKyoku();
+            SendMJsonObject(msgobj);
+            gameContext.ChangeState(msgobj);
+            return true;
         }
 
         bool EndGame()
         {
-            throw new NotImplementedException();
+            var msgobj = gameModel.EndGame();
+            SendMJsonObject(msgobj);
+            gameContext.ChangeState(msgobj);
+            CloseRoom();
+            return true;
         }
 
 

@@ -194,7 +194,9 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_RyukyokuTest()
         {
-            Assert.Fail();
+            SetUp(@"../../E2E_TestData/RyukyokuTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsRYUKYOKU()));
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsEND_KYOKU()));
         }
         [TestMethod()]
         public void E2E_SukaikanRyukyokuTest()
@@ -214,9 +216,9 @@ namespace MjServer.Tests
 
 
 
+
         int yakuNamepos = 0;
         int yakuHanpos = 1;
-
         // Accidental Hands Test
         [TestMethod()]
         public void E2E_TenhouTest()

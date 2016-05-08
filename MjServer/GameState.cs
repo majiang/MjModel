@@ -556,10 +556,10 @@ namespace MjServer
         }
     }
 
-    class EndState : StateBase, GameState
+    class AfterEndGameState : StateBase, GameState
     {
-        static EndState state = new EndState();
-        private EndState() { }
+        static AfterEndGameState state = new AfterEndGameState();
+        private AfterEndGameState() { }
         public static GameState GetInstance()
         {
             return state;
@@ -567,8 +567,7 @@ namespace MjServer
 
         public bool ValidateMessage(MJsonMessageAll msg)
         {
-            Debug.Assert(false);
-            return false;
+            return msg.IsNONE();
         }
 
         public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)

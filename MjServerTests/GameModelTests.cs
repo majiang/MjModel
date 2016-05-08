@@ -218,7 +218,7 @@ namespace MjServer.Tests
 
             Assert.AreEqual(1, model.tehais[actor].furos.Count);
 
-            Assert.AreEqual(MJUtil.TartsuType.MINKO, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, model.tehais[actor].furos[0].ftype);
             Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
 
         }
@@ -228,75 +228,51 @@ namespace MjServer.Tests
         {
             SetUp();
             var doraNum = 1;
-            Assert.AreEqual(doraNum, model.yama.GetDoraMarkers());
+            Assert.AreEqual(doraNum, model.yama.GetDoraMarkers().Count);
+            Assert.AreEqual(doraNum, model.yama.GetUradoraMarker().Count);
+            model.OpenDora();
+            Assert.AreEqual(doraNum + 1, model.yama.GetDoraMarkers().Count);
+            Assert.AreEqual(doraNum + 1, model.yama.GetUradoraMarker().Count);
+            
         }
 
         [TestMethod()]
-        public void Unit_ReachTest()
+        public void Unit_Reach_ReachAcceptTest()
         {
-            Assert.Fail();
+            SetUp();
+            var startPoint = 25000;
+            var reachPoint = 1000;
+            
+            Assert.AreEqual(startPoint, model.points[0]);
+
+            var tsumoObj = model.Tsumo();
+            model.Reach(0);
+            model.Dahai(tsumoObj.actor,tsumoObj.pai, true);
+            model.ReachAccept();
+
+            Assert.AreEqual(startPoint - reachPoint, model.points[0]);
+            Assert.IsFalse(model.CanReach(0));
         }
-
-        [TestMethod()]
-        public void Unit_HoraTest()
-        {
-            Assert.Fail();
-        }
-
-
 
         [TestMethod()]
         public void Unit_RyukyokuTest()
         {
-            Assert.Fail();
+            SetUp();
+            var motaNum = 70;
+
+            Assert.IsFalse(model.CanRyukyoku());
+
+            for (int i = 0; i < motaNum; i++)
+            {
+                var tsumoObj = model.Tsumo();
+                model.Dahai(tsumoObj.actor, tsumoObj.pai, true);
+            }
+
+            Assert.IsTrue(model.CanRyukyoku());
+            model.EndKyoku();
         }
 
-        [TestMethod()]
-        public void Unit_ReachAcceptTest()
-        {
-            Assert.Fail();
-        }
 
-        [TestMethod()]
-        public void Unit_CanTsumoTest()
-        {
-            Assert.Fail();
-        }
 
-        [TestMethod()]
-        public void Unit_CanDahaiTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void Unit_CanChiTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void Unit_CanPonTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void Unit_CanFinishKyokuTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void Unit_CanEndGameTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void Unit_SetReachTest()
-        {
-            Assert.Fail();
-        }
     }
 }
