@@ -267,6 +267,7 @@ namespace MjServer.Tests
         public void E2E_RinshanTest()
         {
             Assert.Fail();
+
         }
 
         public void E2E_UradoraTest()
