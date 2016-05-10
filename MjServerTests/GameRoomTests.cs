@@ -218,7 +218,6 @@ namespace MjServer.Tests
 
 
         int yakuNamepos = 0;
-        int yakuHanpos = 1;
         // Accidental Hands Test
         [TestMethod()]
         public void E2E_TenhouTest()

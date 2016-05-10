@@ -17,6 +17,12 @@ namespace MjModelLibrary
             { "5sr", 22}
         };
 
+
+        /// <summary>
+        ///  this function convert paiString to paiID
+        ///  reddora does not affect ID
+        ///  ex. 5m -> 4 , 5mr -> 4, 5p -> 13, 5pr -> 13
+        /// </summary>
         public static readonly Dictionary<string, int> STRING_TO_ID = new Dictionary<string, int>()
         {
             { "5mr", 4},

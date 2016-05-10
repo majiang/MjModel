@@ -126,7 +126,7 @@ namespace MjServer.Tests
 
             var furopai = "1m";
             var ponConsumed = new List<string>() { "1m", "1m" };
-            var kakanConsumed = new List<string>() { "1m", "1m" };
+            var kakanConsumed = new List<string>() { "1m", "1m","1m" };
             var actorTehai = new List<string>() { "1m", "1m", "1m", "2m", "3m", "4m", "5m" };
 
             var actor = 1;

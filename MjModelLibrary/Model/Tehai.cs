@@ -309,7 +309,7 @@ namespace MjModelLibrary
 
             foreach (var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && IsSameConsumed(furo.consumed,consumed) )
+                if (furo.ftype == MJUtil.TartsuType.MINKO && (furo.consumed[0].PaiNumber == PaiConverter.STRING_TO_ID[consumed[0]]) )
                 {
                     return true;
                 }
