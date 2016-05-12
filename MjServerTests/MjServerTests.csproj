@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="E2E_TestData\AnkanTestData.txt" />
+    <Content Include="E2E_TestData\ChankanTestData.txt" />
     <Content Include="E2E_TestData\ChihoTestData.txt" />
     <Content Include="E2E_TestData\ChiTestData.txt" />
     <Content Include="E2E_TestData\DaiminkanTestData.txt" />

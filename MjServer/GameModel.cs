@@ -51,7 +51,7 @@ namespace MjServer
             kawas.ForEach(e => e.Init());
             var haipais = yama.MakeHaipai();
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
-            SetCurrentActor(0);
+            SetCurrentActor(field.OyaPlayerId);
             infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
 
             return new MJsonMessageStartKyoku(
@@ -78,7 +78,7 @@ namespace MjServer
             return (currentActor + 1) % 4;
         }
 
-        public void GoNextActor()
+        public void IncrementActor()
         {
             currentActor = CalcNextActor(currentActor);
         }
@@ -107,6 +107,8 @@ namespace MjServer
             tehais[currentActor].Tsumo(tsumoPai);
             infoForResultList[currentActor].SetLastAddedPai(tsumoPai);
 
+            EnableRinshanFlag(currentActor);
+
             return new MJsonMessageTsumo(
                 currentActor,
                 tsumoPai.PaiString
@@ -118,7 +120,13 @@ namespace MjServer
             var dapai = new Pai(pai);
             tehais[actor].Da(dapai);
             kawas[actor].Sutehai(dapai);
-            GoNextActor();
+
+
+            DisableMyIppatsuRinshanFlags(actor);
+            DisableOtherPlayersChankanFlags(actor);
+
+            IncrementActor();
+
             return new MJsonMessageDahai(actor, pai, tsumogiri);
         }
 
@@ -188,7 +196,10 @@ namespace MjServer
         
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
-            // CanHora
+
+            // change field
+            field = Field.ChangeOnHora(field, actor);
+            
             return calclatedHoraMessage;
         }
 
@@ -308,8 +319,7 @@ namespace MjServer
             }
 
 
-            // change field
-            field = Field.ChangeOnHora(field, actor);
+
 
             return true;
             
@@ -490,6 +500,24 @@ namespace MjServer
         {
             return sutehai == kawas[target].discards.Last().PaiString;
         }
+
+        void DisableMyIppatsuRinshanFlags(int actor)
+        {
+            infoForResultList[actor].IsIppatsu = false;
+            infoForResultList[actor].IsRinshan = false;
+        }
+
+        void DisableOtherPlayersChankanFlags(int actor)
+        {
+            infoForResultList.Where(e => infoForResultList.IndexOf(e) != actor)
+                             .ToList()
+                             .ForEach(e => e.IsChankan = false);
+        }
+        void EnableRinshanFlag(int actor)
+        {
+            infoForResultList[actor].IsRinshan = true;
+        }
+
 
     }
 }

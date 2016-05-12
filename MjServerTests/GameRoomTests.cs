@@ -22,11 +22,8 @@ namespace MjServer.Tests
 
 
 
-        void SetUp()
-        {
 
-        }
-        void SetUp(string filepath)
+        void TestInputLines(string filepath)
         {
             clients = new List<ClientHolderForTest>()
             {
@@ -111,8 +108,10 @@ namespace MjServer.Tests
             return RecursiveFilterTsumo(tsumoAndKanList).Select(e => e.pai).ToList();
         }
 
+        // this function removes rinshan tsumo
         List<MJsonMessageAll> RecursiveFilterTsumo(List<MJsonMessageAll> msgobjList)
         {
+            
             var lastKanIndex = msgobjList.FindIndex(e => e.IsKAKAN() || e.IsDAIMINKAN() || e.IsANKAN());
 
             if (lastKanIndex == -1)
@@ -120,8 +119,16 @@ namespace MjServer.Tests
                 return msgobjList;
             }
 
-            msgobjList.RemoveRange(lastKanIndex, 2);
-            return RecursiveFilterTsumo(msgobjList);
+            var rinshanIndex = lastKanIndex + 1;
+            if (rinshanIndex >= msgobjList.Count)
+            {
+                return msgobjList.GetRange(0, lastKanIndex);
+            }
+            else
+            {
+                msgobjList.RemoveRange(lastKanIndex, 2);
+                return RecursiveFilterTsumo(msgobjList);
+            }
         }
 
         List<string> ReadTestFile( string filepath)
@@ -168,33 +175,33 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_ChiTest()
         {
-            SetUp(@"../../E2E_TestData/ChiTestData.txt");
+            TestInputLines(@"../../E2E_TestData/ChiTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsCHI()));
         }
         [TestMethod()]
         public void E2E_PonTest()
         {
-            SetUp(@"../../E2E_TestData/PonTestData.txt");
+            TestInputLines(@"../../E2E_TestData/PonTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsPON()));
         }
         [TestMethod()]
         public void E2E_AnkanTest()
         {
-            SetUp(@"../../E2E_TestData/AnkanTestData.txt");
+            TestInputLines(@"../../E2E_TestData/AnkanTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsANKAN()));
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDORA()));
         }
         [TestMethod()]
         public void E2E_KakanTest()
         {
-            SetUp(@"../../E2E_TestData/KakanTestData.txt");
+            TestInputLines(@"../../E2E_TestData/KakanTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsKAKAN()));
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDORA()));
         }
         [TestMethod()]
         public void E2E_DaiminkanTest()
         {
-            SetUp(@"../../E2E_TestData/DaiminkanTestData.txt");
+            TestInputLines(@"../../E2E_TestData/DaiminkanTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDAIMINKAN()));
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsDORA()));
 
@@ -202,21 +209,17 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_RyukyokuTest()
         {
-            SetUp(@"../../E2E_TestData/RyukyokuTestData.txt");
+            TestInputLines(@"../../E2E_TestData/RyukyokuTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsRYUKYOKU()));
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsEND_KYOKU()));
         }
         [TestMethod()]
         public void E2E_SukaikanRyukyokuTest()
         {
-            SetUp(@"../../E2E_TestData/SukaikanRyukyokuTestData.txt");
+            TestInputLines(@"../../E2E_TestData/SukaikanRyukyokuTestData.txt");
             Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsRYUKYOKU()));
         }
-        [TestMethod()]
-        public void E2E_SanchahoRyukyokuTest()
-        {
-            Assert.Fail();
-        }
+
         [TestMethod()]
         public void E2E_EndGameTest()
         {
@@ -236,14 +239,14 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_TenhouTest()
         {
-            SetUp(@"../../E2E_TestData/TenhoTestData.txt");
+            TestInputLines(@"../../E2E_TestData/TenhoTestData.txt");
             var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
 
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
 
-            SetUp(@"../../E2E_TestData/TenhoTestData2.txt");
+            TestInputLines(@"../../E2E_TestData/TenhoTestData2.txt");
             var horaMessage2 = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
             Assert.IsTrue(horaMessage2.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
@@ -255,7 +258,7 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_ChihouTest()
         {
-            SetUp(@"../../E2E_TestData/ChihoTestData.txt");
+            TestInputLines(@"../../E2E_TestData/ChihoTestData.txt");
             var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHIHO]));
@@ -264,7 +267,10 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_ChankanTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/ChankanTestData.txt");
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHANKAN]));
         }
 
         [TestMethod()]
