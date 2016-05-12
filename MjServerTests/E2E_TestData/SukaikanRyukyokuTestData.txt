@@ -1,0 +1,38 @@
+﻿{"type": "start_kyoku", "bakaze": "E","kyoku":1, "honba": 0, "kyotaku": 0, "oya": 0, "dora_marker" :"5sr", "tehais": [["1m","1m","1m","1m","2p","2p","2p","2p","3s","3s","3s","3s","E"],["W","W","W","W","P","P","P","P","P","P","P","P","P"],["W","W","W","W","P","P","P","P","P","P","P","P","P"],["W","W","W","W","P","P","P","P","P","P","P","P","P"]] }
+{"type":"none"}
+{"type": "tsumo", "actor": 0, "pai": "E" }
+{"type": "ankan", "actor": 0, "consumed":["1m","1m","1m","1m"]}
+{"type": "ankan", "actor": 0, "consumed":["1m","1m","1m","1m"]}
+{"type":"none"}
+{"type": "dora", "dora_marker": "9m"}
+{"type":"none"}
+{"type": "tsumo", "actor": 0, "pai": "E" }
+{"type": "ankan", "actor": 0, "consumed":["2p","2p","2p","2p"]}
+{"type": "ankan", "actor": 0, "consumed":["2p","2p","2p","2p"]}
+{"type":"none"}
+{"type": "dora", "dora_marker": "9m"}
+{"type":"none"}
+{"type": "tsumo", "actor": 0, "pai": "E" }
+{"type": "ankan", "actor": 0, "consumed":["3s","3s","3s","3s"]}
+{"type": "ankan", "actor": 0, "consumed":["3s","3s","3s","3s"]}
+{"type":"none"}
+{"type": "dora", "dora_marker": "9m"}
+{"type":"none"}
+{"type": "tsumo", "actor": 0, "pai": "N" }
+{"type": "dahai", "actor": 0, "pai": "N", "tsumogiri": true}
+{"type": "dahai", "actor": 0, "pai": "N", "tsumogiri": true}
+{"type":"none"}
+{"type": "tsumo", "actor": 1, "pai": "1s" }
+{"type": "ankan", "actor": 1, "consumed":["W","W","W","W"]}
+{"type": "ankan", "actor": 1, "consumed":["W","W","W","W"]}
+{"type":"none"}
+{"type": "dora", "dora_marker": "9s"}
+{"type":"none"}
+{"type": "tsumo", "actor": 1, "pai": "1s" }
+{"type": "dahai", "actor": 1, "pai": "1s", "tsumogiri": true}
+{"type": "dahai", "actor": 1, "pai": "1s", "tsumogiri": true}
+{"type":"none"}
+{"type":"ryukyoku","reason":"sukaikan","tehais":[["5m","5m","5mr","3s","3s","N","N"],["?","?","?","?","?","?","?","?","?","?","?","?","?"],["?","?","?","?","?","?","?","?","?","?","?","?","?"],["?","?","?","?"]],"tenpais":[true,false,false,false],"deltas":[3000,-1000,-1000,-1000],"scores":[28000,24000,24000,24000]}
+{"type":"none"}
+{"type":"end_kyoku"}
+{"type":"none"}

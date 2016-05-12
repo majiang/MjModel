@@ -75,7 +75,7 @@ namespace MjServer
             gameContext.Ryukyoku += Ryukyoku;
             gameContext.Endkyoku += EndKyoku;
             gameContext.EndGame += EndGame;
-            gameContext.CheckIsEndKyoku += CheckIsEndKyoku;
+            gameContext.CheckIsRyuKyoku += CheckIsRyukyoku;
             gameContext.CheckIsEndGame += CheckIsEndGame;
         }
 
@@ -152,6 +152,7 @@ namespace MjServer
                     var errorMessages = gameContext.GetMessageList();
                     StringBuilder sb = new StringBuilder();
                     errorMessages.Select(e => sb.Append(MjsonObjectToString(errorMessages)));
+                    Debug.WriteLine(sb.ToString());
                     OnErrorDetected( sb.ToString() );
                 }
 
@@ -185,7 +186,7 @@ namespace MjServer
 
 
         // mj status check functions called by GameState
-        bool CheckIsEndKyoku()
+        bool CheckIsRyukyoku()
         {
             return gameModel.CanRyukyoku();
         }

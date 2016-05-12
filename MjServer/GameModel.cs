@@ -405,9 +405,33 @@ namespace MjServer
         }
         public bool CanRyukyoku()
         {
-            return (yama != null) && (yama.GetRestYamaNum() == 0);
+            return ((yama != null) && (yama.GetRestYamaNum() == 0))
+                || IsSukaiKanRyukyoku();
         }
         
+        bool IsSukaiKanRyukyoku()
+        {
+            if (tehais.Sum( tehai => tehai.furos.Count( furo => furo.IsKantsu() ) ) < 4)
+            {
+                return false;
+            }
+            else
+            {
+                if ( tehais.Any( e => e.furos.Count(furo => furo.IsKantsu()) == 4) )
+                {
+                    // if one player has 4 kantsu, it is not ryukyoku 
+                    // because of Sukantsu
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            
+        }
+
+
         public bool CanEndGame()
         {
             return field.KyokuId == 1 && field.Bakaze.PaiString == "S";

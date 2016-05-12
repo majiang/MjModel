@@ -162,7 +162,7 @@ namespace MjServer
         public event EndKyokuHandler Endkyoku;
         public event EndGameHandler EndGame;
         public event CheckIsEndGameHandler CheckIsEndGame;
-        public event CheckIsEndKyokuHandler CheckIsEndKyoku;
+        public event CheckIsEndKyokuHandler CheckIsRyuKyoku;
 
 
         public bool OnStartKyoku()
@@ -233,9 +233,9 @@ namespace MjServer
         {
             return EndGame();
         }
-        public bool OnCheckIsEndKyoku()
+        public bool OnCheckIsRyukyoku()
         {
-            return CheckIsEndKyoku();
+            return CheckIsRyuKyoku();
         }
         public bool OnCheckIsEndGame()
         {

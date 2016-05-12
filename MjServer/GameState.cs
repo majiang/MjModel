@@ -195,7 +195,7 @@ namespace MjServer
                 return context.OnHora(nextAction.actor, nextAction.target, nextAction.pai);
             }
             // check kyokuend
-            if ( context.OnCheckIsEndKyoku() )
+            if ( context.OnCheckIsRyukyoku() )
             {
                 return context.OnRyukyoku();
             }

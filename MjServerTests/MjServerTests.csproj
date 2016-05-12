@@ -93,6 +93,7 @@
     <Content Include="E2E_TestData\PonTestData.txt" />
     <Content Include="E2E_TestData\RyukyokuTestData.txt" />
     <Content Include="E2E_TestData\StartKyokuTestData.txt" />
+    <Content Include="E2E_TestData\SukaikanRyukyokuTestData.txt" />
     <Content Include="E2E_TestData\TenhoTestData.txt" />
     <Content Include="E2E_TestData\TenhoTestData2.txt" />
   </ItemGroup>

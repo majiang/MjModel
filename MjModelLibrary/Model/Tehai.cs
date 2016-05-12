@@ -207,22 +207,7 @@ namespace MjModelLibrary
         {
             Kakan(actor,new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
-        public void KakanOnlyMakeFuro(int actor, string paiString, List<string> consumed)
-        {
-            var pai = new Pai(paiString);
-            //change pon to kakan
-            foreach (var furo in furos)
-            {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
-                {
-                    furo.ftype = MJUtil.TartsuType.MINKANTSU;
-                    furo.consumed.Add(pai);
-                    furo.consumed.Sort();
-                    break;
-                }
-            }
 
-        }
 
 
 
@@ -453,44 +438,31 @@ namespace MjModelLibrary
             this.minPaiSyu = GetMin(furopai, consumed);
         }
 
+
+        // for Unit Test
         public Furo(string typeString, string pai,List<string> consumed)
         {
-            if(MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.HEAD] == typeString)
+            if( MJUtil.TARTSU_TYPE_STRING_ENUM_MAP.ContainsKey(typeString) == false)
             {
-                ftype = MJUtil.TartsuType.HEAD;
+                Debug.WriteLine("invalid Furo Type string !");
+                Debug.Assert(false);
             }
-            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.ANKO] == typeString)
-            {
-                ftype = MJUtil.TartsuType.ANKO;
-            }
-            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.MINKO] == typeString)
-            {
-                ftype = MJUtil.TartsuType.MINKO;
-            }
-            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.ANSYUN] == typeString)
-            {
-                ftype = MJUtil.TartsuType.ANSYUN;
-            }
-            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.MINSYUN] == typeString)
-            {
-                ftype = MJUtil.TartsuType.MINSYUN;
-            }
-            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.ANKANTSU] == typeString)
-            {
-                ftype = MJUtil.TartsuType.ANKANTSU;
-            }
-            if (MJUtil.TARTSU_TYPE_STRING[(int)MJUtil.TartsuType.MINKANTSU] == typeString)
-            {
-                ftype = MJUtil.TartsuType.MINKANTSU;
-            }
+            this.ftype = MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[typeString];
             this.furopai = new Pai(pai);
             this.consumed = consumed.Select(e => new Pai(e)).ToList();
             this.minPaiSyu = GetMin(this.furopai, this.consumed);
         }
 
-        private int GetMin(Pai furopai, List<Pai> consumed){
+
+        int GetMin(Pai furopai, List<Pai> consumed){
             consumed.Sort();
             return Math.Min(furopai.PaiNumber, consumed[0].PaiNumber);
+        }
+
+        public bool IsKantsu()
+        {
+            return this.ftype == MJUtil.TartsuType.ANKANTSU
+                || this.ftype == MJUtil.TartsuType.MINKANTSU;
         }
 
     }

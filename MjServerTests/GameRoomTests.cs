@@ -55,6 +55,7 @@ namespace MjServer.Tests
             // Replase Yama and Tehai
             ReplaceYamaAndTehaiForTEst(msgList);
 
+
             // execution client to server mesages
             ExecLines(msgList);
         }
@@ -62,10 +63,13 @@ namespace MjServer.Tests
 
         void ReplaceYamaAndTehaiForTEst(List<string> msgList)
         {
+
+
             var serverToClientMessages = msgList.Where((e, index) => index % 2 == 0).ToList().Select( e => JsonConvert.DeserializeObject<MJsonMessageAll>(e) ).ToList();
             var startKyokuMessage = serverToClientMessages.First(e => e.IsSTART_KYOKU());
             room.ReplaceStartKyokuForTest(startKyokuMessage);
-            
+
+            //連続カンの際に問題あり
             var tsumopais = FilterTsumo(serverToClientMessages);
             var rinshanpais = FilterRinshan(serverToClientMessages);
 
@@ -96,7 +100,7 @@ namespace MjServer.Tests
             }
             var rinshanObj = msgobjList[rinshanIndex];
 
-            var rinshanList = RecursiveFilterRinshan(msgobjList.GetRange(0, lastKanIndex - 1));
+            var rinshanList = RecursiveFilterRinshan(msgobjList.GetRange(0, lastKanIndex));
             rinshanList.Add(rinshanObj);
             return rinshanList;
         }
@@ -139,7 +143,11 @@ namespace MjServer.Tests
         void ExecLines(List<string> msgList)
         {
             var clientToServerMessages = msgList.Where((e, index) => index % 2 == 1).ToList();
-            clientToServerMessages.ForEach(e => SendMessageToServerFromAllTestClients(e));
+            foreach(var msg in clientToServerMessages)
+            {
+                SendMessageToServerFromAllTestClients(msg);
+            }
+
 
         }
 
@@ -201,7 +209,8 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_SukaikanRyukyokuTest()
         {
-            Assert.Fail();
+            SetUp(@"../../E2E_TestData/SukaikanRyukyokuTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsRYUKYOKU()));
         }
         [TestMethod()]
         public void E2E_SanchahoRyukyokuTest()
@@ -214,6 +223,11 @@ namespace MjServer.Tests
             Assert.Fail();
         }
 
+        [TestMethod()]
+        public void E2E_GoNextKyokuTest()
+        {
+            Assert.Fail();
+        }
 
 
 
