@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MjNetworkProtocolLibrary;
+using Newtonsoft.Json;
 
 namespace MjServer
 {
@@ -46,15 +47,21 @@ namespace MjServer
             return messageList.Count == MjModelLibrary.Constants.PLAYER_NUM;
         }
         
-        public List<MJsonMessageAll> GetMessageList()
+        public string GetMessages()
         {
-            return messageList;
+            StringBuilder sb = new StringBuilder();
+            messageList.Select(e => JsonConvert.SerializeObject(e))
+                       .ToList()
+                       .ForEach(e => sb.Append(e));
+
+            return sb.ToString();
         }
 
         
         public void ChangeState(MJsonMessageStartKyoku sentMessage)
         {
             gameState = AfterStartKyokuState.GetInstance();
+            gameState.SetLastActor(sentMessage.oya);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageTsumo sentMessage)

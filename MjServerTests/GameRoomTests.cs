@@ -46,11 +46,13 @@ namespace MjServer.Tests
             // read file
             var msgList = ReadTestFile(filepath);
 
+            //start game
             room.StartGame();
-            var tempMsg = room.gameModel.StartKyoku();
-            room.gameContext.ChangeState(tempMsg);
+            room.gameModel.StartKyoku();
+
+            
             // Replase Yama and Tehai
-            ReplaceYamaAndTehaiForTEst(msgList);
+            ReplaceYamaAndTehaiForTest(msgList);
 
 
             // execution client to server mesages
@@ -58,15 +60,14 @@ namespace MjServer.Tests
         }
 
 
-        void ReplaceYamaAndTehaiForTEst(List<string> msgList)
+        void ReplaceYamaAndTehaiForTest(List<string> msgList)
         {
 
 
             var serverToClientMessages = msgList.Where((e, index) => index % 2 == 0).ToList().Select( e => JsonConvert.DeserializeObject<MJsonMessageAll>(e) ).ToList();
-            var startKyokuMessage = serverToClientMessages.First(e => e.IsSTART_KYOKU());
-            room.ReplaceStartKyokuForTest(startKyokuMessage);
-
-            //連続カンの際に問題あり
+            var startKyokuMessage =   serverToClientMessages.First(e => e.IsSTART_KYOKU());
+            var typeModifiedStartKyokuMessage = JsonConvert.DeserializeObject<MJsonMessageStartKyoku>(JsonConvert.SerializeObject(startKyokuMessage));
+            room.ReplaceKyokuInfoForTest(typeModifiedStartKyokuMessage);
             var tsumopais = FilterTsumo(serverToClientMessages);
             var rinshanpais = FilterRinshan(serverToClientMessages);
 
@@ -223,7 +224,11 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_EndGameTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/EndGameTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsRYUKYOKU()));
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsEND_KYOKU()));
+            Assert.IsTrue(clients[0].ReceivedMessageList.Any(e => e.IsEND_GAME()));
+
         }
 
         [TestMethod()]
@@ -246,6 +251,12 @@ namespace MjServer.Tests
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
 
+
+        }
+        // Accidental Hands Test
+        [TestMethod()]
+        public void E2E_TenhouTest2()
+        {
             TestInputLines(@"../../E2E_TestData/TenhoTestData2.txt");
             var horaMessage2 = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
@@ -276,8 +287,12 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_IppatsuTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/ReachIppatsuTestData.txt");
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.IPPATSU]));
         }
+
         [TestMethod()]
         public void E2E_DoubleReachTest()
         {

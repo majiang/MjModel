@@ -16,8 +16,7 @@ namespace MjServer
             
             while (true)
             {
-
-                //continue wait call async function
+                //wait client
                 Thread.Sleep(10000);
             }
         }

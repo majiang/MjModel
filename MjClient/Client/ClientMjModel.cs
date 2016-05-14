@@ -45,7 +45,7 @@ namespace MjClient
 
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
-            field = new Field(kyoku, honba, kyotaku, bakaze);
+            field = new Field(kyoku, honba, kyotaku, oya, bakaze);
             currentActor = 0;
             infoForResults = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, bakaze), new InfoForResult(field.KyokuId, 1, bakaze), new InfoForResult(field.KyokuId, 2, bakaze), new InfoForResult(field.KyokuId, 3, bakaze) };
 

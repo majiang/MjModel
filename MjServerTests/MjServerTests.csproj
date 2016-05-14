@@ -90,8 +90,10 @@
     <Content Include="E2E_TestData\ChihoTestData.txt" />
     <Content Include="E2E_TestData\ChiTestData.txt" />
     <Content Include="E2E_TestData\DaiminkanTestData.txt" />
+    <Content Include="E2E_TestData\EndGameTestData.txt" />
     <Content Include="E2E_TestData\KakanTestData.txt" />
     <Content Include="E2E_TestData\PonTestData.txt" />
+    <Content Include="E2E_TestData\ReachIppatsuTestData.txt" />
     <Content Include="E2E_TestData\RyukyokuTestData.txt" />
     <Content Include="E2E_TestData\StartKyokuTestData.txt" />
     <Content Include="E2E_TestData\SukaikanRyukyokuTestData.txt" />

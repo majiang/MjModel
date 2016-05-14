@@ -113,7 +113,7 @@ namespace MjModelLibrary.Tests
                         ifr.RegisterUraDoraMarker(obj.uradora_markers);
 
 
-                        var fd = new Field(obj.kyoku, 0, 0, obj.bakaze);
+                        var fd = new Field(obj.kyoku, 0, 0, 0,obj.bakaze);
                         var tehai = new Tehai(obj.hora_tehais);
 
                         foreach (var furo in obj.hora_furos)

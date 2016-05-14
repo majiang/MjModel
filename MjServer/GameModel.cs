@@ -14,13 +14,13 @@ namespace MjServer
 
     public class GameModel
     {
+
+        public Yama yama;
+        public List<Kawa> kawas;
+        public List<Tehai> tehais;
+        public Field field;
         
-        public Yama yama { get; set; }
-        public List<Kawa> kawas { get; set; }
-        public List<Tehai> tehais { get; set; }
-        public Field field { get; set; }
-        
-        public int currentActor;
+        public int CurrentActor { get; private set; }
         public List<InfoForResult> infoForResultList { get; set; }
 
         public List<int> points { get; set; }
@@ -33,7 +33,7 @@ namespace MjServer
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-            currentActor = 0;
+            CurrentActor = 0;
             infoForResultList = new List<InfoForResult>() {new InfoForResult(field.KyokuId,0), new InfoForResult(field.KyokuId,1), new InfoForResult(field.KyokuId,2), new InfoForResult(field.KyokuId,3) };
             points = new List<int> { 25000, 25000, 25000, 25000 };
         }
@@ -80,11 +80,11 @@ namespace MjServer
 
         public void IncrementActor()
         {
-            currentActor = CalcNextActor(currentActor);
+            CurrentActor = CalcNextActor(CurrentActor);
         }
         public void SetCurrentActor(int i)
         {
-            currentActor = i;
+            CurrentActor = i;
         }
 
 
@@ -92,11 +92,11 @@ namespace MjServer
         public MJsonMessageTsumo Tsumo()
         {
             var tsumoPai = yama.DoTsumo();
-            tehais[currentActor].Tsumo(tsumoPai);
-            infoForResultList[currentActor].SetLastAddedPai(tsumoPai);
+            tehais[CurrentActor].Tsumo(tsumoPai);
+            infoForResultList[CurrentActor].SetLastAddedPai(tsumoPai);
 
             return new MJsonMessageTsumo(
-                currentActor,
+                CurrentActor,
                 tsumoPai.PaiString
                 );
         }
@@ -104,13 +104,13 @@ namespace MjServer
         public MJsonMessageTsumo Rinshan()
         {
             var tsumoPai = yama.DoRinshan();
-            tehais[currentActor].Tsumo(tsumoPai);
-            infoForResultList[currentActor].SetLastAddedPai(tsumoPai);
+            tehais[CurrentActor].Tsumo(tsumoPai);
+            infoForResultList[CurrentActor].SetLastAddedPai(tsumoPai);
 
-            EnableRinshanFlag(currentActor);
+            EnableRinshanFlag(CurrentActor);
 
             return new MJsonMessageTsumo(
-                currentActor,
+                CurrentActor,
                 tsumoPai.PaiString
                 );
         }
@@ -181,7 +181,7 @@ namespace MjServer
 
         public MJsonMessageReachAccept ReachAccept()
         {
-            var reachedActor = ((currentActor - 1) + 4) % 4;
+            var reachedActor = ((CurrentActor - 1) + 4) % 4;
             var deltas = new List<int> { 0, 0, 0, 0 };
             deltas[reachedActor] = -Constants.REACH_POINT;
             points = AddPoints(points, deltas);
@@ -443,6 +443,11 @@ namespace MjServer
 
 
         public bool CanEndGame()
+        {
+            return IsTonpuEnd();
+        }
+
+        bool IsTonpuEnd()
         {
             return field.KyokuId == 1 && field.Bakaze.PaiString == "S";
         }

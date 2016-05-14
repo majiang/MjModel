@@ -48,6 +48,7 @@ namespace MjServer
         public GameModel gameModel = new GameModel();
         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         public GameContext gameContext = new GameContext();
+        MjLogger logger = new MjLogger();
 
         public GameRoom(Dictionary<ClientHolderInterface, string> inputClients)
         {
@@ -96,10 +97,17 @@ namespace MjServer
                 SendMessageToOneClient(gameStartMessage, client.index);
             }
         }
-        public void ReplaceStartKyokuForTest(MJsonMessageAll msg)
+        public void ReplaceKyokuInfoForTest(MJsonMessageStartKyoku msg)
         {
             var haipais = msg.tehais;
+
+            var field = new Field(msg.kyoku, msg.honba, msg.kyotaku, msg.oya, msg.bakaze);
+            gameModel.field = field;
+
             gameModel.tehais = haipais.Select(e => new Tehai(e)).ToList();
+            gameContext.ChangeState(msg);
+            gameModel.SetCurrentActor(msg.oya);
+
         }
         public void ReplaceYamaForTest(List<string> tsumopais,List<string> rinshanpais)
         {
@@ -133,7 +141,10 @@ namespace MjServer
                 // validate message
                 if ( gameContext.ValidateMessage(messageObj) == false)
                 {
-                    OnErrorDetected(message);
+                    var errorMessages = gameContext.GetMessages();
+                    OnErrorDetected(errorMessages);
+                    logger.Log(" invalidate MessageType! : " + errorMessages);
+                    Debug.Assert(false);
                     return;
                 }
 
@@ -149,11 +160,11 @@ namespace MjServer
 
                 if ( isSuccesseded == false)
                 {
-                    var errorMessages = gameContext.GetMessageList();
-                    StringBuilder sb = new StringBuilder();
-                    errorMessages.Select(e => sb.Append(MjsonObjectToString(errorMessages)));
-                    Debug.WriteLine(sb.ToString());
-                    OnErrorDetected( sb.ToString() );
+                    var errorMessages = gameContext.GetMessages();
+                    OnErrorDetected(errorMessages);
+                    logger.Log(" failed execute message !: " + errorMessages);
+                    Debug.Assert(false);
+                    return;
                 }
 
             }
@@ -172,7 +183,7 @@ namespace MjServer
         void OnErrorDetected(string jsonEerrorMessage)
         {
             // log errorMessage
-            Debug.WriteLine(jsonEerrorMessage);
+            logger.Log(jsonEerrorMessage);
             // send error to client
             clients.ForEach(e => e.SendMessageToClient(jsonEerrorMessage));
 
@@ -396,6 +407,10 @@ namespace MjServer
         // hide tsumopai and haipai in messages by follow functions
         public void SendMJsonObject(MJsonMessageStartKyoku jsonmsg)
         {
+            // logging
+            logger.Log(MjsonObjectToString(jsonmsg));
+
+
             var opentehais = jsonmsg.tehais;
             var hidetehais = new List<List<string>>() {
                 Tehai.UNKNOWN_TEHAI_STRING ,
@@ -411,9 +426,14 @@ namespace MjServer
                 sendMessage.tehais[i] = opentehais[i];
                 clients[i].SendMessageToClient(MjsonObjectToString(sendMessage));
             }
+
         }
         public void SendMJsonObject(MJsonMessageTsumo jsonmsg)
         {
+            // logging
+            logger.Log(MjsonObjectToString(jsonmsg));
+
+
             for (int i = 0; i < clients.Count; i++)
             {
                 var sendMsssage = jsonmsg;
@@ -426,6 +446,10 @@ namespace MjServer
         }
         public void SendMJsonObject(object jsonmsg)
         {
+            // logging
+            logger.Log(MjsonObjectToString(jsonmsg));
+
+
             clients.ForEach(e => e.SendMessageToClient(MjsonObjectToString(jsonmsg)));
         }
 
@@ -433,6 +457,8 @@ namespace MjServer
         {
             return JsonConvert.SerializeObject(obj);
         }
+
+
 
     }
 

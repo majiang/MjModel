@@ -29,42 +29,52 @@ namespace MjModelLibrary
             Bakaze = bakazeTemplate[0];
         }
 
-        public Field(int kyokuid, int honba, int kyotaku, string bakaze)
+        public Field(int kyokuid, int honba, int kyotaku, int oyaPlayerId, string bakaze)
         {
 
             KyokuId = kyokuid;
             Honba = honba;
             Kyotaku = kyotaku;
-            OyaPlayerId = getOyaPlayerID(kyokuid);
+            OyaPlayerId = oyaPlayerId;
             Bakaze = new Pai(bakaze);
         }
 
 
-        private static int getOyaPlayerID(int kyokuId)
+        static int getOyaPlayerID(int kyokuId)
         {
             return (kyokuId-1) % 4;
         }
 
-        public static Field ChangeOnHora(Field fld, int horaActor)
+        static int getNextOyaPlayerId(int beforeOyaPlayerId)
         {
-
-            var nextKyokuId = horaActor == fld.OyaPlayerId ? fld.KyokuId : (4 + fld.OyaPlayerId + 1) % 4 + 1;
-            var nextHonba = horaActor == fld.OyaPlayerId ? fld.Honba++ : 0;
-            var nextkyotaku = 0;
-            var nextBakaze = nextKyokuId == 1 && fld.KyokuId == 4 ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
-
-            return new Field(nextKyokuId, nextHonba, nextkyotaku, nextBakaze.PaiString);
+            return (beforeOyaPlayerId + 1) % 4;
         }
 
 
+        static readonly int SAME_WIND_KYOKU_NUM = 4;
+        public static Field ChangeOnHora(Field fld, int horaActor)
+        {
+            var IsOyaChange = horaActor != fld.OyaPlayerId;
+            var nextKyokuId = IsOyaChange ? fld.KyokuId % SAME_WIND_KYOKU_NUM + 1 : fld.KyokuId;
+            var nextHonba = IsOyaChange ? 0 : fld.Honba++;
+            var nextkyotaku = 0;
+            var nextOyaPlayerId = IsOyaChange ? getNextOyaPlayerId(fld.OyaPlayerId) : fld.OyaPlayerId;
+            var nextBakaze = (nextKyokuId == 1 && IsOyaChange) ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
+
+            return new Field(nextKyokuId, nextHonba, nextkyotaku, nextOyaPlayerId, nextBakaze.PaiString);
+        }
+        
         public static Field ChangeOnRyukyoku(Field fld, List<bool> tenpais)
         {
-            var nextKyokuId = tenpais[fld.OyaPlayerId] ? fld.KyokuId : (4 + fld.OyaPlayerId + 1)%4 + 1;
+
+            var IsOyaChange = tenpais[fld.OyaPlayerId] == false ;
+            var nextKyokuId = IsOyaChange ? fld.KyokuId % SAME_WIND_KYOKU_NUM + 1: fld.KyokuId;
             var nextHonba = fld.Honba++;
             var nextkyotaku = fld.Kyotaku;
-            var nextBakaze = nextKyokuId == 1 && fld.KyokuId == 4 ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
+            var nextOyaPlayerId = IsOyaChange ? getNextOyaPlayerId(fld.OyaPlayerId) : fld.OyaPlayerId;
+            var nextBakaze = (nextKyokuId == 1 && IsOyaChange) ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
 
-            return new Field(nextKyokuId, nextHonba, nextkyotaku, nextBakaze.PaiString);
+            return new Field(nextKyokuId, nextHonba, nextkyotaku, nextOyaPlayerId,  nextBakaze.PaiString);
         }
 
         public void AddKyotaku()
