@@ -28,6 +28,8 @@
 {"type": "kakan", "actor": 0,  "pai": "1m" , "consumed":["1m","1m","1m"]}
 {"type": "kakan", "actor": 0,  "pai": "1m" , "consumed":["1m","1m","1m"]}
 {"type":"none"}
+{"type": "dora", "dora_marker": "9m"}
+{"type":"none"}
 {"type": "tsumo", "actor": 0, "pai": "S" }
 {"type": "dahai", "actor": 0, "pai": "S", "tsumogiri": true}
 {"type": "dahai", "actor": 0, "pai": "S", "tsumogiri": true}

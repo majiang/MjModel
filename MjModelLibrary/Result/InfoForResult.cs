@@ -22,8 +22,8 @@ namespace MjModelLibrary
         public bool IsDoubleReach;
         public bool IsOya;
         public int UseYamaPaiNum;
-        public bool IsFured;//for player 
-        public bool IsFuredOnField;
+        public bool IsFured;// if player furoed, it will be true 
+        public bool IsFuredOnField;// if all player or other player furoed, it will be true; 
         private int gameId;
         private List<int> doraMarkerList = new List<int>();
         private List<int> uradoraMarkerList = new List<int>();

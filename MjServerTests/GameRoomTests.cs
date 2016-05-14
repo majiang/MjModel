@@ -285,33 +285,64 @@ namespace MjServer.Tests
         }
 
         [TestMethod()]
-        public void E2E_IppatsuTest()
+        public void E2E_ReachIppatsuTest()
         {
             TestInputLines(@"../../E2E_TestData/ReachIppatsuTestData.txt");
             var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
 
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.IPPATSU]));
+
+        }
+        [TestMethod()]
+        public void E2E_ReachIppatsuTest2()
+        {
+            TestInputLines(@"../../E2E_TestData/ReachIppatsuTestData2.txt");
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+
+            Assert.IsFalse(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.IPPATSU]));
+
         }
 
         [TestMethod()]
         public void E2E_DoubleReachTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/DoubleReachTestData.txt");
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DOUBLEREACH]));
+            Assert.IsFalse(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.REACH]));
         }
+        [TestMethod()]
+        public void E2E_DoubleReachTest2()
+        {
+            TestInputLines(@"../../E2E_TestData/DoubleReachTestData2.txt");
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+            Assert.IsFalse(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.DOUBLEREACH]));
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.REACH]));
+        }
+
+        [TestMethod()]
         public void E2E_RinshanTest()
         {
             Assert.Fail();
 
         }
 
+        [TestMethod()]
         public void E2E_UradoraTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/UradoraTestData.txt");
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+
+            Assert.IsTrue(horaMessage.uradora_markers.Count > 0);
         }
+
+        [TestMethod()]
         public void E2E_HaiteiTest()
         {
             Assert.Fail();
         }
+
+        [TestMethod()]
         public void E2E_HouteiTest()
         {
             Assert.Fail();

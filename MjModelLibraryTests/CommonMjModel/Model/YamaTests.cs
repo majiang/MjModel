@@ -19,9 +19,9 @@ namespace MjModelLibrary.Tests
             Yama testYama = new Yama();
 
             Assert.AreEqual(testYama.GetRestYamaNum(), FIRST_YAMA_LENGTH);
-            foreach (var omote in testYama.GetDoraMarkers())
+            foreach (var omote in testYama.GetDoraMarkerStrings())
             {
-                Debug.WriteLine("Dora = " + omote.PaiString);
+                Debug.WriteLine("Dora = " + omote);
             }
 
 

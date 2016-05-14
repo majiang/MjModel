@@ -40,5 +40,17 @@ namespace MjServer.Properties {
                 return ((string)(this["ipAddress"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int KyokuNum {
+            get {
+                return ((int)(this["KyokuNum"]));
+            }
+            set {
+                this["KyokuNum"] = value;
+            }
+        }
     }
 }

@@ -45,13 +45,16 @@ namespace MjServer
 
         public List<ClientHolderInterface> clients = new List<ClientHolderInterface>();
         List<string> clientNames = new List<string>();
-        public GameModel gameModel = new GameModel();
+        MjLogger logger = new MjLogger();
+        public GameModel gameModel;
         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         public GameContext gameContext = new GameContext();
-        MjLogger logger = new MjLogger();
+
 
         public GameRoom(Dictionary<ClientHolderInterface, string> inputClients)
         {
+            gameModel = new GameModel(logger);
+
             foreach(var client in inputClients)
             {
                 client.Key.GetMessageFromClientHandler += OnGetMessageFromClient;

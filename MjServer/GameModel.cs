@@ -24,8 +24,11 @@ namespace MjServer
         public List<InfoForResult> infoForResultList { get; set; }
 
         public List<int> points { get; set; }
-
-        public GameModel(){}
+        MjLogger logger;
+        public GameModel(MjLogger logger)
+        {
+            this.logger = logger;
+        }
 
         private void Init()
         {
@@ -60,7 +63,7 @@ namespace MjServer
                         field.Honba,
                         field.Kyotaku,
                         field.OyaPlayerId,
-                        yama.GetDoraMarkers()[0].PaiString,
+                        yama.GetDoraMarkerStrings()[0],
                         new List<List<string>> { 
                             tehais[0].GetTehaiStringList(),
                             tehais[1].GetTehaiStringList(),
@@ -108,6 +111,7 @@ namespace MjServer
             infoForResultList[CurrentActor].SetLastAddedPai(tsumoPai);
 
             EnableRinshanFlag(CurrentActor);
+            DisableAllOlayersIppatsuFlag();
 
             return new MJsonMessageTsumo(
                 CurrentActor,
@@ -124,6 +128,7 @@ namespace MjServer
 
             DisableMyIppatsuRinshanFlags(actor);
             DisableOtherPlayersChankanFlags(actor);
+            DisableMyIppatsuFlag(actor);
 
             IncrementActor();
 
@@ -134,7 +139,11 @@ namespace MjServer
         {
             kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Pon(actor, target, pai, consumed);
+
+            DisableAllOlayersIppatsuFlag();
+
             SetCurrentActor(actor);
+        
             return new MJsonMessagePon(actor, target, pai, consumed);
         }
 
@@ -142,14 +151,21 @@ namespace MjServer
         {
             kawas[target].discards[kawas[target].discards.Count - 1].isFuroTargeted = true;
             tehais[actor].Chi(actor, target, pai, consumed);
+
+            DisableAllOlayersIppatsuFlag();
+
             SetCurrentActor(actor);
+
             return new MJsonMessageChi(actor, target, pai, consumed);
         }
 
         public MJsonMessageKakan Kakan(int actor, string pai, List<string> consumed)
         {
             tehais[actor].Kakan( actor, pai, consumed);
+
+            EnableOtherPlayersChankanFlags(actor);
             SetCurrentActor(actor);
+
             return new MJsonMessageKakan(actor, pai, consumed);
         }
 
@@ -157,6 +173,7 @@ namespace MjServer
         {
             tehais[actor].Ankan(actor, consumed);
             SetCurrentActor(actor);
+
             return new MJsonMessageAnkan(actor, consumed);
         }
 
@@ -176,8 +193,11 @@ namespace MjServer
 
         public MJsonMessageReach Reach(int actor)
         {
+            
             return new MJsonMessageReach(actor);
         }
+
+
 
         public MJsonMessageReachAccept ReachAccept()
         {
@@ -185,15 +205,15 @@ namespace MjServer
             var deltas = new List<int> { 0, 0, 0, 0 };
             deltas[reachedActor] = -Constants.REACH_POINT;
             points = AddPoints(points, deltas);
+            field.AddKyotaku();
 
-            SetReach(reachedActor);
-
+            SetReachFlag(reachedActor);
+            EnableIppatsuFlag(reachedActor);            
             return new MJsonMessageReachAccept(reachedActor, deltas, points);
         }
 
 
-        
-        
+
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
 
@@ -326,7 +346,7 @@ namespace MjServer
         }
         HoraResult PreCalcHoraResult(int actor, int target, string pai)
         {
-            var uradoraMarkers = yama.GetUradoraMarker();
+            var uradoraMarkers = yama.GetUradoraMarkerStrings();
             var ifr = infoForResultList[actor];
             ifr.UseYamaPaiNum =
                 yama.GetTsumoedYamaNum();
@@ -441,17 +461,36 @@ namespace MjServer
             
         }
 
+        static readonly int TONPU_KYOKU_NUM = 4;
+        static readonly int TONNAN_KYOKU_NUM = 8;
+
 
         public bool CanEndGame()
         {
-            return IsTonpuEnd();
+            if (Properties.Settings.Default.KyokuNum == TONPU_KYOKU_NUM)
+            {
+                return IsTonpuEnd();
+            }
+            else if(Properties.Settings.Default.KyokuNum == TONNAN_KYOKU_NUM)
+            {
+                return IsTonnanEnd();
+            }
+            else
+            {
+                logger.Log("invalid kyoku number is set in Settings.settings.");
+                Debug.Assert(false);
+                return true;
+            }
         }
 
         bool IsTonpuEnd()
         {
             return field.KyokuId == 1 && field.Bakaze.PaiString == "S";
         }
-
+        bool IsTonnanEnd()
+        {
+            return field.KyokuId == 1 && field.Bakaze.PaiString == "W";
+        }
 
         // model change functions 
         private readonly int DELTA_POINT_BASE = 3000;
@@ -481,9 +520,9 @@ namespace MjServer
         }
         
 
-        public void SetReach(int actor)
+        public void SetReachFlag(int actor)
         {
-            if (yama.GetTsumoedYamaNum() < 4 && infoForResultList.Count(e => e.IsFuredOnField) == 0)
+            if (yama.GetTsumoedYamaNum() <= Constants.PLAYER_NUM  && infoForResultList[actor].IsFuredOnField == false)
             {
                 infoForResultList[actor].IsDoubleReach = true;
             }
@@ -491,8 +530,9 @@ namespace MjServer
             {
                 infoForResultList[actor].IsReach = true;
             }
-            field.AddKyotaku();
+
         }
+
 
 
 
@@ -506,23 +546,42 @@ namespace MjServer
             return sutehai == kawas[target].discards.Last().PaiString;
         }
 
-        void DisableMyIppatsuRinshanFlags(int actor)
-        {
-            infoForResultList[actor].IsIppatsu = false;
-            infoForResultList[actor].IsRinshan = false;
-        }
 
+        void EnableOtherPlayersChankanFlags(int actor)
+        {
+            infoForResultList.Where(e => infoForResultList.IndexOf(e) != actor)
+                             .ToList()
+                             .ForEach(e => e.IsChankan = true);
+        }
         void DisableOtherPlayersChankanFlags(int actor)
         {
             infoForResultList.Where(e => infoForResultList.IndexOf(e) != actor)
                              .ToList()
                              .ForEach(e => e.IsChankan = false);
         }
+
         void EnableRinshanFlag(int actor)
         {
             infoForResultList[actor].IsRinshan = true;
         }
+        void DisableMyIppatsuRinshanFlags(int actor)
+        {
+            infoForResultList[actor].IsIppatsu = false;
+            infoForResultList[actor].IsRinshan = false;
+        }
 
+        void EnableIppatsuFlag(int actor)
+        {
+            infoForResultList[actor].IsIppatsu = true;
+        }
+        void DisableMyIppatsuFlag(int actor)
+        {
+            infoForResultList[actor].IsIppatsu = false;
+        }
+        void DisableAllOlayersIppatsuFlag()
+        {
+            infoForResultList.ForEach(e => e.IsIppatsu = false);
+        }
 
     }
 }

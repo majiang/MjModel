@@ -15,7 +15,7 @@ namespace MjModelLibrary
         const int DORA_START_POS = YAMA_LENGTH - WANPAI_LENGTH + 4;
         const int WANPAI_START_POS = YAMA_LENGTH - WANPAI_LENGTH;
 
-        private int HAIPAI_LENGTH = 13;
+        private int ONEPLAYER_HAIPAI_LENGTH = 13;
 
         List<Pai> doraMarkers;
 
@@ -87,10 +87,7 @@ namespace MjModelLibrary
             return mYama[yamaPointer++];
         }
 
-        public List<Pai> GetDoraMarkers()
-        {
-            return doraMarkers;
-        }
+
 
         public int GetRestYamaNum()
         {
@@ -99,7 +96,7 @@ namespace MjModelLibrary
 
         public int GetTsumoedYamaNum()
         {
-            return yamaPointer + rinshanPointer - HAIPAI_LENGTH * 4;
+            return yamaPointer + rinshanPointer - ONEPLAYER_HAIPAI_LENGTH * 4;
         }
 
         public bool CanKan()
@@ -124,7 +121,7 @@ namespace MjModelLibrary
         {
             var haipais = new List<List<Pai>>() { new List<Pai>(), new List<Pai>(), new List<Pai>(), new List<Pai>(), };
 
-            for (int i = 0; i < HAIPAI_LENGTH; i++)
+            for (int i = 0; i < ONEPLAYER_HAIPAI_LENGTH; i++)
             {
                 haipais[0].Add(DoTsumo());
                 haipais[1].Add(DoTsumo());
@@ -135,13 +132,18 @@ namespace MjModelLibrary
             return haipais;
         }
 
-        public List<string> GetUradoraMarker()
+        public List<string> GetDoraMarkerStrings()
+        {
+            return doraMarkers.Select(e=>e.PaiString).ToList();
+        }
+
+        public List<string> GetUradoraMarkerStrings()
         {
             var uradoraMarkers = new List<string>();
 
             for (int i = 0; i < doraPointer; i++)
             {
-                uradoraMarkers.Add(mYama[DORA_START_POS + doraPointer + i].ToString());
+                uradoraMarkers.Add( (mYama[DORA_START_POS + doraPointer + i]).PaiString);
             }
 
             return uradoraMarkers;

@@ -13,7 +13,8 @@ namespace MjServer.Tests
 
         private void SetUp()
         {
-            model = new GameModel();
+            MjLogger testLogger = new MjLogger();
+            model = new GameModel(testLogger);
             model.StartGame();
             model.StartKyoku();
         }
@@ -228,11 +229,11 @@ namespace MjServer.Tests
         {
             SetUp();
             var doraNum = 1;
-            Assert.AreEqual(doraNum, model.yama.GetDoraMarkers().Count);
-            Assert.AreEqual(doraNum, model.yama.GetUradoraMarker().Count);
+            Assert.AreEqual(doraNum, model.yama.GetDoraMarkerStrings().Count);
+            Assert.AreEqual(doraNum, model.yama.GetUradoraMarkerStrings().Count);
             model.OpenDora();
-            Assert.AreEqual(doraNum + 1, model.yama.GetDoraMarkers().Count);
-            Assert.AreEqual(doraNum + 1, model.yama.GetUradoraMarker().Count);
+            Assert.AreEqual(doraNum + 1, model.yama.GetDoraMarkerStrings().Count);
+            Assert.AreEqual(doraNum + 1, model.yama.GetUradoraMarkerStrings().Count);
             
         }
 
