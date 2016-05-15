@@ -47,21 +47,55 @@ namespace MjServer.Tests
             var msgList = ReadTestFile(filepath);
 
 
-            //start game
+            // start game
             room.StartGame();
-            room.gameModel.StartKyoku();
 
-            
-            // Replase Yama and Tehai
-            ReplaceYamaAndTehaiForTest(msgList);
+            // test each kyoku
+            var splitedEachKyokuMsgList = SplitEachKyoku(msgList);
 
+            foreach (var kyokuMsg in splitedEachKyokuMsgList)
+            {
 
-            // execution client to server mesages
-            ExecLines(msgList);
+                // start kyoku
+                room.gameModel.StartKyoku();
 
+                // Replase Yama and Tehai
+                ReplaceYamaAndTehaiForTest(kyokuMsg);
+
+                // execution client to server mesages
+                ExecLines(kyokuMsg);
+            }
 
         }
+        List<List<string>> SplitEachKyoku(List<string> msgList)
+        {
+            var endKyokuResponseMessageIndexs = msgList.Select(e => JsonConvert.DeserializeObject<MJsonMessageAll>(e))
+                                                .Select((item, index) => new { Index = index, Value = item })
+                                                .Where(e => e.Value.IsEND_KYOKU())
+                                                .Select(e => e.Index + 1);
+                                                
 
+            var startIndex = 0;
+            var splitedMsgList = new List<List<string>>();
+
+            foreach(var endKyokuIndex in endKyokuResponseMessageIndexs)
+            {
+                splitedMsgList.Add( msgList.GetRange( startIndex, endKyokuIndex - startIndex + 1) );// + 1 is need for include endKyokuRespounceMessage.
+                startIndex = GetNextStartKyokuIndex(endKyokuIndex);
+
+                if( startIndex >= msgList.Count)
+                {
+                    break;
+                }
+            }
+
+            return splitedMsgList;
+        }
+
+        int GetNextStartKyokuIndex(int endKyokuIndex)
+        {
+            return endKyokuIndex + 1;
+        }
 
         void ReplaceYamaAndTehaiForTest(List<string> msgList)
         {
@@ -242,10 +276,8 @@ namespace MjServer.Tests
             Assert.IsTrue(clients[0].ReceivedMessageList.Count(e => e.IsEND_KYOKU()) == 2);
         }
 
-
-
+        
         int yakuNamepos = 0;
-        // Accidental Hands Test
         [TestMethod()]
         public void E2E_TenhouTest()
         {
@@ -256,9 +288,7 @@ namespace MjServer.Tests
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.CHURENPOTO]));
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.TENHO]));
 
-
         }
-        // Accidental Hands Test
         [TestMethod()]
         public void E2E_TenhouTest2()
         {
@@ -346,13 +376,17 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_HaiteiTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/HaiteiTestData.txt");
+            var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.HAITEI]));
         }
 
         [TestMethod()]
         public void E2E_HouteiTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/HouteiTestData.txt");
+            var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.HOUTEI]));
         }
     }
 } 
