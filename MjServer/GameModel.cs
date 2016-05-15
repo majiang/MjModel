@@ -78,7 +78,7 @@ namespace MjServer
 
         public int CalcNextActor(int currentActor)
         {
-            return (currentActor + 1) % 4;
+            return (currentActor + 1) % Constants.PLAYER_NUM;
         }
 
         public void IncrementActor()
@@ -201,7 +201,7 @@ namespace MjServer
 
         public MJsonMessageReachAccept ReachAccept()
         {
-            var reachedActor = ((CurrentActor - 1) + 4) % 4;
+            var reachedActor = ((CurrentActor - 1) + Constants.PLAYER_NUM) % Constants.PLAYER_NUM;
             var deltas = new List<int> { 0, 0, 0, 0 };
             deltas[reachedActor] = -Constants.REACH_POINT;
             points = AddPoints(points, deltas);
@@ -313,6 +313,8 @@ namespace MjServer
             return tehais[actor].CanChi(pai,consumed);
 
         }
+
+
         public bool CanPon(int actor, int  target, string pai, List< string > consumed)
         {
             if ((target != actor) == false)

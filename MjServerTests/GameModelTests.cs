@@ -23,7 +23,7 @@ namespace MjServer.Tests
         public void Unit_StartKyokuTest()
         {
             SetUp();
-            Assert.AreEqual(MJUtil.LENGTH_ID - MJUtil.LENGTH_HAIPAI*4  - MJUtil.LENGTH_WANPAI, model.yama.GetRestYamaNum());
+            Assert.AreEqual(MJUtil.LENGTH_ALLPAI - MJUtil.LENGTH_HAIPAI* Constants.PLAYER_NUM - MJUtil.LENGTH_WANPAI, model.yama.GetRestYamaNum());
 
         }
 
@@ -31,7 +31,7 @@ namespace MjServer.Tests
         public void Unit_TsumoTest()
         {
             SetUp();
-            var restpainum = MJUtil.LENGTH_ID - MJUtil.LENGTH_HAIPAI * 4 - MJUtil.LENGTH_WANPAI;
+            var restpainum = MJUtil.LENGTH_ALLPAI - MJUtil.LENGTH_HAIPAI * Constants.PLAYER_NUM - MJUtil.LENGTH_WANPAI;
             Assert.AreEqual(restpainum, model.yama.GetRestYamaNum());
             Assert.AreEqual(MJUtil.LENGTH_HAIPAI, model.tehais[model.CurrentActor].tehai.Count);
 
@@ -45,7 +45,7 @@ namespace MjServer.Tests
         public void Unit_RinshanTest()
         {
             SetUp();
-            var restpainum = MJUtil.LENGTH_ID - MJUtil.LENGTH_HAIPAI * 4 - MJUtil.LENGTH_WANPAI;
+            var restpainum = MJUtil.LENGTH_ALLPAI - MJUtil.LENGTH_HAIPAI * Constants.PLAYER_NUM - MJUtil.LENGTH_WANPAI;
             Assert.AreEqual(restpainum, model.yama.GetRestYamaNum());
             Assert.AreEqual(MJUtil.LENGTH_HAIPAI, model.tehais[model.CurrentActor].tehai.Count);
             model.Rinshan();

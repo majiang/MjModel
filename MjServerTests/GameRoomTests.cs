@@ -46,6 +46,7 @@ namespace MjServer.Tests
             // read file
             var msgList = ReadTestFile(filepath);
 
+
             //start game
             room.StartGame();
             room.gameModel.StartKyoku();
@@ -57,6 +58,8 @@ namespace MjServer.Tests
 
             // execution client to server mesages
             ExecLines(msgList);
+
+
         }
 
 
@@ -234,7 +237,9 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_GoNextKyokuTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/GoNextKyokuTestData.txt");
+            Assert.IsTrue(clients[0].ReceivedMessageList.Count(e => e.IsRYUKYOKU()) == 2);
+            Assert.IsTrue(clients[0].ReceivedMessageList.Count(e => e.IsEND_KYOKU()) == 2);
         }
 
 
@@ -323,7 +328,9 @@ namespace MjServer.Tests
         [TestMethod()]
         public void E2E_RinshanTest()
         {
-            Assert.Fail();
+            TestInputLines(@"../../E2E_TestData/RinshanTestData.txt");
+            var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+            Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.RINSHAN]));
 
         }
 

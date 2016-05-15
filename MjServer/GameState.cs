@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MjNetworkProtocolLibrary;
 using System.Diagnostics;
+using MjModelLibrary;
 
 namespace MjServer
 {
@@ -29,7 +30,7 @@ namespace MjServer
             if (msgList.Exists(e => e.IsHORA()))
             {
                 return msgList.Where(e => e.IsHORA())
-                              .OrderBy(e => (e.actor > e.target ? e.actor - 4 : e.actor))// nearest player hora is selected 
+                              .OrderBy(e => (e.actor > e.target ? e.actor - Constants.PLAYER_NUM : e.actor))// nearest player hora is selected 
                               .First();
             }
             else if (msgList.Exists(e => e.IsDAIMINKAN()))

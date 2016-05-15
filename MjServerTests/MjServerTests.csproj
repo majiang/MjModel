@@ -93,10 +93,12 @@
     <Content Include="E2E_TestData\DoubleReachTestData.txt" />
     <Content Include="E2E_TestData\DoubleReachTestData2.txt" />
     <Content Include="E2E_TestData\EndGameTestData.txt" />
+    <Content Include="E2E_TestData\GoNextKyokuTestData.txt" />
     <Content Include="E2E_TestData\KakanTestData.txt" />
     <Content Include="E2E_TestData\PonTestData.txt" />
     <Content Include="E2E_TestData\ReachIppatsuTestData.txt" />
     <Content Include="E2E_TestData\ReachIppatsuTestData2.txt" />
+    <Content Include="E2E_TestData\RinshanTestData.txt" />
     <Content Include="E2E_TestData\RyukyokuTestData.txt" />
     <Content Include="E2E_TestData\StartKyokuTestData.txt" />
     <Content Include="E2E_TestData\SukaikanRyukyokuTestData.txt" />

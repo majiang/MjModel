@@ -26,7 +26,7 @@ namespace MjModelLibrary
         public static readonly int HORAMENTSU_TYPE = 0;
         public static readonly int HORAMENTSU_SYU = 1;
 
-        public static readonly int LENGTH_ID = 34 * 4;
+        public static readonly int LENGTH_ALLPAI = 34 * 4;
         public static readonly int LENGTH_SYU_ALL = 34;
         public static readonly int LENGTH_SYU_NUMBERS = 9;
 

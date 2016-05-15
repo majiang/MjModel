@@ -177,7 +177,7 @@ namespace MjClient
 
         public void SetReach(int actor)
         {
-            if (yama.GetTsumoedYamaNum() > 4 && infoForResults.Count(e => e.IsFured) == 0)
+            if (yama.GetTsumoedYamaNum() > Constants.PLAYER_NUM && infoForResults.Count(e => e.IsFured) == 0)
             {
                 infoForResults[actor].IsDoubleReach = true;
             }

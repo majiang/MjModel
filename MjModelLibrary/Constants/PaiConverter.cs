@@ -8,7 +8,7 @@ namespace MjModelLibrary
 {
     public static class PaiConverter
     {
-
+        static readonly int UNKNOWN_ID = -1; 
 
         public static readonly Dictionary<string, int> RED_DORA_STRING_ID = new Dictionary<string, int>()
         {
@@ -66,7 +66,7 @@ namespace MjModelLibrary
             { "F",  32},
             { "C",  33},
 
-            {"?", -1}
+            {"?", UNKNOWN_ID}
         };
         public static readonly Dictionary<int, string> ID_TO_STRING = new Dictionary<int, string>()
         {
@@ -108,7 +108,7 @@ namespace MjModelLibrary
             { 32,"F"},
             { 33,"C"},
 
-            { -1,"?"}
+            { UNKNOWN_ID,"?"}
         };
 
     }

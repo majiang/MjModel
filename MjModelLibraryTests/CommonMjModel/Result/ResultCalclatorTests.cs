@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using static MjModelLibrary.MJUtil;
 
 namespace MjModelLibrary.Tests
 {
@@ -102,7 +103,7 @@ namespace MjModelLibrary.Tests
 
 
 
-                        ifr.IsOya = (obj.kyoku - 1 - obj.actor + 4) % 4 == 0;
+                        ifr.IsOya = (obj.kyoku - 1 - obj.actor + Constants.PLAYER_NUM) % Constants.PLAYER_NUM == 0;
 
 
                         foreach (var doraMarker in obj.dora_markers)
@@ -118,8 +119,17 @@ namespace MjModelLibrary.Tests
 
                         foreach (var furo in obj.hora_furos)
                         {
-                            var f = new Furo(furo[0], furo[1], furo.GetRange(2, furo.Count - 2));
-                            tehai.furos.Add(f);
+                            // ankantsu don't contains furo.furopai
+                            if (TARTSU_TYPE_STRING_ENUM_MAP[furo[0]] == TartsuType.ANKANTSU)
+                            {
+                                var f = new Furo(furo[0], Pai.UNKNOWN_PAI_STRING, furo.GetRange(1, furo.Count - 1));
+                                tehai.furos.Add(f);
+                            }
+                            else
+                            {
+                                var f = new Furo(furo[0], furo[1], furo.GetRange(2, furo.Count - 2));
+                                tehai.furos.Add(f);
+                            }
                         }
 
                         if (ifr.IsTsumo)
@@ -136,7 +146,7 @@ namespace MjModelLibrary.Tests
                             Debug.WriteLine(lineNumber + ", acc = " + expected + " --> " + myPointResult + " tehais:" + string.Join(",", tehai.GetTehaiStringList().ToList()));
 
                             foreach (var yaku in result.yakuResult.yakus) {
-                                Debug.WriteLine("accual {0}, {1}",yaku[0],yaku[1]);
+                                Debug.WriteLine("accual yaku {0}, han {1}",yaku[0],yaku[1]);
                             }
 
                             result = ResultCalclator.CalcHoraResult(tehai, ifr, fd, lastAddedPai);

@@ -392,7 +392,11 @@ namespace MjModelLibrary
             }
             foreach (var furo in furos)
             {
-                syu[furo.furopai.PaiNumber]++;
+                // ankan don't has furo.furopai
+                if (furo.ftype != MJUtil.TartsuType.ANKANTSU)
+                {
+                    syu[furo.furopai.PaiNumber]++;
+                }
 
                 foreach(var consumedpai in furo.consumed)
                 {
@@ -456,7 +460,16 @@ namespace MjModelLibrary
 
         int GetMin(Pai furopai, List<Pai> consumed){
             consumed.Sort();
-            return Math.Min(furopai.PaiNumber, consumed[0].PaiNumber);
+
+            if (furopai.PaiString == Pai.UNKNOWN_PAI_STRING)
+            {
+                return consumed[0].PaiNumber;
+            }
+            else
+            {
+                return Math.Min(furopai.PaiNumber, consumed[0].PaiNumber);
+            }
+
         }
 
         public bool IsKantsu()
