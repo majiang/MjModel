@@ -82,7 +82,8 @@ namespace MjModelLibrary.Tests
                         var playerPosition = obj.actor;
                         var lastAddedPai = obj.pai;
 
-                        var ifr = new InfoForResult(gameId, playerPosition, obj.bakaze);
+                        var stubOyaId = 0;// replaced after
+                        var ifr = new InfoForResult(gameId, playerPosition, stubOyaId, obj.bakaze);
                         ifr.IsTsumo = obj.actor == obj.target;
 
                         var ankantsuCount = obj.hora_furos.Count(e => e[0] == "ankantsu");

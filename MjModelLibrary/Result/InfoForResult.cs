@@ -36,12 +36,12 @@ namespace MjModelLibrary
         private List<Pai> bakazeList = new List<Pai>();
         private static readonly List<Pai> WindList = new List<Pai>() { new Pai("E"), new Pai("S"), new Pai("W"), new Pai("N") }; 
 
-        public InfoForResult(int gameId = 1, int myPositionId = 0, string bakaze = "E")
+        public InfoForResult(int gameId = 1, int myPositionId = 0, int oyaId = 0, string bakaze = "E")
         {
             this.gameId = gameId;
             var zeroIdxGameId = gameId - 1;
             this.myPositionId = myPositionId;
-            IsOya = (zeroIdxGameId % 4) == myPositionId;
+            IsOya = oyaId == myPositionId;
 
             bakazeList.Add(WindList.Where(e => e.PaiString == bakaze).First());
 

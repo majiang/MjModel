@@ -78,6 +78,13 @@ namespace MjServer.Tests
             var startIndex = 0;
             var splitedMsgList = new List<List<string>>();
 
+            if( endKyokuResponseMessageIndexs.Count() == 0 )
+            {
+                splitedMsgList.Add(msgList);
+                return splitedMsgList;
+            }
+
+
             foreach(var endKyokuIndex in endKyokuResponseMessageIndexs)
             {
                 splitedMsgList.Add( msgList.GetRange( startIndex, endKyokuIndex - startIndex + 1) );// + 1 is need for include endKyokuRespounceMessage.
@@ -99,12 +106,12 @@ namespace MjServer.Tests
 
         void ReplaceYamaAndTehaiForTest(List<string> msgList)
         {
-
-
             var serverToClientMessages = msgList.Where((e, index) => index % 2 == 0).ToList().Select( e => JsonConvert.DeserializeObject<MJsonMessageAll>(e) ).ToList();
             var startKyokuMessage =   serverToClientMessages.First(e => e.IsSTART_KYOKU());
             var typeModifiedStartKyokuMessage = JsonConvert.DeserializeObject<MJsonMessageStartKyoku>(JsonConvert.SerializeObject(startKyokuMessage));
+
             room.ReplaceKyokuInfoForTest(typeModifiedStartKyokuMessage);
+
             var tsumopais = FilterTsumo(serverToClientMessages);
             var rinshanpais = FilterRinshan(serverToClientMessages);
 
@@ -377,7 +384,7 @@ namespace MjServer.Tests
         public void E2E_HaiteiTest()
         {
             TestInputLines(@"../../E2E_TestData/HaiteiTestData.txt");
-            var horaMessage = clients[0].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
+            var horaMessage = clients[1].ReceivedMessageList.FirstOrDefault(e => e.IsHORA());
             Assert.IsTrue(horaMessage.yakus.Any(e => (string)e[yakuNamepos] == MJUtil.YAKU_STRING[(int)MJUtil.Yaku.HAITEI]));
         }
 

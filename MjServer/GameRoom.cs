@@ -111,6 +111,14 @@ namespace MjServer
             gameContext.ChangeState(msg);
             gameModel.SetCurrentActor(msg.oya);
 
+            gameModel.infoForResultList = new List<InfoForResult>()
+            {
+                new InfoForResult(field.KyokuId, 0, field.OyaPlayerId),
+                new InfoForResult(field.KyokuId, 1, field.OyaPlayerId),
+                new InfoForResult(field.KyokuId, 2, field.OyaPlayerId),
+                new InfoForResult(field.KyokuId, 3, field.OyaPlayerId)
+            };
+
         }
         public void ReplaceYamaForTest(List<string> tsumopais,List<string> rinshanpais)
         {

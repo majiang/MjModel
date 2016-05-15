@@ -69,7 +69,7 @@ namespace MjModelLibrary
 
             var IsOyaChange = tenpais[fld.OyaPlayerId] == false ;
             var nextKyokuId = IsOyaChange ? fld.KyokuId % SAME_WIND_KYOKU_NUM + 1: fld.KyokuId;
-            var nextHonba = fld.Honba++;
+            var nextHonba = fld.Honba + 1;
             var nextkyotaku = fld.Kyotaku;
             var nextOyaPlayerId = IsOyaChange ? getNextOyaPlayerId(fld.OyaPlayerId) : fld.OyaPlayerId;
             var nextBakaze = (nextKyokuId == 1 && IsOyaChange) ? getNextBakaze(fld.Bakaze) : fld.Bakaze;
@@ -79,7 +79,7 @@ namespace MjModelLibrary
 
         public void AddKyotaku()
         {
-            Kyotaku += Constants.REACH_POINT;
+            Kyotaku += 1;
         }
 
 

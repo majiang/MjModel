@@ -23,7 +23,7 @@ namespace MjServer
         public int CurrentActor { get; private set; }
         public List<InfoForResult> infoForResultList { get; set; }
 
-        public List<int> points { get; set; }
+        public List<int> scores { get; set; }
         MjLogger logger;
         public GameModel(MjLogger logger)
         {
@@ -36,9 +36,7 @@ namespace MjServer
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-            CurrentActor = 0;
-            infoForResultList = new List<InfoForResult>() {new InfoForResult(field.KyokuId,0), new InfoForResult(field.KyokuId,1), new InfoForResult(field.KyokuId,2), new InfoForResult(field.KyokuId,3) };
-            points = new List<int> { 25000, 25000, 25000, 25000 };
+            scores = new List<int> { 25000, 25000, 25000, 25000 };
         }
 
 
@@ -55,7 +53,7 @@ namespace MjServer
             var haipais = yama.MakeHaipai();
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
             SetCurrentActor(field.OyaPlayerId);
-            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0), new InfoForResult(field.KyokuId, 1), new InfoForResult(field.KyokuId, 2), new InfoForResult(field.KyokuId, 3) };
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, field.OyaPlayerId), new InfoForResult(field.KyokuId, 1, field.OyaPlayerId), new InfoForResult(field.KyokuId, 2, field.OyaPlayerId), new InfoForResult(field.KyokuId, 3, field.OyaPlayerId) };
 
             return new MJsonMessageStartKyoku(
                         field.Bakaze.PaiString,
@@ -204,12 +202,12 @@ namespace MjServer
             var reachedActor = ((CurrentActor - 1) + Constants.PLAYER_NUM) % Constants.PLAYER_NUM;
             var deltas = new List<int> { 0, 0, 0, 0 };
             deltas[reachedActor] = -Constants.REACH_POINT;
-            points = AddPoints(points, deltas);
+            scores = AddPoints(scores, deltas);
             field.AddKyotaku();
 
             SetReachFlag(reachedActor);
             EnableIppatsuFlag(reachedActor);            
-            return new MJsonMessageReachAccept(reachedActor, deltas, points);
+            return new MJsonMessageReachAccept(reachedActor, deltas, scores);
         }
 
 
@@ -219,7 +217,7 @@ namespace MjServer
 
             // change field
             field = Field.ChangeOnHora(field, actor);
-            
+            scores = calclatedHoraMessage.scores;
             return calclatedHoraMessage;
         }
 
@@ -234,11 +232,11 @@ namespace MjServer
             var tenpais = new List<bool>() { tehais[0].IsTenpai(), tehais[1].IsTenpai(), tehais[2].IsTenpai(), tehais[3].IsTenpai() };
             var deltas = CalcRyukyokuDeltaPoint(tenpais);
             
-            points = AddPoints(points, deltas);
+            scores = AddPoints(scores, deltas);
 
             field = Field.ChangeOnRyukyoku(field, tenpais);
 
-            return new MJsonMessageRyukyoku("fanpai", tehaisString, tenpais, deltas, points);
+            return new MJsonMessageRyukyoku("fanpai", tehaisString, tenpais, deltas, scores);
         }
 
 
@@ -333,15 +331,13 @@ namespace MjServer
         MJsonMessageHora calclatedHoraMessage;
         public bool CanHora(int actor, int target, string pai)
         {
+            // OreCelcHoraResult affects calclatedHoraMessage.
             var horaResult = PreCalcHoraResult(actor, target, pai);
             // if hora contains any yaku, return false. 
             if (horaResult.yakuResult.HasYakuExcludeDora == false)
             {
                 return false;
             }
-
-
-
 
             return true;
             
@@ -350,12 +346,12 @@ namespace MjServer
         {
             var uradoraMarkers = yama.GetUradoraMarkerStrings();
             var ifr = infoForResultList[actor];
-            ifr.UseYamaPaiNum =
-                yama.GetTsumoedYamaNum();
+            ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
             ifr.IsFured = !ifr.IsMenzen;
+            ifr.IsTsumo = actor == target;
 
-            if (actor == target)
+            if (ifr.IsTsumo)
             {
                 ifr.IsHaitei = yama.GetRestYamaNum() == 0;
                 ifr.IsTsumo = true;
@@ -370,14 +366,78 @@ namespace MjServer
 
             var horaResult =  ResultCalclator.CalcHoraResult(tehais[actor], infoForResultList[actor], field, pai);
             //TODO  modifie delta and pointResult.
-
+            var nextDeltas = CalcDeltaPoint(horaResult.pointResult, actor, target, field.OyaPlayerId, field.Honba, field.Kyotaku);
+            var nextScores = nextDeltas.Zip(this.scores, (delta, score) => delta + score).ToList();
             // save calclated horaresult
             calclatedHoraMessage = new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
-                horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 });
+                horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, nextDeltas, nextScores);
 
             return horaResult;
         }
 
+        readonly static int HONBA_POINT_BASE = 100;
+        List<int> CalcDeltaPoint(PointResult pointResult, int horaActor, int horaTarget, int oyaPlayerId, int honba, int kyotaku)
+        {
+            var deltas = new List<int>() { 0,0,0,0};
+            
+            
+
+            if (pointResult.IsTsumoHora) {
+
+                if (horaActor == field.OyaPlayerId)
+                {
+                    for (int i = 0; i < Constants.PLAYER_NUM; i++)
+                    {
+                        if (i == horaActor)
+                        {
+                            deltas[i] = pointResult.HoraPlayerIncome
+                                      + honba * HONBA_POINT_BASE * (Constants.PLAYER_NUM - 1)
+                                      + kyotaku * Constants.REACH_POINT;
+                        }
+                        else
+                        {
+                            deltas[i] = -1 * pointResult.ChildOutcome
+                                      - honba * HONBA_POINT_BASE;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Constants.PLAYER_NUM; i++)
+                    {
+                        if (i == oyaPlayerId)
+                        {
+                            deltas[i] = -1 * pointResult.OyaOutcome
+                                      - honba * HONBA_POINT_BASE;
+                        }
+                        else if (i == horaActor)
+                        {
+                            deltas[i] = pointResult.HoraPlayerIncome
+                                      + honba * HONBA_POINT_BASE * (Constants.PLAYER_NUM - 1)
+                                      + kyotaku * Constants.REACH_POINT;
+                        }
+                        else
+                        {
+                            deltas[i] = -1 * pointResult.ChildOutcome
+                                      - honba * HONBA_POINT_BASE;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                deltas[horaActor] = pointResult.HoraPlayerIncome
+                                  + honba * HONBA_POINT_BASE * (Constants.PLAYER_NUM - 1)
+                                  + kyotaku * Constants.REACH_POINT;
+
+                deltas[horaTarget] = -1 * pointResult.RonedPlayerOutcome
+                                   - honba * HONBA_POINT_BASE * (Constants.PLAYER_NUM - 1);
+            }
+
+
+
+            return deltas;
+        }
 
         public bool CanReach(int actor)
         {

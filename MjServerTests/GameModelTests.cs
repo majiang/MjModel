@@ -244,14 +244,14 @@ namespace MjServer.Tests
             var startPoint = 25000;
             var reachPoint = 1000;
             
-            Assert.AreEqual(startPoint, model.points[0]);
+            Assert.AreEqual(startPoint, model.scores[0]);
 
             var tsumoObj = model.Tsumo();
             model.Reach(0);
             model.Dahai(tsumoObj.actor,tsumoObj.pai, true);
             model.ReachAccept();
 
-            Assert.AreEqual(startPoint - reachPoint, model.points[0]);
+            Assert.AreEqual(startPoint - reachPoint, model.scores[0]);
             Assert.IsFalse(model.CanReach(0));
         }
 

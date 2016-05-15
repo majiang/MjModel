@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 namespace MjModelLibrary
 {
 
-    public class PointResult
+    public struct PointResult
     {
         public int ChildOutcome;
         public int OyaOutcome;
         public int RonedPlayerOutcome;
         public int HoraPlayerIncome;
-        public bool HoraIsTsumo;
+        public bool IsTsumoHora;
+        public bool IsOyaHora;
 
     }
 
@@ -33,10 +34,12 @@ namespace MjModelLibrary
 
             int bp = calcBasicPoint(yakuResult.Fu, yakuResult.Han, yakuResult.YakumanMultiple);
 
+            pointResult.IsTsumoHora = yakuResult.IsTsumo;
+            pointResult.IsOyaHora = yakuResult.IsOya;
 
-            if (yakuResult.IsTsumo)
+            if (pointResult.IsTsumoHora)
             {//tsumo
-                if (yakuResult.IsOya)
+                if (pointResult.IsOyaHora)
                 {
                     pointResult.ChildOutcome = ceilAt100(bp * 2);
                     pointResult.HoraPlayerIncome = pointResult.ChildOutcome * 3;
@@ -45,18 +48,20 @@ namespace MjModelLibrary
                 {
                     pointResult.ChildOutcome = ceilAt100(bp);
                     pointResult.OyaOutcome = ceilAt100(bp * 2);
-                    pointResult.HoraPlayerIncome = pointResult.ChildOutcome * 2 + pointResult. OyaOutcome;
+                    pointResult.HoraPlayerIncome = pointResult.ChildOutcome * 2 + pointResult.OyaOutcome;
                 }
             }
             else
             {//ron
-                if (yakuResult.IsOya)
+                if (pointResult.IsOyaHora)
                 {
                     pointResult.HoraPlayerIncome = ceilAt100(bp * 6);
+                    pointResult.RonedPlayerOutcome = pointResult.HoraPlayerIncome;
                 }
                 else
                 {
                     pointResult.HoraPlayerIncome = ceilAt100(bp * 4);
+                    pointResult.RonedPlayerOutcome = pointResult.HoraPlayerIncome;
                 }
             }
 
