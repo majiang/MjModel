@@ -58,7 +58,6 @@
     <Compile Include="GameModelTests.cs" />
     <Compile Include="GameRoomTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerFacadeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MjClient\MjClient.csproj">
