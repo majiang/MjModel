@@ -344,7 +344,7 @@ namespace MjServer
         }
         HoraResult PreCalcHoraResult(int actor, int target, string pai)
         {
-            var uradoraMarkers = yama.GetUradoraMarkerStrings();
+
             var ifr = infoForResultList[actor];
             ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
@@ -365,9 +365,11 @@ namespace MjServer
 
 
             var horaResult =  ResultCalclator.CalcHoraResult(tehais[actor], infoForResultList[actor], field, pai);
-            //TODO  modifie delta and pointResult.
             var nextDeltas = CalcDeltaPoint(horaResult.pointResult, actor, target, field.OyaPlayerId, field.Honba, field.Kyotaku);
             var nextScores = nextDeltas.Zip(this.scores, (delta, score) => delta + score).ToList();
+
+            var uradoraMarkers = (ifr.IsReach || ifr.IsDoubleReach) ? yama.GetUradoraMarkerStrings() : new List<string>();
+
             // save calclated horaresult
             calclatedHoraMessage = new MJsonMessageHora(actor, target, pai, uradoraMarkers, tehais[actor].GetTehaiStringList(), horaResult.yakuResult.yakus, horaResult.yakuResult.Fu,
                 horaResult.yakuResult.Han, horaResult.pointResult.HoraPlayerIncome, nextDeltas, nextScores);

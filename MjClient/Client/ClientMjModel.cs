@@ -136,17 +136,6 @@ namespace MjClient
 
 
 
-        //public bool CanChi(int dapaiActor, int playerId, string pai)
-        //{
-        //    return tehais[myPositionId].CanChi(pai, consumed);
-            
-        //}
-        //public bool CanPon(int dapaiActor, int playerId, string pai)
-        //{
-          
-        //    return tehais[myPositionId].CanPon(dapaiActor, playerId, pai);
-            
-        //}
 
         public bool CanReach(int playerId)
         {

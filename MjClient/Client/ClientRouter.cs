@@ -60,7 +60,7 @@ namespace MjClient
 
 
 
-        //サーバからメッセージを受信してクライアントコントローラに命令を出す部分
+
         public void RouteGetMessage(string msg)
         {
             var msgobj = JsonConvert.DeserializeObject<MJsonMessageAll>(msg);
