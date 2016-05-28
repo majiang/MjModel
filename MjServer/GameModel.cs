@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using MjModelLibrary;
+using MjModelLibrary.Result;
 using MjNetworkProtocolLibrary;
+
 
 namespace MjServer
 {
-
-
 
     public class GameModel
     {

@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="shaneten.dat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="E2E_TestData\AnkanTestData.txt" />

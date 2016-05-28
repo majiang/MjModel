@@ -76,18 +76,23 @@ namespace MjModelLibrary.Tests
         }
 
         [TestMethod]
-        public void CompareSpeed()
+        public void CompareShantenCalclatorSpeed()
         {
             var ss = ShantenCalclator.GetInstance();
             var ass = ArrayShantenCalculator.GetInstance();
 
+            // testPais contains number of pai.
+            // 1112345599m112p => [ 3,1,1,1,2,0,0,0,2,
+            //                      2,1,0, ...] 
+
             int[] testPais = new int[MJUtil.LENGTH_SYU_ALL];
 
+            // 11112222333344m
             testPais[0] = 4;
             testPais[1] = 4;
             testPais[2] = 4;
             testPais[3] = 2;
-
+            
             var compareNum = 1000;
             var sw_normal = new Stopwatch();
 

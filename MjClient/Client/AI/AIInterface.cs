@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using MjNetworkProtocolLibrary;
 using MjModelLibrary;
+using MjModelLibrary.Result;
+
 
 namespace MjClient.AI
 {
