@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MjModelLibrary.Result;
 
 
 namespace MjModelLibrary
 {
     public class Tehai
     {
-        private ShantenCalclator shantenCanclator = ShantenCalclator.GetInstance();
+        //private ShantenCalclator shantenCanclator = ShantenCalclator.GetInstance();
+        private ArrayShantenCalculator shantenCanclator = ArrayShantenCalculator.GetInstance();
+
 
         public List<Pai> tehai;
         public List<Furo> furos;

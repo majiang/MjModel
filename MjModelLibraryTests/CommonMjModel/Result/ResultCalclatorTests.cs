@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using Newtonsoft.Json;
-using static MjModelLibrary.MJUtil;
+using MjModelLibrary.Result;
 
 namespace MjModelLibrary.Tests
 {
@@ -120,8 +120,8 @@ namespace MjModelLibrary.Tests
 
                         foreach (var furo in obj.hora_furos)
                         {
-                            // ankantsu don't contains furo.furopai
-                            if (TARTSU_TYPE_STRING_ENUM_MAP[furo[0]] == TartsuType.ANKANTSU)
+                            // ankan Furo don't contains furo.furopai
+                            if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[furo[0]] == MJUtil.TartsuType.ANKANTSU)
                             {
                                 var f = new Furo(furo[0], Pai.UNKNOWN_PAI_STRING, furo.GetRange(1, furo.Count - 1));
                                 tehai.furos.Add(f);
@@ -338,7 +338,7 @@ namespace MjModelLibrary.Tests
             public void Unit_YakuResultTest()
             {
 
-                //清一色ピンフ一盃口
+                //chinitsu pinfu iipeiko 
                 {
                     Tehai testTehai = new Tehai(new List<string> { "1m", "2m", "3m", "4m", "5m", "6m", "7m", "7m", "1m", "2m", "2m", "3m", "3m", "4m" });
 

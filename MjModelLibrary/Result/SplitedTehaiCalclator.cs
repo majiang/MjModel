@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace MjModelLibrary
+namespace MjModelLibrary.Result
 {
         public class SplitedTehai
     {

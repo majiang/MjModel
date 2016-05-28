@@ -47,11 +47,15 @@
     <Compile Include="Model\Tehai.cs" />
     <Compile Include="Model\TehaiAnalizer.cs" />
     <Compile Include="Model\Yama.cs" />
+    <Compile Include="Result\ArrayShantenCalculator.cs" />
     <Compile Include="Result\ForAIStructs.cs" />
     <Compile Include="Result\InfoForResult.cs" />
+    <Compile Include="Result\IShantenLogic.cs" />
     <Compile Include="Result\PointResultCalclator.cs" />
     <Compile Include="Result\ResultCalclator.cs" />
     <Compile Include="Result\ShantenCalclator.cs" />
+    <Compile Include="Result\ShantenLogicBase.cs" />
+    <Compile Include="Result\ShantenLogicFast.cs" />
     <Compile Include="Result\SplitedTehaiCalclator.cs" />
     <Compile Include="Result\YakuResultCalclator.cs" />
     <Compile Include="Constants\Constants.cs" />
@@ -61,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="shaneten.dat" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
