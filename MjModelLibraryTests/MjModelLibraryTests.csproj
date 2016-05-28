@@ -73,6 +73,7 @@
   <ItemGroup>
     <Content Include="HoraPatternOutputSmall.txt" />
     <None Include="packages.config" />
+    <None Include="shaneten.dat" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
