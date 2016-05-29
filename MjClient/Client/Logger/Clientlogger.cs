@@ -10,7 +10,7 @@ namespace MjClient.Logger
     public class ClientLogger
     {
         private static ClientLogger singletonClientLogger = new ClientLogger();
-
+        public bool EnableLog;
 
         public static ClientLogger GetInstance()
         {
@@ -26,7 +26,10 @@ namespace MjClient.Logger
         /// <param name="message">log message</param>
         public void Log(string message)
         {
-            Debug.WriteLine("clientLog:{0}",message);
+            if (EnableLog)
+            {
+                Debug.WriteLine("clientLog:{0}", message);
+            }
         }
     }
 }

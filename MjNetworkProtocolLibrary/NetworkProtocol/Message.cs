@@ -451,5 +451,7 @@ namespace MjNetworkProtocolLibrary
         public List<List<string>> tehais;
         public List<int> deltas;
 
+        public string error_message;// for error
+
     }
 }

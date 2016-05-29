@@ -443,8 +443,10 @@ namespace MjServer
 
         public bool CanReach(int actor)
         {
-            return infoForResultList[actor].IsReach == false
-                && infoForResultList[actor].IsDoubleReach == false;
+            return tehais[actor].IsTenpai()
+                && tehais[actor].IsMenzen()
+                && (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false)
+                && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
 
         public bool CanOpenDora()

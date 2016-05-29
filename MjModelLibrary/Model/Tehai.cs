@@ -14,7 +14,7 @@ namespace MjModelLibrary
         //private ShantenCalclator shantenCanclator = ShantenCalclator.GetInstance();
         private ArrayShantenCalculator shantenCanclator = ArrayShantenCalculator.GetInstance();
 
-
+        public List<string> tehaiString;
         public List<Pai> tehai;
         public List<Furo> furos;
         public static readonly List<Pai> UNKNOWN_TEHAI_PAI = new List<Pai> 
@@ -35,6 +35,7 @@ namespace MjModelLibrary
         {
             this.tehai = new List<Pai>(tehai);
             this.furos = new List<Furo>();
+            tehaiString = GetTehaiStringList();
         }
 
         public Tehai(List<string> tehai)
@@ -42,6 +43,7 @@ namespace MjModelLibrary
             var paiTehai = from hai in tehai select new Pai(hai);
             this.tehai = new List<Pai>(paiTehai);
             this.furos = new List<Furo>();
+            tehaiString = GetTehaiStringList();
         }
 
 
@@ -55,6 +57,8 @@ namespace MjModelLibrary
         public void Tsumo(Pai tsumopai)
         {
             tehai.Add(tsumopai);
+            tehaiString.Add(tsumopai.PaiString);
+           
         }
         public void Tsumo(string tsumopai)
         {
@@ -73,6 +77,7 @@ namespace MjModelLibrary
                 Debug.Assert(false);
                 return;
             }
+            tehaiString = GetTehaiStringList();
         }
         public void Da(string dapai)
         {

@@ -47,10 +47,16 @@ namespace MjClient
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             field = new Field(kyoku, honba, kyotaku, oya, bakaze);
-            currentActor = 0;
+            currentActor = oya;
             infoForResults = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, oya, bakaze), new InfoForResult(field.KyokuId, 1, oya, bakaze), new InfoForResult(field.KyokuId, 2, oya,bakaze), new InfoForResult(field.KyokuId, 3, oya, bakaze) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
+
+            // Don't use this haipai and this operation is for restYamaNum count
+            yama = new Yama();
+            yama.MakeHaipai();
+
+            kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
         }
 
         public void Tsumo(int actor, string pai)
@@ -59,7 +65,8 @@ namespace MjClient
             {
                 tehais[actor].Tsumo(pai);   
             }
-
+            // Don't use this tsumo and this operation is for restYamaNum count
+            yama.DoTsumo();
         }
 
         public void Dahai(int actor, string pai, bool tsumogiri)
@@ -92,22 +99,23 @@ namespace MjClient
 
         public void Kakan(int actor, string pai, List<string> consumed)
         {
-
+            //TODO
             
         }
 
         public void Ankan(int actor, List<string> consumed)
         {
-
+            //TODO
         }
 
         public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-
+            //TODO 
         }
 
         public void Reach(int actor)
         {
+            //TODO
         }
         public void ReachAccept(int actor, List<int> delta, List<int> scores)
         {
@@ -122,7 +130,7 @@ namespace MjClient
 
         public void Hora(int actor, int target, string pai, List<string> uradora_markers, List<string> hora_tehais, List<List<object>> yakus, int fu, int fan, int hora_points, List<int> deltas, List<int> scores)
         {
-
+            //TODO
         }
 
         public void None()
@@ -140,8 +148,9 @@ namespace MjClient
 
         public bool CanReach(int playerId)
         {
-            return ( shantenCalclator.CalcShanten(tehais[playerId]) <= 0) 
-                && ( (infoForResults[playerId].IsDoubleReach || infoForResults[playerId].IsReach) == false );
+            return tehais[playerId].IsMenzen()
+                && (infoForResults[playerId].IsReach == false && infoForResults[playerId].IsDoubleReach == false)
+                && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
 
         public bool CanTsumoHora()
@@ -160,10 +169,6 @@ namespace MjClient
             return shantenCalclator.CalcShanten(tehais[myPositionId], pai) == -1;
         }
 
-
-
-
-        
 
         public void SetReach(int actor)
         {

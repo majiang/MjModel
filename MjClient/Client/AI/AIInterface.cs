@@ -29,7 +29,7 @@ namespace MjClient.AI
         event SendChiHandler SendChi;
         event SendDaiminkanHandler SendDaiminkan;
         event SendNoneHandler SendNone;
-        void thinkOnOtherPlayerDoroped(int myPositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs);
+        void thinkOnOtherPlayerDoroped(int myPositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama);
 
 
 
@@ -40,12 +40,12 @@ namespace MjClient.AI
         event SendAnkanHandler SendAnkan;
         event SendKakanHandler SendKakan;
         event SendReachHandler SendReach;
-        void thinkOnMyTsumo(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs);
+        void thinkOnMyTsumo(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama);
 
 
 
         //action after furo
         void thinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
-                         Field field, List<InfoForResult> ifrs);
+                         Field field, List<InfoForResult> ifrs, Yama yama);
     }
 }

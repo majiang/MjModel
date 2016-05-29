@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using MjNetworkProtocolLibrary;
 using MjModelLibrary;
+using System.Threading;
 
 namespace MjServer
 {
@@ -14,14 +15,17 @@ namespace MjServer
     class WaitingRoom
     {
         public event StartGameRoom StartRoomHandler;
-        Dictionary<ClientHolderInterface, string> clientHolderRoomNameDictionary;
-        Dictionary<ClientHolderInterface, string> clientHolderClientNameDictionary;
-        Dictionary<string, int> roomNameWaitingNumDictionary;
+        Dictionary<ClientHolderInterface, string> clientHolderRoomNameMap;
+        Dictionary<ClientHolderInterface, string> clientHolderClientNameMap;
+        Dictionary<string, int> roomNameWaitingNumMap;
+        BotClientManager botClientManager = new BotClientManager();
 
         public WaitingRoom() { }
         
         public async void StartWaiting()
         {
+
+
 
             IPAddress ipAdd = IPAddress.Parse(Properties.Settings.Default.ipAddress);//LAN
             int port = Properties.Settings.Default.port;
@@ -34,9 +38,13 @@ namespace MjServer
                 ( (IPEndPoint)server.LocalEndpoint).Port
                 );
             
-            clientHolderRoomNameDictionary = new Dictionary<ClientHolderInterface, string>();
-            clientHolderClientNameDictionary = new Dictionary<ClientHolderInterface, string>();
-            roomNameWaitingNumDictionary = new Dictionary<string, int>();
+            clientHolderRoomNameMap = new Dictionary<ClientHolderInterface, string>();
+            clientHolderClientNameMap = new Dictionary<ClientHolderInterface, string>();
+            roomNameWaitingNumMap = new Dictionary<string, int>();
+
+
+            // bot client genarator 
+            Task.Run(() => TimerTrigger());
 
             while (true)
             {
@@ -47,6 +55,29 @@ namespace MjServer
             }
         }
 
+        void TimerTrigger()
+        {
+            var TrigerBitween = 5 * 1000;
+            while (true)
+            {
+                //Debug.WriteLine("Triggerd!");
+                AllRoomGameStart();
+                Thread.Sleep(TrigerBitween);
+            }
+        }
+
+        void AllRoomGameStart()
+        {
+            semaphore.WaitAsync();
+            var needClients = GetNeedMemberNum();
+
+            foreach (var map in needClients)
+            {
+                Debug.WriteLine("room = {0}, num = {1}", map.Key, map.Value);
+                botClientManager.GenerateClient(map.Key, map.Value);
+            }
+            semaphore.Release();
+        }
 
         private System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);
         async void RouteMessage(string message, ClientHolderInterface clientHolder)
@@ -67,7 +98,7 @@ namespace MjServer
                 if (mjsonObject != null)
                 {
                     Debug.WriteLine("Json Deserialize Error! "+e.Message);
-                    Debug.Assert(false);
+                    Debug.Fail("Json Deserialize Error! " + e.Message);
                     var errorMessasge = JsonConvert.SerializeObject(new MJsonMessageError(message));
                     clientHolder.SendMessageToClient(errorMessasge);
                     clientHolder.Disconnect();
@@ -79,12 +110,12 @@ namespace MjServer
             if (mjsonObject.IsJOIN())
             {
                 var roomName = mjsonObject.room;
-                clientHolderRoomNameDictionary.Add(clientHolder, roomName);
-                clientHolderClientNameDictionary.Add(clientHolder, mjsonObject.name);
-                var alreadyWaitingSameRoom = roomNameWaitingNumDictionary.ContainsKey(roomName);
-                var newWaitingNum = alreadyWaitingSameRoom ?
-                    roomNameWaitingNumDictionary[roomName] + 1: 1;
-                roomNameWaitingNumDictionary[roomName] = newWaitingNum;
+                clientHolderRoomNameMap.Add(clientHolder, roomName);
+                clientHolderClientNameMap.Add(clientHolder, mjsonObject.name);
+                var alreadyWaitingInTargetRoom = roomNameWaitingNumMap.ContainsKey(roomName);
+                var newWaitingNum = alreadyWaitingInTargetRoom ?
+                    roomNameWaitingNumMap[roomName] + 1: 1;
+                roomNameWaitingNumMap[roomName] = newWaitingNum;
             }
 
             foreach( var room in GetStartableRoomList())
@@ -100,7 +131,7 @@ namespace MjServer
         List<string> GetStartableRoomList()
         {
             List<string> canStartRoom = new List<string>();
-            foreach(var map in roomNameWaitingNumDictionary)
+            foreach(var map in roomNameWaitingNumMap)
             {
                 if( map.Value == Constants.PLAYER_NUM)
                 {
@@ -113,22 +144,22 @@ namespace MjServer
         void StartGameRoom(string startRoomName)
         {
             Dictionary<ClientHolderInterface,string> playerList = new Dictionary<ClientHolderInterface,string>();
-            foreach(var map in clientHolderRoomNameDictionary)
+            foreach(var map in clientHolderRoomNameMap)
             {
                 if( map.Value == startRoomName)
                 {
-                    playerList[map.Key] = clientHolderClientNameDictionary[map.Key];
+                    playerList[map.Key] = clientHolderClientNameMap[map.Key];
                 }
             }
 
             //remove client from waitingroom
             foreach(var player in playerList)
             {
-                clientHolderRoomNameDictionary.Remove(player.Key);
-                clientHolderClientNameDictionary.Remove(player.Key);
+                clientHolderRoomNameMap.Remove(player.Key);
+                clientHolderClientNameMap.Remove(player.Key);
                 player.Key.GetMessageFromClientHandler -= RouteMessage;
             }
-            roomNameWaitingNumDictionary.Remove(startRoomName);
+            roomNameWaitingNumMap.Remove(startRoomName);
  
 
             //register client to Gameroom
@@ -136,5 +167,16 @@ namespace MjServer
         }
 
 
+        Dictionary<string,int> GetNeedMemberNum()
+        {
+            var roomNameNeedMemberNumMap = new Dictionary<string, int>();
+
+            foreach(var map in roomNameWaitingNumMap)
+            {
+                roomNameNeedMemberNumMap[map.Key] = Constants.PLAYER_NUM - map.Value;
+            }
+
+            return roomNameNeedMemberNumMap;
+        }
     }
 }

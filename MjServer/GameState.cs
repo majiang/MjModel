@@ -151,7 +151,7 @@ namespace MjServer
             else
             {
                 // it is error if this line executed;
-                Debug.Assert(false);
+               Debug.Assert(false);
                 return false;
             }
 

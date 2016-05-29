@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BotClientManager.cs" />
     <Compile Include="ClientHolderForTest.cs" />
     <Compile Include="ClientHolderUsingTcpHolder.cs" />
     <Compile Include="ClientHolderInterface.cs" />
@@ -82,8 +83,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="shaneten.dat" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MjClient\MjClient.csproj">
+      <Project>{dd24cbea-66c4-4b34-ae68-7de476c91062}</Project>
+      <Name>MjClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MjModelLibrary\MjModelLibrary.csproj">
       <Project>{b2cdbbce-0f5c-4b4b-a457-18575c71e85d}</Project>
       <Name>MjModelLibrary</Name>

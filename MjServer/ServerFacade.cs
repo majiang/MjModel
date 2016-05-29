@@ -30,10 +30,7 @@ namespace MjServer
 
 
 
-        void testStartGameRoom()
-        {
 
-        }
 
         void OnStartGameRoom( Dictionary<ClientHolderInterface, string> clients )
         {

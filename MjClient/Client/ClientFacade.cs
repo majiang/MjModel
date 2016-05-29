@@ -18,6 +18,7 @@ namespace MjClient
         ClientLogger clientLogger = ClientLogger.GetInstance();
 
 
+
         int myPositionId;
         List<string> playerNames;
         MinShantenAI ai;
@@ -84,11 +85,10 @@ namespace MjClient
             try
             {
                 clientIO.MakeConnection();
-
             }
             catch (Exception e)
             {
-                clientLogger.Log(e.Message);
+                //clientLogger.Log(e.Message);
             }
         }
 
@@ -160,7 +160,7 @@ namespace MjClient
             if (actor == myPositionId)
             {
                 
-                ai.thinkOnMyTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
+                ai.thinkOnMyTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
 
             }
             else
@@ -184,10 +184,8 @@ namespace MjClient
             clientMjModel.Dahai(actor, pai, tsumogiri);
 
             // ai think action 
-            //ai.thinkOnOtherPlayerDoroped(myPositionId,actor,pai,clientMjModel.tehais,clientMjModel.kawas, clientMjModel.field);
+            ai.thinkOnOtherPlayerDoroped(myPositionId,actor,pai,clientMjModel.tehais,clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
 
-            // do nothing
-            clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 
         /// <summary>
@@ -203,7 +201,7 @@ namespace MjClient
             clientMjModel.Pon(actor, target, pai, consumed);
             if (actor == myPositionId)
             {
-                ai.thinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
+                ai.thinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
             }
             else
             {
@@ -224,7 +222,7 @@ namespace MjClient
             clientMjModel.Chi(actor, target, pai, consumed);
             if (actor == myPositionId)
             {
-                ai.thinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults);
+                ai.thinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
             }
             else
             {
@@ -295,9 +293,12 @@ namespace MjClient
         void OnEndGame()
         {
             IsEndGame = true;
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            //clientIO.SendMJsonObject(new MJsonMessageNone());
         }
 
-
+        public void SetLoggable(bool flg)
+        {
+            clientLogger.EnableLog = flg;
+        }
     }
 }

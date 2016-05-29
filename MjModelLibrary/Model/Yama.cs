@@ -72,8 +72,8 @@ namespace MjModelLibrary
             {
                 foreach (var redDora in PaiConverter.RED_DORA_STRING_ID)
                 {
-                    ym[redDora.Value * 4 - 1].IsRedDora = true;
-                    ym[redDora.Value * 4 - 1].PaiString = redDora.Key;
+                    ym[redDora.Value * 4].IsRedDora = true;
+                    ym[redDora.Value * 4].PaiString = redDora.Key;
                 }
             }
 

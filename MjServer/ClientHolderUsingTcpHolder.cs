@@ -46,13 +46,13 @@ namespace MjServer
                 while (tcpClient.Connected)
                 {
                     string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
-                    Debug.WriteLine("get:"+ line);
+                    //Debug.WriteLine("get:"+ line);
                     GetMessageFromClientHandler(line, this);
                 }
             }
             catch (IOException e)
             {
-                Debug.WriteLine("error! : {0}, {1}", e.Message,e.StackTrace);
+                Debug.Fail("error! : "+ e.Message);
                 Disconnect();
                 ConnectionBrokenHandler();
             }
@@ -71,11 +71,11 @@ namespace MjServer
             {
                 NetworkStream stream = tcpClient.GetStream();
                 stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
-                Debug.WriteLine("send:"+ message);
+                //Debug.WriteLine("send:"+ message);
             }
             catch(IOException e)
             {
-                Debug.WriteLine("error! : {0}, {1}", e.Message, e.StackTrace);
+                Debug.Fail("error! :"+ e.Message);
                 ConnectionBrokenHandler();
             }
         }

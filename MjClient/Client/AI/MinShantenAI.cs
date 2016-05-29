@@ -36,9 +36,9 @@ namespace MjClient.AI
         /// <param name="kawas">all player's discards</param>
         /// <param name="field">field infomation</param>
         public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
-                                              List<Kawa> kawas, Field field, List<InfoForResult> ifrs)
+                                              List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama)
         {
-            if(ifrs[mypositionId].IsReach && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1)
+            if((ifrs[mypositionId].IsReach || ifrs[mypositionId].IsDoubleReach) && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1)
             {
                 SendHora(new MJsonMessageHora(mypositionId,dapaiActor, pai));
                 return;
@@ -66,7 +66,7 @@ namespace MjClient.AI
         /// <param name="kawas">all player kawa</param>
         /// <param name="field">field infomation</param>
         public void thinkOnMyTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
-                                 Field field, List<InfoForResult> ifrs)
+                                 Field field, List<InfoForResult> ifrs, Yama yama)
         {
             var myTehai = tehais[mypositionId];
         
@@ -79,8 +79,9 @@ namespace MjClient.AI
 
             var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
             
-            if (myTehai.IsTenpai() && ifrs[mypositionId].IsReach == false)
+            if (CanReach(tehais[mypositionId],ifrs[mypositionId],yama))
             {
+                
                 MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString,false);
                 SendReach(new MJsonMessageReach(mypositionId));
                 return;
@@ -89,8 +90,11 @@ namespace MjClient.AI
             SendDahai(new MJsonMessageDahai(mypositionId, dahaiPaiString, dahaiPaiString == pai));
 
         }
+
+
+
         public void thinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
-                                 Field field, List<InfoForResult> ifrs)
+                                 Field field, List<InfoForResult> ifrs, Yama yama)
         {
             var myTehai = tehais[mypositionId];
 
@@ -128,6 +132,12 @@ namespace MjClient.AI
             return paiString;
         }
 
-
+        bool CanReach(Tehai tehai, InfoForResult infoForResult, Yama yama)
+        {
+            return tehai.IsTenpai()
+            && tehai.IsMenzen()
+            && (infoForResult.IsReach == false && infoForResult.IsDoubleReach == false)
+            && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
+        }
     }
 }

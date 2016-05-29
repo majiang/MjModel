@@ -24,12 +24,7 @@ namespace MjServer
 
         static void SandBox()
         {
-            var tehai = new List<string>() { "1m","2m", "3m" };
-            var dict = new List<Dictionary<string, string>>();
-            dict.Add(new Dictionary<string, string>() { { "type", "minsyun" }, { "target", "1" }, { "pai", "1m" }, { "consumed", "2m, 3m" } });
 
-            var rt = new ReadOnlyTehai(tehai, dict);
-            Debug.WriteLine(rt);
         }
     }
 }

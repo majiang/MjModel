@@ -153,10 +153,10 @@ namespace MjServer
                 // validate message
                 if ( gameContext.ValidateMessage(messageObj) == false)
                 {
-                    var errorMessages = gameContext.GetMessages();
-                    OnErrorDetected(errorMessages);
-                    logger.Log(" invalidate MessageType! : " + errorMessages);
-                    Debug.Assert(false);
+
+                    Debug.Fail(" invalidate MessageType!");
+                    OnErrorDetected();
+
                     return;
                 }
 
@@ -172,10 +172,10 @@ namespace MjServer
 
                 if ( isSuccesseded == false)
                 {
-                    var errorMessages = gameContext.GetMessages();
-                    OnErrorDetected(errorMessages);
-                    logger.Log(" failed execute message !: " + errorMessages);
-                    Debug.Assert(false);
+                    Debug.Fail(" failed execute message !");
+                    OnErrorDetected();
+
+
                     return;
                 }
 
@@ -192,12 +192,16 @@ namespace MjServer
             clients.Clear();
         }
 
-        void OnErrorDetected(string jsonEerrorMessage)
+        void OnErrorDetected()
         {
+            
+            var msgObj = new MJsonMessageError(gameContext.GetMessages());
+            var msgString = JsonConvert.SerializeObject(msgObj);
             // log errorMessage
-            logger.Log(jsonEerrorMessage);
+            logger.Log(msgString);
+            Debug.WriteLine(msgString);
             // send error to client
-            clients.ForEach(e => e.SendMessageToClient(jsonEerrorMessage));
+            clients.ForEach(e => e.SendMessageToClient(msgString));
 
             // disconnect client
             clients.ForEach(e => e.Disconnect());
@@ -346,6 +350,10 @@ namespace MjServer
                 gameContext.ChangeState(msgobj);
                 return true;
             }
+            else
+            {
+                gameModel.CanReach(actor);
+            }
             return false;
         }
 
@@ -437,6 +445,7 @@ namespace MjServer
                 sendMessage.tehais = hidetehais;
                 sendMessage.tehais[i] = opentehais[i];
                 clients[i].SendMessageToClient(MjsonObjectToString(sendMessage));
+                sendMessage.tehais[i] = Tehai.UNKNOWN_TEHAI_STRING;
             }
 
         }
@@ -444,16 +453,18 @@ namespace MjServer
         {
             // logging
             logger.Log(MjsonObjectToString(jsonmsg));
-
-
+            var paiHiddemMsg = new MJsonMessageTsumo(jsonmsg.actor, Pai.UNKNOWN_PAI_STRING);
+            
             for (int i = 0; i < clients.Count; i++)
             {
-                var sendMsssage = jsonmsg;
-                if( i != jsonmsg.actor )
+                if( i == jsonmsg.actor )
                 {
-                    sendMsssage.pai = Pai.UNKNOWN_PAI_STRING;
+                    clients[i].SendMessageToClient(MjsonObjectToString(jsonmsg));
                 }
-                clients[i].SendMessageToClient(MjsonObjectToString(sendMsssage));
+                else
+                {
+                    clients[i].SendMessageToClient(MjsonObjectToString(paiHiddemMsg));
+                }
             }
         }
         public void SendMJsonObject(object jsonmsg)

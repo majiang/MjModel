@@ -40,19 +40,25 @@ namespace MjClient.IO
         {
             StreamReader reader = new StreamReader(tcpClient.GetStream());
             string line = String.Empty;
-
-            while (tcpClient.Connected)
+            try
             {
-                line += reader.ReadLine();
-                if (String.IsNullOrEmpty(line))
+                while (tcpClient.Connected)
                 {
-                    break;
+                    line += reader.ReadLine();
+                    if (String.IsNullOrEmpty(line))
+                    {
+                        break;
+                    }
+
+                    //delegate event
+                    OnGetMessage(line);
+                    line = String.Empty;
                 }
-                
-                //delegate event
-                OnGetMessage(line);
-                line = String.Empty;
-            } 
+            }
+            catch (Exception e)
+            {
+                Debug.Fail("error! : " + e.Message);
+            }
         }
 
         private void SendMessage(string message)
@@ -62,14 +68,19 @@ namespace MjClient.IO
                 return;
             }
             //Debug.Assert(string.IsNullOrEmpty(message));
-            
-            if (tcpClient.Connected)
+            try
             {
-                message += lineBreakMark;
-                Encoding enc = Encoding.UTF8;
-                byte[] sendBytes = enc.GetBytes(message);
-                //データを送信する
-                tcpClient.GetStream().Write(sendBytes, 0, sendBytes.Length);
+                if (tcpClient.Connected)
+                {
+                    message += lineBreakMark;
+                    Encoding enc = Encoding.UTF8;
+                    byte[] sendBytes = enc.GetBytes(message);
+                    tcpClient.GetStream().Write(sendBytes, 0, sendBytes.Length);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Fail("error! : " + e.Message);
             }
         }
 
