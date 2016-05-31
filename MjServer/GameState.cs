@@ -11,17 +11,12 @@ namespace MjServer
 {
     interface GameState
     {
-        bool ValidateMessage(MJsonMessageAll msg);
+        bool ValidateMessage(MJsonMessageAll msg, int lastActor);
         bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList);
-        void SetLastActor(int actor);
     }
     class StateBase
     {
-        protected int lastActor = 0;
-        public void SetLastActor(int actor)
-        {
-            lastActor = actor;
-        }
+
 
         protected MJsonMessageAll SelectHighPriorityMessage(List<MJsonMessageAll> msgList)
         {
@@ -64,7 +59,7 @@ namespace MjServer
             return state;
         }
 
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -87,7 +82,7 @@ namespace MjServer
             return state;
         }
 
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -110,7 +105,7 @@ namespace MjServer
             return state;
         }
 
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -131,6 +126,7 @@ namespace MjServer
             if (nextAction.IsREACH())
             {
                 return context.OnReach(nextAction.actor);
+                
             }
             else if (nextAction.IsANKAN())
             {
@@ -152,7 +148,7 @@ namespace MjServer
             {
                 // it is error if this line executed;
                Debug.Assert(false);
-                return false;
+               return false;
             }
 
         }
@@ -172,7 +168,7 @@ namespace MjServer
             return state;
         }
 
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -239,7 +235,7 @@ namespace MjServer
             return state;
         }
 
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -257,7 +253,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -300,7 +296,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -328,7 +324,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -355,7 +351,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -376,7 +372,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -395,7 +391,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -422,7 +418,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             if (msg.actor == lastActor)
             {
@@ -458,7 +454,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -501,7 +497,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -520,7 +516,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -539,7 +535,7 @@ namespace MjServer
         {
             return state;
         }
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }
@@ -566,7 +562,7 @@ namespace MjServer
             return state;
         }
 
-        public bool ValidateMessage(MJsonMessageAll msg)
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
         {
             return msg.IsNONE();
         }

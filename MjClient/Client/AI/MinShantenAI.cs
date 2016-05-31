@@ -82,7 +82,7 @@ namespace MjClient.AI
             if (CanReach(tehais[mypositionId],ifrs[mypositionId],yama))
             {
                 
-                MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString,false);
+                MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString, dahaiPaiString == pai);
                 SendReach(new MJsonMessageReach(mypositionId));
                 return;
             }
@@ -134,7 +134,7 @@ namespace MjClient.AI
 
         bool CanReach(Tehai tehai, InfoForResult infoForResult, Yama yama)
         {
-            return tehai.IsTenpai()
+            return ( tehai.IsTenpai() || tehai.IsHora() )
             && tehai.IsMenzen()
             && (infoForResult.IsReach == false && infoForResult.IsDoubleReach == false)
             && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);

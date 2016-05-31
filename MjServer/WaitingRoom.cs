@@ -44,7 +44,7 @@ namespace MjServer
 
 
             // bot client genarator 
-            Task.Run(() => TimerTrigger());
+            //Task.Run(() => TimerTrigger());
 
             while (true)
             {
@@ -98,7 +98,7 @@ namespace MjServer
                 if (mjsonObject != null)
                 {
                     Debug.WriteLine("Json Deserialize Error! "+e.Message);
-                    Debug.Fail("Json Deserialize Error! " + e.Message);
+                    Debug.Fail("Json Deserialize Error! "+e.Message);
                     var errorMessasge = JsonConvert.SerializeObject(new MJsonMessageError(message));
                     clientHolder.SendMessageToClient(errorMessasge);
                     clientHolder.Disconnect();
@@ -109,6 +109,10 @@ namespace MjServer
             await semaphore.WaitAsync();
             if (mjsonObject.IsJOIN())
             {
+                //TODO
+                //check clientNum
+                
+
                 var roomName = mjsonObject.room;
                 clientHolderRoomNameMap.Add(clientHolder, roomName);
                 clientHolderClientNameMap.Add(clientHolder, mjsonObject.name);

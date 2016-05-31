@@ -28,7 +28,7 @@ namespace MjClient.Logger
         {
             if (EnableLog)
             {
-                Debug.WriteLine("clientLog:{0}", message);
+                Debug.WriteLine("clientLog:"+message);
             }
         }
     }

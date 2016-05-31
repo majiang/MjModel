@@ -269,7 +269,16 @@ namespace MjServer
             {
                 if ((pai == infoForResultList[actor].LastAddedPai.PaiString))
                 {
-                    return false;
+                    if (tehais[actor].tehai.Count(e => e.PaiString == pai) >= 2)
+                    {
+                        // karagiri
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.Fail("invalid Tsumogiri! tsumogiri is false but tumopai and discard pai are same.");
+                        return false;
+                    }
                 }
                 else
                 {
@@ -291,6 +300,7 @@ namespace MjServer
                     }
                     else
                     {
+                        Debug.Fail("invalid Tsumogiri! tsumogiri is true but tumopai and discard pai are NOT same.");
                         return false;
                     }
                 }
@@ -443,10 +453,24 @@ namespace MjServer
 
         public bool CanReach(int actor)
         {
-            return tehais[actor].IsTenpai()
+            var booley =  (tehais[actor].IsTenpai() || tehais[actor].IsHora() )
                 && tehais[actor].IsMenzen()
                 && (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false)
                 && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
+
+
+            // for debug
+            if(booley == false)
+            {
+                Debug.Fail("can't reach!");
+                booley = (tehais[actor].IsTenpai() || tehais[actor].IsHora())
+                && tehais[actor].IsMenzen()
+                && (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false)
+                && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
+
+            }
+            // end for debug
+            return booley;
         }
 
         public bool CanOpenDora()

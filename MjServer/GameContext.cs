@@ -18,6 +18,11 @@ namespace MjServer
 
         List<MJsonMessageAll> messageList = new List<MJsonMessageAll>();
 
+        protected int lastActor = 0;
+        public void SetLastActor(int actor)
+        {
+            lastActor = actor;
+        }
 
         public GameContext()
         {
@@ -27,7 +32,7 @@ namespace MjServer
         
         public bool ValidateMessage(MJsonMessageAll msg)
         {
-            return gameState.ValidateMessage(msg);
+            return gameState.ValidateMessage(msg, lastActor);
         }
 
 
@@ -61,13 +66,13 @@ namespace MjServer
         public void ChangeState(MJsonMessageStartKyoku sentMessage)
         {
             gameState = AfterStartKyokuState.GetInstance();
-            gameState.SetLastActor(sentMessage.oya);
+            SetLastActor(sentMessage.oya);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageTsumo sentMessage)
         {
             gameState = AfterTsumoState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageDahai sentMessage, bool isReachDahai)
@@ -80,37 +85,37 @@ namespace MjServer
             {
                 gameState = AfterDahiState.GetInstance();
             }
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessagePon sentMessage)
         {
             gameState = AfterPonState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageChi sentMessage)
         {
             gameState = AfterChiState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageDaiminkan sentMessage)
         {
             gameState = AfterDaiminkanState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageAnkan sentMessage)
         {
             gameState = AfterAnkanState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageKakan sentMessage)
         {
             gameState = AfterKakanState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageDora sentMessage)
@@ -127,7 +132,7 @@ namespace MjServer
         public void ChangeState(MJsonMessageReach sentMessage)
         {
             gameState = AfterReachState.GetInstance();
-            gameState.SetLastActor(sentMessage.actor);
+            SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
         public void ChangeState(MJsonMessageReachAccept sentMessage)

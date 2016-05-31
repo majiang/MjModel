@@ -174,7 +174,7 @@ namespace MjServer
                 {
                     Debug.Fail(" failed execute message !");
                     OnErrorDetected();
-
+                    logger.OutPutFile();
 
                     return;
                 }
@@ -350,10 +350,7 @@ namespace MjServer
                 gameContext.ChangeState(msgobj);
                 return true;
             }
-            else
-            {
-                gameModel.CanReach(actor);
-            }
+
             return false;
         }
 
@@ -418,6 +415,7 @@ namespace MjServer
             var msgobj = gameModel.EndGame();
             SendMJsonObject(msgobj);
             gameContext.ChangeState(msgobj);
+            logger.OutPutFile();
             CloseRoom();
             return true;
         }

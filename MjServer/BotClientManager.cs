@@ -15,7 +15,7 @@ namespace MjServer
             {
                 var client = new ClientFacade("bot_" + roomName, roomName);
                 client.SetLoggable(false);
-                Task.Run(() => client.StartClient());
+                client.StartClient();
             }
         }
     }

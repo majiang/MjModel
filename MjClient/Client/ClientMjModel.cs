@@ -148,7 +148,8 @@ namespace MjClient
 
         public bool CanReach(int playerId)
         {
-            return tehais[playerId].IsMenzen()
+            return (tehais[playerId].IsTenpai() || tehais[playerId].IsHora() )
+                && tehais[playerId].IsMenzen()
                 && (infoForResults[playerId].IsReach == false && infoForResults[playerId].IsDoubleReach == false)
                 && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
