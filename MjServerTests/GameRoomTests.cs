@@ -55,7 +55,6 @@ namespace MjServer.Tests
 
             foreach (var kyokuMsg in splitedEachKyokuMsgList)
             {
-
                 // start kyoku
                 room.gameModel.StartKyoku();
 

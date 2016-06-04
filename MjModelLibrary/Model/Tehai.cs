@@ -276,7 +276,10 @@ namespace MjModelLibrary
                 return false;
             }
 
+
+            // TODO
             // kuikae is not allowed
+            /*
             consumedIdList.Sort();
             var consumedStartId = consumedIdList[0] % MJUtil.LENGTH_SYU_ONE_NUMBERS;
             var isRyanmen =  ( (consumedIdList[1] - consumedIdList[0]) == 1)
@@ -286,7 +289,7 @@ namespace MjModelLibrary
             {
                 
             }
-
+            */
 
             return true;
         }
