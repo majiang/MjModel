@@ -215,7 +215,6 @@ namespace MjServer
         public MJsonMessageHora Hora(int actor, int target, string pai)
         {
 
-            // change field
             field = Field.ChangeOnHora(field, actor);
             scores = calclatedHoraMessage.scores;
             return calclatedHoraMessage;
@@ -311,10 +310,12 @@ namespace MjServer
         {
             if ( ( (target != actor) && ((target + 1) % 4 == actor) ) == false)
             {
+                Debug.Fail("invalid chi! target or actor or both is invalid.");
                 return false;
             }
             if (pai != kawas[target].discards.Last().PaiString)
             {
+                Debug.Fail("invalid chi! target didn't discard the pai.");
                 return false;
             }
 
@@ -327,11 +328,13 @@ namespace MjServer
         {
             if ((target != actor) == false)
             {
+                Debug.Fail("invalid pon! target or actor or both is invalid.");
                 return false;
             }
 
             if (pai != kawas[target].discards.Last().PaiString)
             {
+                Debug.Fail("invalid pon! target didn't discard the pai.");
                 return false;
             }
 
@@ -346,6 +349,7 @@ namespace MjServer
             // if hora contains any yaku, return false. 
             if (horaResult.yakuResult.HasYakuExcludeDora == false)
             {
+                Debug.Fail("invalid hora! actor tehai don't contain yaku.");
                 return false;
             }
 
@@ -453,24 +457,31 @@ namespace MjServer
 
         public bool CanReach(int actor)
         {
-            var booley =  (tehais[actor].IsTenpai() || tehais[actor].IsHora() )
-                && tehais[actor].IsMenzen()
-                && (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false)
-                && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
-
-
-            // for debug
-            if(booley == false)
+            var isTenpai = (tehais[actor].IsTenpai() || tehais[actor].IsHora());
+            if (isTenpai == false)
             {
-                Debug.Fail("can't reach!");
-                booley = (tehais[actor].IsTenpai() || tehais[actor].IsHora())
-                && tehais[actor].IsMenzen()
-                && (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false)
-                && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
-
+                Debug.Fail("invalid reach! tehai is not tenpai.");
             }
-            // end for debug
-            return booley;
+
+            var isMenzen = tehais[actor].IsMenzen();
+            if (isMenzen == false)
+            {
+                Debug.Fail("invalid reach! tehai is not menzen.");
+            }
+
+            var isActorNotAlreadyReached = (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false);
+            if (isActorNotAlreadyReached == false)
+            {
+                Debug.Fail("invalid reach! actor already reached.");
+            }
+
+            var isAllowedTurn = (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
+            if (isAllowedTurn == false)
+            {
+                Debug.Fail("invalid reach! reach is not allowed in last turn.");
+            }
+
+            return isTenpai && isMenzen && isActorNotAlreadyReached && isAllowedTurn;
         }
 
         public bool CanOpenDora()

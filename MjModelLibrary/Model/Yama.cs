@@ -38,8 +38,6 @@ namespace MjModelLibrary
             yamaPointer = 0;
             rinshanPointer = 0;
             doraPointer = 0;
-
-            //ドラ表設定
             OpenDoraOmote();
         }
 
@@ -128,8 +126,7 @@ namespace MjModelLibrary
                 haipais[2].Add(DoTsumo());
                 haipais[3].Add(DoTsumo());
             }
-            List<string> testDoubleReach = new List<string>() { "4m", "4m", "2p", "2p", "3p", "3p", "4p", "4p", "5s", "5s", "6s", "F", "F" };
-            haipais[3] = testDoubleReach.Select(e => new Pai(e)).ToList();
+
             return haipais;
         }
 

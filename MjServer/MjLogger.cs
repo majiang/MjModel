@@ -73,7 +73,7 @@ namespace MjServer
             {
                 Directory.CreateDirectory(outputfolder);
             }
-            var outputFile = outputfolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_fff") + ".mjson";
+            var outputFile = outputfolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid()+ ".mjson";
 
             using (StreamWriter sw = new StreamWriter(outputFile, false, Encoding.GetEncoding("utf-8")))
             {
@@ -90,6 +90,7 @@ namespace MjServer
 
             
         }
+        
     }
 
 }
