@@ -252,7 +252,6 @@ namespace MjServer.Tests
             model.ReachAccept();
 
             Assert.AreEqual(startPoint - reachPoint, model.scores[0]);
-            Assert.IsFalse(model.CanReach(0));
         }
 
         [TestMethod()]

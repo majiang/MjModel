@@ -7,7 +7,7 @@ using MjClient;
 
 namespace MjServer
 {
-    class BotClientManager
+    public class BotClientManager
     {
         public void GenerateClient(string roomName, int needNum)
         {

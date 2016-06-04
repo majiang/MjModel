@@ -28,7 +28,7 @@ namespace MjModelLibrary
 
         public static readonly int LENGTH_ALLPAI = 34 * 4;
         public static readonly int LENGTH_SYU_ALL = 34;
-        public static readonly int LENGTH_SYU_NUMBERS = 9;
+        public static readonly int LENGTH_SYU_ONE_NUMBERS = 9;
 
 
         public static readonly int LENGTH_HAIPAI = 13;

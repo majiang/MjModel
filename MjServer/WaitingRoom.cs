@@ -25,8 +25,6 @@ namespace MjServer
         public async void StartWaiting()
         {
 
-
-
             IPAddress ipAdd = IPAddress.Parse(Properties.Settings.Default.ipAddress);//LAN
             int port = Properties.Settings.Default.port;
             TcpListener server = new TcpListener(ipAdd, port);
@@ -44,7 +42,7 @@ namespace MjServer
 
 
             // bot client genarator 
-            //Task.Run(() => TimerTrigger());
+            Task.Run(() => TimerTrigger());
 
             while (true)
             {
@@ -79,7 +77,7 @@ namespace MjServer
             semaphore.Release();
         }
 
-        private System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);
+        private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         async void RouteMessage(string message, ClientHolderInterface clientHolder)
         {
 
@@ -109,11 +107,19 @@ namespace MjServer
             await semaphore.WaitAsync();
             if (mjsonObject.IsJOIN())
             {
-                //TODO
-                //check clientNum
-                
-
                 var roomName = mjsonObject.room;
+
+                // check clientNum
+                if (roomNameWaitingNumMap[roomName] >= Constants.PLAYER_NUM)
+                {
+                    Debug.WriteLine("target room is full!");
+                    var errorMessasge = JsonConvert.SerializeObject(new MJsonMessageError(message));
+                    clientHolder.SendMessageToClient(errorMessasge);
+                    clientHolder.Disconnect();
+                    return;
+                }
+
+                // add client
                 clientHolderRoomNameMap.Add(clientHolder, roomName);
                 clientHolderClientNameMap.Add(clientHolder, mjsonObject.name);
                 var alreadyWaitingInTargetRoom = roomNameWaitingNumMap.ContainsKey(roomName);
@@ -156,7 +162,7 @@ namespace MjServer
                 }
             }
 
-            //remove client from waitingroom
+            // remove client from waitingroom
             foreach(var player in playerList)
             {
                 clientHolderRoomNameMap.Remove(player.Key);
@@ -166,7 +172,7 @@ namespace MjServer
             roomNameWaitingNumMap.Remove(startRoomName);
  
 
-            //register client to Gameroom
+            // register client to Gameroom
             StartRoomHandler(playerList);
         }
 

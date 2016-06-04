@@ -260,20 +260,33 @@ namespace MjModelLibrary
                 }
             }
 
-            var ids = consumed.Select(e => PaiConverter.STRING_TO_ID[e]);
+            var consumedIdList = consumed.Select(e => PaiConverter.STRING_TO_ID[e]).ToList();
 
             // chi consumed pais don't contains jihai.
-            if( ids.Any( e => MJUtil.IsJihaiPaiId(e) ))
+            var paiId = PaiConverter.STRING_TO_ID[pai];
+            if ( MJUtil.IsJihaiPaiId(paiId) || consumedIdList.Any( e => MJUtil.IsJihaiPaiId(e) ) )
             {
                 return false;
             }
 
-            // chi pais must contains one type ( Characters, Circles, Bamboos )
-            var type = ids.First() / 9;
-            if (ids.Any(e => (e/9) != type))
+            // all chi pais must constituted one type ( manzu, pinzu, souzu )
+            var type = paiId / MJUtil.LENGTH_SYU_ONE_NUMBERS;
+            if (consumedIdList.Any(e => (e / MJUtil.LENGTH_SYU_ONE_NUMBERS) != type))
             {
                 return false;
             }
+
+            // kuikae is not allowed
+            consumedIdList.Sort();
+            var consumedStartId = consumedIdList[0] % MJUtil.LENGTH_SYU_ONE_NUMBERS;
+            var isRyanmen =  ( (consumedIdList[1] - consumedIdList[0]) == 1)
+                            && ( 1 <= consumedStartId && consumedStartId <= 7 );
+
+            if (isRyanmen)
+            {
+                
+            }
+
 
             return true;
         }

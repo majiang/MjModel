@@ -28,19 +28,19 @@ namespace MjServer
                               .OrderBy(e => (e.actor > e.target ? e.actor - Constants.PLAYER_NUM : e.actor))// nearest player hora is selected 
                               .First();
             }
-            else if (msgList.Exists(e => e.IsDAIMINKAN()))
+            if (msgList.Exists(e => e.IsDAIMINKAN()))
             {
                 return msgList.First(e => e.IsDAIMINKAN());
             }
-            else if (msgList.Exists(e => e.IsPON()))
+            if (msgList.Exists(e => e.IsPON()))
             {
                 return msgList.First(e => e.IsPON());
             }
-            else if (msgList.Exists(e => e.IsCHI()))
+            if (msgList.Exists(e => e.IsCHI()))
             {
                 return msgList.First(e => e.IsCHI());
             }
-            else if (msgList.Exists(e=> e.IsNONE() == false))
+            if (msgList.Exists(e=> e.IsNONE() == false))
             {
                 return msgList.First(e => e.IsNONE() == false);
             }

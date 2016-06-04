@@ -275,7 +275,7 @@ namespace MjServer
                     }
                     else
                     {
-                        Debug.Fail("invalid Tsumogiri! tsumogiri is false but tumopai and discard pai are same.");
+                        logger.Log("invalid Tsumogiri! tsumogiri is false but tumopai and discard pai are same.");
                         return false;
                     }
                 }
@@ -299,7 +299,7 @@ namespace MjServer
                     }
                     else
                     {
-                        Debug.Fail("invalid Tsumogiri! tsumogiri is true but tumopai and discard pai are NOT same.");
+                        logger.Log("invalid Tsumogiri! tsumogiri is true but tumopai and discard pai are NOT same.");
                         return false;
                     }
                 }
@@ -310,12 +310,12 @@ namespace MjServer
         {
             if ( ( (target != actor) && ((target + 1) % 4 == actor) ) == false)
             {
-                Debug.Fail("invalid chi! target or actor or both is invalid.");
+                logger.Log("invalid chi! target or actor or both is invalid.");
                 return false;
             }
             if (pai != kawas[target].discards.Last().PaiString)
             {
-                Debug.Fail("invalid chi! target didn't discard the pai.");
+                logger.Log("invalid chi! target didn't discard the pai.");
                 return false;
             }
 
@@ -328,13 +328,13 @@ namespace MjServer
         {
             if ((target != actor) == false)
             {
-                Debug.Fail("invalid pon! target or actor or both is invalid.");
+                logger.Log("invalid pon! target or actor or both is invalid.");
                 return false;
             }
 
             if (pai != kawas[target].discards.Last().PaiString)
             {
-                Debug.Fail("invalid pon! target didn't discard the pai.");
+                logger.Log("invalid pon! target didn't discard the pai.");
                 return false;
             }
 
@@ -349,7 +349,7 @@ namespace MjServer
             // if hora contains any yaku, return false. 
             if (horaResult.yakuResult.HasYakuExcludeDora == false)
             {
-                Debug.Fail("invalid hora! actor tehai don't contain yaku.");
+                logger.Log("invalid hora! actor tehai don't contain yaku.");
                 return false;
             }
 
@@ -458,28 +458,9 @@ namespace MjServer
         public bool CanReach(int actor)
         {
             var isTenpai = (tehais[actor].IsTenpai() || tehais[actor].IsHora());
-            if (isTenpai == false)
-            {
-                Debug.Fail("invalid reach! tehai is not tenpai.");
-            }
-
             var isMenzen = tehais[actor].IsMenzen();
-            if (isMenzen == false)
-            {
-                Debug.Fail("invalid reach! tehai is not menzen.");
-            }
-
             var isActorNotAlreadyReached = (infoForResultList[actor].IsReach == false && infoForResultList[actor].IsDoubleReach == false);
-            if (isActorNotAlreadyReached == false)
-            {
-                Debug.Fail("invalid reach! actor already reached.");
-            }
-
             var isAllowedTurn = (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
-            if (isAllowedTurn == false)
-            {
-                Debug.Fail("invalid reach! reach is not allowed in last turn.");
-            }
 
             return isTenpai && isMenzen && isActorNotAlreadyReached && isAllowedTurn;
         }
@@ -514,8 +495,6 @@ namespace MjServer
             {
                 return false;
             }
-            
-            
             return tehais[actor].CanDaiminkan(pai, consumed) && yama.CanKan();
         }
 
@@ -564,8 +543,6 @@ namespace MjServer
 
         static readonly int TONPU_KYOKU_NUM = 4;
         static readonly int TONNAN_KYOKU_NUM = 8;
-
-
         public bool CanEndGame()
         {
             if (Properties.Settings.Default.KyokuNum == TONPU_KYOKU_NUM)

@@ -33,9 +33,13 @@ namespace MjServer
             logger.Log(msg);
         }
 
-        internal void OutPutFile()
+        public void OutPutFile()
         {
             logger.OutPutFile(logStartTime);
+        }
+        public void OutPutErrorFile()
+        {
+            logger.OutPutErrorFile(logStartTime);
         }
     }
 
@@ -43,6 +47,7 @@ namespace MjServer
     {
         void Log(string msg);
         void OutPutFile(DateTime logStartTime);
+        void OutPutErrorFile(DateTime logStartTime);
     }
 
     class DebugConsoleLogger : Logger
@@ -53,6 +58,10 @@ namespace MjServer
         }
 
         public void OutPutFile(DateTime logStartTime)
+        {
+
+        }
+        public void OutPutErrorFile(DateTime logStartTime)
         {
 
         }
@@ -68,18 +77,38 @@ namespace MjServer
 
         public void OutPutFile(DateTime logStartTime)
         {
+            var targetFolder = MakeTargetDirectory(logStartTime);
+
+            var outputFilePath = targetFolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid()+ ".mjson";
+
+            WriteFile(outputFilePath);
+        }
+
+        public void OutPutErrorFile(DateTime logStartTime)
+        {
+            var targetFolder = MakeTargetDirectory(logStartTime);
+
+            var outputErrorFilePath = targetFolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid() +"_Error"+ ".mjson";
+
+            WriteFile(outputErrorFilePath);
+        }
+
+        string MakeTargetDirectory(DateTime logStartTime)
+        {
             var outputfolder = "./log/" + logStartTime.ToString("yyyy") + "/" + logStartTime.ToString("MM");
             if (Directory.Exists(outputfolder) == false)
             {
                 Directory.CreateDirectory(outputfolder);
             }
-            var outputFile = outputfolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid()+ ".mjson";
-
-            using (StreamWriter sw = new StreamWriter(outputFile, false, Encoding.GetEncoding("utf-8")))
+            return outputfolder;
+        }
+        void WriteFile(string outputFilePath)
+        {
+            using (StreamWriter sw = new StreamWriter(outputFilePath, false, Encoding.GetEncoding("utf-8")))
             {
                 try
                 {
-                    msgList.ForEach( e => sw.WriteLine(e) );
+                    msgList.ForEach(e => sw.WriteLine(e));
                     sw.Close();
                 }
                 catch (Exception e)
@@ -88,9 +117,7 @@ namespace MjServer
                 }
             }
 
-            
         }
-        
     }
 
 }

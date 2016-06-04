@@ -784,11 +784,11 @@ namespace MjModelLibrary.Result
                 }
             }
 
-            for(int i=0; i< MJUtil.LENGTH_SYU_NUMBERS; i++)
+            for(int i=0; i< MJUtil.LENGTH_SYU_ONE_NUMBERS; i++)
             {
-                if ( syu[i + MJUtil.LENGTH_SYU_NUMBERS * 0] >= 1
-                  && syu[i + MJUtil.LENGTH_SYU_NUMBERS * 1] >= 1
-                  && syu[i + MJUtil.LENGTH_SYU_NUMBERS * 2] >= 1)
+                if ( syu[i + MJUtil.LENGTH_SYU_ONE_NUMBERS * 0] >= 1
+                  && syu[i + MJUtil.LENGTH_SYU_ONE_NUMBERS * 1] >= 1
+                  && syu[i + MJUtil.LENGTH_SYU_ONE_NUMBERS * 2] >= 1)
                 {
                     return true;
                 }
@@ -819,7 +819,7 @@ namespace MjModelLibrary.Result
                 }
                 else
                 {
-                    var div = tartsu.TartsuStartPaiSyu / MJUtil.LENGTH_SYU_NUMBERS;
+                    var div = tartsu.TartsuStartPaiSyu / MJUtil.LENGTH_SYU_ONE_NUMBERS;
                     hasManzu |= (div == 0);
                     hasPinzu |= (div == 1);
                     hasSouzu |= (div == 2);
@@ -850,7 +850,7 @@ namespace MjModelLibrary.Result
                     hasJi |= true;
                     continue;
                 }
-                var div = syu.index / MJUtil.LENGTH_SYU_NUMBERS;
+                var div = syu.index / MJUtil.LENGTH_SYU_ONE_NUMBERS;
                 hasManzu |= (div == 0);
                 hasPinzu |= (div == 1);
                 hasSouzu |= (div == 2);
@@ -874,7 +874,7 @@ namespace MjModelLibrary.Result
                 {
                     return false;
                 }
-                var div = tartsu.TartsuStartPaiSyu / MJUtil.LENGTH_SYU_NUMBERS;
+                var div = tartsu.TartsuStartPaiSyu / MJUtil.LENGTH_SYU_ONE_NUMBERS;
                 hasManzu |= (div == 0);
                 hasPinzu |= (div == 1);
                 hasSouzu |= (div == 2);
@@ -900,7 +900,7 @@ namespace MjModelLibrary.Result
                 {
                     return false;
                 }
-                var div = syu.index / MJUtil.LENGTH_SYU_NUMBERS;
+                var div = syu.index / MJUtil.LENGTH_SYU_ONE_NUMBERS;
                 hasManzu |= (div == 0);
                 hasPinzu |= (div == 1);
                 hasSouzu |= (div == 2);

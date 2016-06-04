@@ -174,7 +174,7 @@ namespace MjServer
                 {
                     Debug.Fail(" failed execute message !");
                     OnErrorDetected();
-                    logger.OutPutFile();
+
 
                     return;
                 }
@@ -199,6 +199,7 @@ namespace MjServer
             var msgString = JsonConvert.SerializeObject(msgObj);
             // log errorMessage
             logger.Log(msgString);
+            logger.OutPutErrorFile();
             Debug.WriteLine(msgString);
             // send error to client
             clients.ForEach(e => e.SendMessageToClient(msgString));
@@ -351,6 +352,7 @@ namespace MjServer
                 return true;
             }
 
+            logger.Log("invalid reach! actor:"+actor);
             return false;
         }
 
