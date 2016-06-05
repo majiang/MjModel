@@ -25,15 +25,6 @@ namespace MjServer.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("11600")]
-        public int port {
-            get {
-                return ((int)(this["port"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
         public string ipAddress {
             get {
@@ -50,6 +41,15 @@ namespace MjServer.Properties {
             }
             set {
                 this["KyokuNum"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("11601")]
+        public int port {
+            get {
+                return ((int)(this["port"]));
             }
         }
     }

@@ -24,7 +24,7 @@ namespace MjClient.IO
 
 
         string ipAddress = "127.0.0.1";
-        int port = 11600;
+        int port = 11601;
         TcpClient tcpClient;
         public ClientIO(){}
 

@@ -2,14 +2,14 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MjServer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="port" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">11600</Value>
-    </Setting>
     <Setting Name="ipAddress" Type="System.String" Scope="Application">
       <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="KyokuNum" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="port" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">11601</Value>
     </Setting>
   </Settings>
 </SettingsFile>
