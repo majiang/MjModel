@@ -118,9 +118,10 @@ namespace MjClient.AI
             && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
 
-        MJsonMessageDahai GetMessageBufferForRiachDahai()
+        public MJsonMessageDahai GetMessageBufferForRiachDahai()
         {
             return MessagebufferForReach;
         }
+
     }
 }
