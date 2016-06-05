@@ -20,7 +20,7 @@ namespace MjClient.AI
 
 
 
-        public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
+        public void ThinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
                                               List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama)
         {
             if((ifrs[mypositionId].IsReach || ifrs[mypositionId].IsDoubleReach) && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1)
@@ -43,7 +43,7 @@ namespace MjClient.AI
         public event SendKakanHandler SendKakan;
         public event SendReachHandler SendReach;
         public MJsonMessageDahai MessagebufferForReach;
-        public void thinkOnMyTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+        public void ThinkOnMyTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
                                  Field field, List<InfoForResult> ifrs, Yama yama)
         {
             var myTehai = tehais[mypositionId];
@@ -71,7 +71,7 @@ namespace MjClient.AI
 
 
 
-        public void thinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+        public void ThinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
                                  Field field, List<InfoForResult> ifrs, Yama yama)
         {
             var myTehai = tehais[mypositionId];
@@ -116,6 +116,11 @@ namespace MjClient.AI
             && tehai.IsMenzen()
             && (infoForResult.IsReach == false && infoForResult.IsDoubleReach == false)
             && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
+        }
+
+        MJsonMessageDahai GetMessageBufferForRiachDahai()
+        {
+            return MessagebufferForReach;
         }
     }
 }

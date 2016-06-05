@@ -36,7 +36,7 @@ namespace MjClient.AI
         /// <param name="tehais">all player's tehais</param>
         /// <param name="kawas">all player's discards</param>
         /// <param name="field">field infomation</param>
-        void thinkOnOtherPlayerDoroped(int myPositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama);
+        void ThinkOnOtherPlayerDoroped(int myPositionId, int dapaiActor, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama);
 
 
 
@@ -54,12 +54,14 @@ namespace MjClient.AI
         /// <param name="tehais">my tehai</param>
         /// <param name="kawas">all player kawa</param>
         /// <param name="field">field infomation</param>
-        void thinkOnMyTsumo(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama);
+        void ThinkOnMyTsumo(int myPositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama);
 
 
 
         //action after furo
-        void thinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+        void ThinkOnFuroDahai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
                          Field field, List<InfoForResult> ifrs, Yama yama);
+
+        MJsonMessageDahai GetMessageBufferForRiachDahai();
     }
 }
