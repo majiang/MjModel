@@ -49,14 +49,16 @@ namespace MjModelLibrary.Result
             jifuuList.Add(WindList[jifuuIndex]);
         }
 
+
         public void RegisterDoraMarker(string paiString)
         {
-            doraMarkerList.Add(PaiConverter.STRING_TO_ID[paiString]);
-            doraOmoteMultiple[PaiConverter.STRING_TO_ID[paiString]]++;
-
+                doraMarkerList.Add(PaiConverter.STRING_TO_ID[paiString]);
+                doraOmoteMultiple[PaiConverter.STRING_TO_ID[paiString]]++;
         }
         public void RegisterUraDoraMarker(List<string> paiStringList)
         {
+            uradoraMarkerList = new List<int>();
+            uradoraOmoteMultiple = new int[MJUtil.LENGTH_SYU_ALL];
             foreach (var paiString in paiStringList)
             {
                 uradoraMarkerList.Add(PaiConverter.STRING_TO_ID[paiString]);
@@ -77,7 +79,7 @@ namespace MjModelLibrary.Result
             {
                 return doraOmoteMultiple[targetDoraOmote] + uradoraOmoteMultiple[targetDoraOmote];
             }
-            //リーチしていない場合表ドラを考慮
+            //リーチしていない場合表ドラのみ考慮
             return doraOmoteMultiple[targetDoraOmote];
         }
 
