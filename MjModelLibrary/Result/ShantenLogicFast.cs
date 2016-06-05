@@ -190,8 +190,7 @@ namespace MjModelLibrary.Result
                     }
                 }
             }
-            //3枚以上の牌が複数あり、待ち候補牌が無い場合を想定
-            //ex.111122255m55577p→チートイツ2シャンテン
+            // ex.111122255m55577p > return 2 (by chitoitsu)
             if (CHITOITSU_SYU_NUM - syuNum > shanten)
             {
                 shanten = CHITOITSU_SYU_NUM - syuNum;
@@ -202,8 +201,11 @@ namespace MjModelLibrary.Result
         private int CalcKokushiShanten(int[] syu)
         {
             int shanten = SHANTEN_MAX_KOKUSHI;
-            int[] target = { 0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33 };//Kokushi effective tiles
             bool hasHead = false;
+
+            //Kokushi effective tiles
+            int[] target = { 0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33 };
+            
 
             for (int i = 0; i < target.Length; i++)
             {
@@ -242,7 +244,9 @@ namespace MjModelLibrary.Result
             Array.Copy(syu, SYU_LENGTH * 3, ji, 0, JI_LENGTH);
 
 
-            int[] manResult = FastCountBaseMentsuNum(man);//Result[4] = {mentsuNum_coefficient2,kouhoNum_coef2,mentsNum_coef10,kouhoNum,coef10}
+            // Result contains values as follws > { mentsuNum_coefficient2, kouhoNum_coef2, mentsNum_coef10, kouhoNum,coef10 }
+            // reference > http://mahjong.ara.black/etc/shanten/shanten7.htm
+            int[] manResult = FastCountBaseMentsuNum(man);
             int[] pinResult = FastCountBaseMentsuNum(pin);
             int[] souResult = FastCountBaseMentsuNum(sou);
 

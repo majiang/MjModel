@@ -11,7 +11,7 @@ namespace MjModelLibrary.Result
     {
 
         private static ShantenCalclator ss;
-        IShantenLogic sb = new ShantenLogicBase();
+        IShantenLogic sb = new ShantenLogicFast();
 
         private ShantenCalclator() { }
 

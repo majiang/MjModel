@@ -10,6 +10,9 @@ namespace MjClient.AI
 {
     class MinShantenAI : AIInterface
     {
+
+        ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
+
         public event SendPonHandler SendPon;
         public event SendChiHandler SendChi;
         public event SendDaiminkanHandler SendDaiminkan;
@@ -17,24 +20,6 @@ namespace MjClient.AI
 
 
 
-        public MJsonMessageDahai MessagebufferForReach;
-
-
-
-        ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
-
-
-
-        /// <summary>
-        /// think action is called when other player discard pai.
-        /// AI must send hora, pon, chi, daiminkan or none message in this function.
-        /// </summary>
-        /// <param name="mypositionId">your ID</param>
-        /// <param name="dapaiActor">player ID who doropped pai</param>
-        /// <param name="pai">dopped pai name</param>
-        /// <param name="tehais">all player's tehais</param>
-        /// <param name="kawas">all player's discards</param>
-        /// <param name="field">field infomation</param>
         public void thinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
                                               List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama)
         {
@@ -51,20 +36,13 @@ namespace MjClient.AI
 
 
 
+
         public event SendHoraHandler SendHora;
         public event SendDahaiHandler SendDahai;
         public event SendAnkanHandler SendAnkan;
         public event SendKakanHandler SendKakan;
         public event SendReachHandler SendReach;
-        /// <summary>
-        /// think action is called when player tumo pai.
-        /// this function must send hora, ankan, kakan, reach or dahai message.
-        /// </summary>
-        /// <param name="mypositionId">my id</param>
-        /// <param name="pai">tsumo pai</param>
-        /// <param name="tehais">my tehai</param>
-        /// <param name="kawas">all player kawa</param>
-        /// <param name="field">field infomation</param>
+        public MJsonMessageDahai MessagebufferForReach;
         public void thinkOnMyTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
                                  Field field, List<InfoForResult> ifrs, Yama yama)
         {
