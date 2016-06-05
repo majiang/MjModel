@@ -9,7 +9,7 @@ namespace MjClient
 {
     class Program
     {
-        readonly static int AllGameNum = 1000;
+        readonly static int AllGameNum = 100;
         readonly static int ConcurrentNum = 3;
 
         static int FinishCount = 0;
