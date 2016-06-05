@@ -110,7 +110,7 @@ namespace MjServer
                 var roomName = mjsonObject.room;
 
                 // check clientNum
-                if (roomNameWaitingNumMap[roomName] >= Constants.PLAYER_NUM)
+                if ( roomNameWaitingNumMap.ContainsKey(roomName) && roomNameWaitingNumMap[roomName] >= Constants.PLAYER_NUM)
                 {
                     Debug.WriteLine("target room is full!");
                     var errorMessasge = JsonConvert.SerializeObject(new MJsonMessageError(message));

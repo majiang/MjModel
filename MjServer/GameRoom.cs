@@ -190,6 +190,7 @@ namespace MjServer
         {
             clients.ForEach(e => e.Disconnect());
             clients.Clear();
+            OnAfterGameEnd(this);
         }
 
         void OnErrorDetected()
@@ -207,7 +208,7 @@ namespace MjServer
             // disconnect client
             clients.ForEach(e => e.Disconnect());
             clients.Clear();
-            //OnAfterError(this);
+            OnAfterError(this);
         }
 
 

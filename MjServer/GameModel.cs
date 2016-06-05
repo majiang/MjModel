@@ -54,7 +54,7 @@ namespace MjServer
             tehais = new List<Tehai> { new Tehai(haipais[0]), new Tehai(haipais[1]), new Tehai(haipais[2]), new Tehai(haipais[3]), };
             SetCurrentActor(field.OyaPlayerId);
             infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, field.OyaPlayerId), new InfoForResult(field.KyokuId, 1, field.OyaPlayerId), new InfoForResult(field.KyokuId, 2, field.OyaPlayerId), new InfoForResult(field.KyokuId, 3, field.OyaPlayerId) };
-
+            infoForResultList.ForEach(e=> e.RegisterDoraMarker(yama.GetDoraMarkerStrings()[0]));
             return new MJsonMessageStartKyoku(
                         field.Bakaze.PaiString,
                         field.KyokuId,
@@ -186,6 +186,7 @@ namespace MjServer
         public MJsonMessageDora OpenDora()
         {
             var openedPai = yama.OpenDoraOmote();
+            infoForResultList.ForEach(e => e.RegisterDoraMarker(openedPai.PaiString));
             return new MJsonMessageDora(openedPai.PaiString);
         }
 
@@ -344,8 +345,9 @@ namespace MjServer
         MJsonMessageHora calclatedHoraMessage;
         public bool CanHora(int actor, int target, string pai)
         {
+
             // OreCelcHoraResult affects calclatedHoraMessage.
-            var horaResult = PreCalcHoraResult(actor, target, pai);
+            var horaResult = CalcHoraResult(actor, target, pai);
             // if hora contains any yaku, return false. 
             if (horaResult.yakuResult.HasYakuExcludeDora == false)
             {
@@ -356,14 +358,15 @@ namespace MjServer
             return true;
             
         }
-        HoraResult PreCalcHoraResult(int actor, int target, string pai)
+        HoraResult CalcHoraResult(int actor, int target, string pai)
         {
-
+            
             var ifr = infoForResultList[actor];
             ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
             ifr.IsMenzen = tehais[actor].IsMenzen();
             ifr.IsFured = !ifr.IsMenzen;
             ifr.IsTsumo = actor == target;
+            ifr.RegisterUraDoraMarker(yama.GetUradoraMarkerStrings());
 
             if (ifr.IsTsumo)
             {

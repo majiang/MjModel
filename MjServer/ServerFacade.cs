@@ -17,6 +17,8 @@ namespace MjServer
             waitingRoom = new WaitingRoom();
             waitingRoom.StartRoomHandler += OnStartGameRoom;
             gameRooms = new List<GameRoom>();
+
+            
             
         }
 
