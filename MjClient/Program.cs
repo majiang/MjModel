@@ -9,32 +9,52 @@ namespace MjClient
 {
     class Program
     {
-        readonly static int ALL_GAME_NUM = 100;
+        readonly static int AllGameNum = 1000;
+        readonly static int ConcurrentNum = 3;
+
+        static int FinishCount = 0;
+
         static void Main(string[] args)
         {
-            for (int i = 0; i < ALL_GAME_NUM; i++)
+            var i = 0;
+            while(i < ConcurrentNum)
             {
-                Console.WriteLine("start game : " + i);
-                DoOneGame();
-                Console.WriteLine("end game : " + i);
+                var roomId = i.ToString();
+                Task.Run(() => DoGame(roomId));
+                i += 1;
+            }
+
+            while( FinishCount < ConcurrentNum)
+            {
+                Thread.Sleep(10);
             }
         }
 
 
-        static void DoOneGame()
+        static void DoGame(string roomId)
         {
-            var roomName = "testRoom";
-            ClientFacade cf0 = new ClientFacade("player0", roomName);
 
-
-            //cf0.SetLoggable(true);
-
-            cf0.StartClient();
-
-            while (cf0.IsEndGame == false)
+            var roomName = "testRoom" + roomId;
+            var targetGameNum = AllGameNum / ConcurrentNum;
+            var gameCount = 0;
+            while (gameCount < targetGameNum)
             {
-                Thread.Sleep(10);
+                Console.WriteLine("start game : room" + roomId + ", gameCount:" + gameCount);
+                
+                ClientFacade cf0 = new ClientFacade("player0", roomName);
+                //cf0.SetLoggable(true);
+                cf0.StartClient();
+
+                while (cf0.IsEndGame == false)
+                {
+                    Thread.Sleep(10);
+                }
+
+                Console.WriteLine("end game : room" + roomId +", gameCount:"+gameCount);
+                gameCount += 1;
             }
+            Interlocked.Increment(ref FinishCount);
+
         }
     }
 }

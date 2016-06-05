@@ -79,7 +79,7 @@ namespace MjServer
         {
             var targetFolder = MakeTargetDirectory(logStartTime);
 
-            var outputFilePath = targetFolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid()+ ".mjson";
+            var outputFilePath = targetFolder + "\\" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid()+ ".mjson";
 
             WriteFile(outputFilePath);
         }
@@ -88,14 +88,14 @@ namespace MjServer
         {
             var targetFolder = MakeTargetDirectory(logStartTime);
 
-            var outputErrorFilePath = targetFolder + "/" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid() +"_Error"+ ".mjson";
+            var outputErrorFilePath = targetFolder + "\\" + logStartTime.ToString("yyyy_MM_dd_hh_mm_ss_") + Guid.NewGuid() +"_Error"+ ".mjson";
 
             WriteFile(outputErrorFilePath);
         }
 
         string MakeTargetDirectory(DateTime logStartTime)
         {
-            var outputfolder = "./log/" + logStartTime.ToString("yyyy") + "/" + logStartTime.ToString("MM");
+            var outputfolder = ".\\log\\" + logStartTime.ToString("yyyy") + "\\" + logStartTime.ToString("MM");
             if (Directory.Exists(outputfolder) == false)
             {
                 Directory.CreateDirectory(outputfolder);
