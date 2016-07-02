@@ -55,7 +55,8 @@ namespace MjServer
 
         void TimerTrigger()
         {
-            var TrigerBitween = 5 * 1000;
+            //var TrigerBitween = 5 * 1000;
+            var TrigerBitween = 10;
             while (true)
             {
                 //Debug.WriteLine("Triggerd!");

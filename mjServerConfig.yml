@@ -1,0 +1,45 @@
+- hosts: localhost
+  connection: local
+  remote_user: rick
+  tasks:
+    - name: add mono key
+      become: yes
+      apt_key:
+        keyserver=keyserver.ubuntu.com
+        id=3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        state=present
+
+    - name: add repository
+      become: yes
+      apt_repository:
+        repo='deb http://download.mono-project.com/repo/debian wheezy main'
+        state=present
+
+    - name: apt install mono
+      become: yes
+      apt:
+        pkg=mono-complete
+        update_cache=yes
+
+    - name: apt install git
+      become: yes
+      apt:
+        pkg=git
+        update_cache=yes
+
+    - name: clone repository
+      git : repo=git://github.com/rick0000/Mjmodel.git dest=~/work/Server
+
+    - name: download nuget.exe
+      get_url:
+        url=http://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+        dest=~/work/Server/NuGet.exe
+
+    - name: restore dependency by nuget.exe
+      command: mono ./NuGet.exe restore ./MjModelProject.sln chdir=~/work/Server
+
+    - name: build server project
+      command: xbuild ./MjServer.csproj /p:Configuration=Release chdir=~/work/Server/MjServer
+
+    - name: build client project
+      command: xbuild ./MjClient.csproj /p:Configuration=Release chdir=~/work/Server/MjClient
