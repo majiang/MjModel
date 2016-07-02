@@ -14,11 +14,10 @@ namespace MjClient.IO
     /// <summary>
     /// Handles Game Message by Tcp Connection.
     /// </summary>
-    class ClientIO 
+    class TCPServerHolder : IServerHolder
     {
-        public event GetMessageHandler OnGetMessage;
+        public event GetMessageHandler OnGetMessageFromServer;
 
-        public delegate void GetMessageHandler(string message);
 
         string lineBreakMark = "\r\n";
 
@@ -26,17 +25,17 @@ namespace MjClient.IO
         string ipAddress = "127.0.0.1";
         int port = 11601;
         TcpClient tcpClient;
-        public ClientIO(){}
+        public TCPServerHolder(){}
 
 
         public void MakeConnection()
         {
             tcpClient = new TcpClient(ipAddress, port);
-            Thread thread = new Thread(RecieveMessage);
+            Thread thread = new Thread(WaitMessage);
             thread.Start();
         }
         
-        private void RecieveMessage()
+        private void WaitMessage()
         {
             StreamReader reader = new StreamReader(tcpClient.GetStream());
             string line = String.Empty;
@@ -51,7 +50,7 @@ namespace MjClient.IO
                     }
 
                     //delegate event
-                    OnGetMessage(line);
+                    GetMessageFromServer(line);
                     line = String.Empty;
                 }
             }
@@ -61,7 +60,13 @@ namespace MjClient.IO
             }
         }
 
-        private void SendMessage(string message)
+        public void GetMessageFromServer(string message)
+        {
+            OnGetMessageFromServer(message);
+        }
+
+
+        public void SendMessageToServer(string message)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -91,44 +96,44 @@ namespace MjClient.IO
 
         public void SendMJsonObject(MJsonMessageJoin jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessagePon jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageChi jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageDaiminkan jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageNone jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
 
         public void SendMJsonObject(MJsonMessageHora jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageDahai jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageAnkan jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageKakan jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
         public void SendMJsonObject(MJsonMessageReach jsonmsg)
         {
-            SendMessage(MjsonObjectToString(jsonmsg));
+            SendMessageToServer(MjsonObjectToString(jsonmsg));
         }
 
     }

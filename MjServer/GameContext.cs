@@ -155,6 +155,13 @@ namespace MjServer
             gameState = AfterEndGameState.GetInstance();
             messageList.Clear();
         }
+        public void ChangeState(MJsonMessageSetScene sentMessage)
+        {
+            gameState = AfterDahiState.GetInstance();
+            SetLastActor(sentMessage.actor);
+            messageList.Clear();
+        }
+        
 
         public event StartKyokuHandler StartKyoku;
         public event TsumoHandler Tsumo;

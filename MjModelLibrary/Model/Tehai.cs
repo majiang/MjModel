@@ -115,8 +115,6 @@ namespace MjModelLibrary
 
         public void Pon(int actor, int target, Pai pai, List<Pai> consumed)
         {
-
-
             //remove consumed
             foreach (var consumedPai in consumed)
             {
@@ -215,7 +213,20 @@ namespace MjModelLibrary
         {
             Kakan(actor,new Pai(pai), ConsumedStringToConsumedPai(consumed));
         }
-
+        public void kakanOnlyMakeFuro(int actor, string pai, List<string> consumed)
+        {
+            var paiObj = new Pai(pai);
+            foreach (var furo in furos)
+            {
+                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == paiObj.PaiNumber)
+                {
+                    furo.ftype = MJUtil.TartsuType.MINKANTSU;
+                    furo.consumed.Add(paiObj);
+                    furo.consumed.Sort();
+                    break;
+                }
+            }
+        }
 
 
 
@@ -446,6 +457,34 @@ namespace MjModelLibrary
             return furos.Count - furos.Count(e => e.ftype == MJUtil.TartsuType.ANKANTSU) == 0;
         }
 
+        public void SetScene(List<string> tehai, List<List<string>> furos)
+        {
+            this.tehai = tehai.Select(e => new Pai(e)).ToList();
+            this.furos = new List<Furo>();
+            tehaiString = GetTehaiStringList();
+
+
+            foreach (var furo in furos)
+            {
+                // List<List<type, actor, target, furotargetpai, consumedpai>>
+                var type = furo[0];
+                var actor = Int32.Parse( furo[1]);
+                var target = Int32.Parse(furo[2]);
+                var furopai = furo[3];
+                var consumedStart = 4;
+
+                if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[type] == MJUtil.TartsuType.ANKANTSU)
+                {
+                    this.furos.Add(new Furo(type, target, Pai.UNKNOWN_PAI_STRING , furo.GetRange(consumedStart, furo.Count - consumedStart)));
+                }
+                else
+                {
+                    this.furos.Add(new Furo(type, target, furopai, furo.GetRange(consumedStart, furo.Count - consumedStart)));
+                }
+
+            }
+
+        }
     }
 
     public class Furo
@@ -480,6 +519,20 @@ namespace MjModelLibrary
             this.consumed = consumed.Select(e => new Pai(e)).ToList();
             this.minPaiSyu = GetMin(this.furopai, this.consumed);
         }
+        public Furo(string typeString, int target, string pai, List<string> consumed)
+        {
+            if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP.ContainsKey(typeString) == false)
+            {
+                Debug.WriteLine("invalid Furo Type string !");
+                Debug.Assert(false);
+            }
+            this.ftype = MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[typeString];
+            this.target = target;
+            this.furopai = new Pai(pai);
+            this.consumed = consumed.Select(e => new Pai(e)).ToList();
+            this.minPaiSyu = GetMin(this.furopai, this.consumed);
+        }
+
 
 
         int GetMin(Pai furopai, List<Pai> consumed){

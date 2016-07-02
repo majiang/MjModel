@@ -120,7 +120,7 @@ namespace MjModelLibrary.Tests
 
                         foreach (var furo in obj.hora_furos)
                         {
-                            // ankan Furo don't contains furo.furopai
+                            // ankan don't contains furo.furopai
                             if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[furo[0]] == MJUtil.TartsuType.ANKANTSU)
                             {
                                 var f = new Furo(furo[0], Pai.UNKNOWN_PAI_STRING, furo.GetRange(1, furo.Count - 1));

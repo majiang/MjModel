@@ -29,6 +29,7 @@ namespace MjNetworkProtocolLibrary
         public const string RYUKYOKU = "ryukyoku";
         public const string NONE = "none";
         public const string ERROR = "error";
+        public const string SET_SCENE = "set_scene";
 
         public static List<string> MsgTypeList = new List<string>()
         {
@@ -50,7 +51,8 @@ namespace MjNetworkProtocolLibrary
             MsgType.END_GAME,
             MsgType.RYUKYOKU,
             MsgType.NONE,
-            MsgType.ERROR
+            MsgType.ERROR,
+            MsgType.SET_SCENE
         };
     }
 
@@ -123,6 +125,10 @@ namespace MjNetworkProtocolLibrary
         public bool IsNONE()
         {
             return type == MsgType.NONE;
+        }
+        public bool IsSET_SCENE()
+        {
+            return type == MsgType.SET_SCENE;
         }
     }
 
@@ -415,8 +421,56 @@ namespace MjNetworkProtocolLibrary
         }
     }
 
+    // message for set scene in simlation
+    public class MJsonMessageSetScene : MJsonMessageBase
+    {
+        
+        // yama 
+        public int rest_tsumo_num;
+        public List<string> dora_markers;
 
-    //サーバー側での受信メッセージパース用
+        // kawa
+        public List<List<string>> kawas;
+        public List<List<bool>> is_reached_kawapai;
+
+        // field
+        public List<int> scores;
+        public int kyoku;
+        public int honba;
+        public int kyotaku;
+        public string bakaze;
+        public int oya;
+        
+        // tehai
+        public List<List<string>> tehais;
+        public List<List<List<string>>> furos;
+
+        public int actor;
+        public int mypositionid;
+
+        public MJsonMessageSetScene(int rest_tsumo_num, List<string> dora_markers, List<List<string>> kawas, List<List<bool>> is_reached_kawapai, List<int> scores, int kyoku, int honba, int kyotaku, string bakaze, int oya, List<List<string>> tehais, List<List<List<string>>> furos, int actor, int mypositionid)
+        {
+            type = MsgType.SET_SCENE;
+            this.rest_tsumo_num = rest_tsumo_num;
+            this.dora_markers = dora_markers;
+            this.kawas = kawas;
+            this.is_reached_kawapai = is_reached_kawapai;
+            this.scores = scores;
+            this.kyoku = kyoku;
+            this.honba = honba;
+            this.kyotaku = kyotaku;
+            this.bakaze = bakaze;
+            this.oya = oya;
+
+            this.tehais = tehais;
+            this.furos = furos;
+            this.actor = actor;
+            this.mypositionid = mypositionid;
+            
+        }
+    } 
+
+    // サーバー側での受信メッセージパース用
     public class MJsonMessageAll : MJsonMessageBase
     {
         
@@ -453,5 +507,12 @@ namespace MjNetworkProtocolLibrary
 
         public string error_message;// for error
 
+        // for set scene
+        public int rest_tsumo_num;
+        public List<string> dora_markers;
+        public List<List<string>> kawas;
+        public List<List<bool>> is_reached_kawapai;
+        public List<List<List<string>>> furos;
+        public int mypositionid;
     }
 }

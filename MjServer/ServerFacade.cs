@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using MjNetworkProtocolLibrary;
 
 namespace MjServer
 {
@@ -34,7 +34,7 @@ namespace MjServer
 
 
 
-        void OnStartGameRoom( Dictionary<ClientHolderInterface, string> clients )
+        void OnStartGameRoom( Dictionary<IClientHolder, string> clients )
         {
             var gameRoom = new GameRoom(clients);
             RegisterGameRoom(gameRoom);

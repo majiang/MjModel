@@ -574,4 +574,60 @@ namespace MjServer
         }
     }
 
+    class AfterSetSceneState : StateBase, GameState
+    {
+        static AfterSetSceneState state = new AfterSetSceneState();
+        private AfterSetSceneState() { }
+        public static GameState GetInstance()
+        {
+            return state;
+        }
+
+        public bool ValidateMessage(MJsonMessageAll msg, int lastActor)
+        {
+            if (msg.actor == lastActor)
+            {
+                return msg.IsREACH() || msg.IsANKAN() || msg.IsKAKAN() || msg.IsHORA() || msg.IsDAHAI();
+            }
+            else
+            {
+                return msg.IsNONE();
+            }
+        }
+        public bool ExecuteAction(GameContext context, List<MJsonMessageAll> msgList)
+        {
+
+            var nextAction = SelectHighPriorityMessage(msgList);
+
+            if (nextAction.IsREACH())
+            {
+                return context.OnReach(nextAction.actor);
+                
+            }
+            else if (nextAction.IsANKAN())
+            {
+                return context.OnAnkan(nextAction.actor, nextAction.consumed);
+            }
+            else if (nextAction.IsKAKAN())
+            {
+                return context.OnKakan(nextAction.actor, nextAction.pai, nextAction.consumed);
+            }
+            else if (nextAction.IsHORA())
+            {
+                return context.OnHora(nextAction.actor, nextAction.target, nextAction.pai);
+            }
+            else if (nextAction.IsDAHAI())
+            {
+                return context.OnDahai(nextAction.actor, nextAction.pai, nextAction.tsumogiri);
+            }
+            else
+            {
+                // it is error if this line executed;
+               Debug.Assert(false);
+               return false;
+            }
+
+        }
+    }
+
 }

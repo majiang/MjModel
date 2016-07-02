@@ -31,6 +31,7 @@ namespace MjClient
         public delegate void RyukyokuHandler(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores);
         public delegate void EndKyokuHandler();
         public delegate void EndGameHandler();
+        public delegate void SetSceneHandler(int rest_tsumo_num, List<string> dora_markers, List<List<string>> kawas, List<List<bool>> is_reached_kawapai, List<int> scores, int kyoku, int honba, int kyotaku, string bakaze, int oya, List<List<string>> tehais, List<List<List<string>>> furos, int actor, int mypositionid);
 
         public event HelloHandler OnHello;
         public event StartGameHandler OnStartGame;
@@ -49,6 +50,7 @@ namespace MjClient
         public event RyukyokuHandler OnRyukyoku;
         public event EndKyokuHandler OnEndKyoku;
         public event EndGameHandler OnEndGame;
+        public event SetSceneHandler OnSetScene;
        
 
         public TcpClient tcpClient;
@@ -133,6 +135,10 @@ namespace MjClient
 
                 case MsgType.END_GAME:
                     OnEndGame();
+                    break;
+
+                case MsgType.SET_SCENE:
+                    OnSetScene(msgobj.rest_tsumo_num, msgobj.dora_markers, msgobj.kawas, msgobj.is_reached_kawapai, msgobj.scores, msgobj.kyoku, msgobj.honba, msgobj.kyotaku, msgobj.bakaze, msgobj.oya, msgobj.tehais, msgobj.furos, msgobj.actor, msgobj.mypositionid);
                     break;
             }
 

@@ -5,4 +5,4 @@
 {"type": "dahai", "actor": 0, "pai": "1m", "tsumogiri":true}
 {"type":"none"}
 {"type": "tsumo", "actor": 1, "pai": "5m" }
-{"type": "hora", "actor": 1, "target": 0, "pai": "5m" }
+{"type": "hora", "actor": 1, "target": 1, "pai": "5m" }

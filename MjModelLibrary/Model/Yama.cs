@@ -146,5 +146,51 @@ namespace MjModelLibrary
 
             return uradoraMarkers;
         }
+
+        public void SetScene(int rest_tsumo_num, List<string> dora_markers,List<List<string>> tehais, List<List<List<string>>> furos,List<List<string>> kawas)
+        {
+            Init();
+
+            doraMarkers = dora_markers.Select(e=>new Pai(e)).ToList();
+            doraPointer = dora_markers.Count;
+            rinshanPointer = dora_markers.Count - 1;
+            yamaPointer = YAMA_LENGTH - WANPAI_LENGTH - rinshanPointer - rest_tsumo_num;
+
+            mYama = GenerateYamaUseRestPai(dora_markers,tehais,furos,kawas);
+        }
+
+        private List<Pai> GenerateYamaUseRestPai(List<string> dora_markers, List<List<string>> tehais, List<List<List<string>>> furos, List<List<string>> kawas)
+        {
+            var restPais = Enumerable.Range(0, (34 * 4)-1).Select(e => e >> 2).Select(e => new Pai(e)).ToList();
+            var usedPais = new List<string>() { };
+            usedPais.AddRange(dora_markers);
+            tehais.ForEach(e => usedPais.AddRange(e));
+            foreach(var onePlayerFuros in furos)
+            {
+                foreach(var furo in onePlayerFuros)
+                {
+                    var type = furo[0];
+                    var actor = Int32.Parse(furo[1]);
+                    var target = Int32.Parse(furo[2]);
+                    var furopai = furo[3];
+
+                    if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[type] != MJUtil.TartsuType.ANKANTSU)
+                    {
+                        usedPais.Add(furopai);
+                    }
+                    usedPais.AddRange(furo.GetRange(3, furo.Count - 3));
+                }
+            }
+
+            foreach(var usedPai in usedPais)
+            {
+                var removeIndex = restPais.FindIndex(e => e.PaiString == usedPai); 
+                restPais.RemoveAt(removeIndex);
+            }
+            var shuffled = new List<Pai>(restPais.OrderBy(i => Guid.NewGuid()));
+            
+
+            return usedPais.Select(e=> new Pai(e)).Concat(shuffled).ToList();
+        }
     }
 }

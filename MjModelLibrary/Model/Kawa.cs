@@ -52,6 +52,11 @@ namespace MjModelLibrary
             return discards.Any(e => e.PaiString == pai);
         }
 
+        public void SetScene(List<string> kawa, List<bool> isReachd)
+        {
+            discards = kawa.Select(e => new KawaPai(e)).ToList();
+            isReachCalledPosition = new List<bool>(isReachd);
+        }
     }
 
     public class KawaPai : Pai

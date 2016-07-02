@@ -15,8 +15,8 @@ namespace MjServer
     class WaitingRoom
     {
         public event StartGameRoom StartRoomHandler;
-        Dictionary<ClientHolderInterface, string> clientHolderRoomNameMap;
-        Dictionary<ClientHolderInterface, string> clientHolderClientNameMap;
+        Dictionary<IClientHolder, string> clientHolderRoomNameMap;
+        Dictionary<IClientHolder, string> clientHolderClientNameMap;
         Dictionary<string, int> roomNameWaitingNumMap;
         BotClientManager botClientManager = new BotClientManager();
 
@@ -36,8 +36,8 @@ namespace MjServer
                 ( (IPEndPoint)server.LocalEndpoint).Port
                 );
             
-            clientHolderRoomNameMap = new Dictionary<ClientHolderInterface, string>();
-            clientHolderClientNameMap = new Dictionary<ClientHolderInterface, string>();
+            clientHolderRoomNameMap = new Dictionary<IClientHolder, string>();
+            clientHolderClientNameMap = new Dictionary<IClientHolder, string>();
             roomNameWaitingNumMap = new Dictionary<string, int>();
 
 
@@ -48,7 +48,7 @@ namespace MjServer
             {
                 TcpClient client = server.AcceptTcpClient();
                 ClientHolderUsingTcpHolder clientHolder = new ClientHolderUsingTcpHolder(client);
-                clientHolder.GetMessageFromClientHandler += RouteMessage;
+                clientHolder.OnGetMessageFromClient += RouteMessage;
                 Task.Run(() => clientHolder.StartWaiting());
             }
         }
@@ -78,7 +78,7 @@ namespace MjServer
         }
 
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-        async void RouteMessage(string message, ClientHolderInterface clientHolder)
+        async void RouteMessage(string message, IClientHolder clientHolder)
         {
 
             if (string.IsNullOrEmpty(message))
@@ -153,7 +153,7 @@ namespace MjServer
 
         void StartGameRoom(string startRoomName)
         {
-            Dictionary<ClientHolderInterface,string> playerList = new Dictionary<ClientHolderInterface,string>();
+            Dictionary<IClientHolder,string> playerList = new Dictionary<IClientHolder,string>();
             foreach(var map in clientHolderRoomNameMap)
             {
                 if( map.Value == startRoomName)
@@ -167,7 +167,7 @@ namespace MjServer
             {
                 clientHolderRoomNameMap.Remove(player.Key);
                 clientHolderClientNameMap.Remove(player.Key);
-                player.Key.GetMessageFromClientHandler -= RouteMessage;
+                player.Key.OnGetMessageFromClient -= RouteMessage;
             }
             roomNameWaitingNumMap.Remove(startRoomName);
  

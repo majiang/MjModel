@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace MjServer
 {
-    delegate void StartGameRoom(Dictionary<ClientHolderInterface, string> client);
+    delegate void StartGameRoom(Dictionary<IClientHolder, string> client);
 
 
 
@@ -44,7 +44,7 @@ namespace MjServer
         public event AfterErrorHandler OnAfterError;
         public event AfterGameEndHandler OnAfterGameEnd;
 
-        public List<ClientHolderInterface> clients = new List<ClientHolderInterface>();
+        public List<IClientHolder> clients = new List<IClientHolder>();
         List<string> clientNames = new List<string>();
         MjLogger logger = new MjLogger();
         public GameModel gameModel;
@@ -52,13 +52,13 @@ namespace MjServer
         public GameContext gameContext = new GameContext();
 
 
-        public GameRoom(Dictionary<ClientHolderInterface, string> inputClients)
+        public GameRoom(Dictionary<IClientHolder, string> inputClients)
         {
             gameModel = new GameModel(logger);
 
             foreach(var client in inputClients)
             {
-                client.Key.GetMessageFromClientHandler += OnGetMessageFromClient;
+                client.Key.OnGetMessageFromClient += OnGetMessageFromClient;
                 clients.Add(client.Key);
                 clientNames.Add(client.Value);
             }
@@ -84,14 +84,10 @@ namespace MjServer
             gameContext.CheckIsEndGame += CheckIsEndGame;
         }
 
-
-
-
         public void StartGame()
         {
 
             gameModel.StartGame();
-            //shuffle client
 
 
             //send start messages which have different playerID
@@ -127,6 +123,11 @@ namespace MjServer
             gameModel.yama.ReplaceRinshanForTest(rinshanpais);
         }
 
+        public void ReplaceSceneForSimlation()
+        {
+
+        }
+
 
         public void SendSameMessageToClients(string jsonMessage)
         {
@@ -142,7 +143,7 @@ namespace MjServer
 
 
 
-        public async void OnGetMessageFromClient(string message, ClientHolderInterface client)
+        public async void OnGetMessageFromClient(string message, IClientHolder client)
         {
             try
             {
@@ -155,6 +156,7 @@ namespace MjServer
                 {
 
                     Debug.Fail(" invalidate MessageType!");
+                    gameContext.ValidateMessage(messageObj);
                     OnErrorDetected();
 
                     return;
@@ -208,7 +210,7 @@ namespace MjServer
             // disconnect client
             clients.ForEach(e => e.Disconnect());
             clients.Clear();
-            OnAfterError(this);
+            OnAfterError?.Invoke(this);
         }
 
 
@@ -468,6 +470,20 @@ namespace MjServer
                 }
             }
         }
+        public void SendMJsonObject(MJsonMessageSetScene jsonmsg)
+        {
+            // logging
+            logger.Log(MjsonObjectToString(jsonmsg));
+
+            for (int i = 0; i < clients.Count; i++)
+            {
+                jsonmsg.mypositionid = i;
+                clients[i].SendMessageToClient(MjsonObjectToString(jsonmsg));
+            }
+        }
+
+
+
         public void SendMJsonObject(object jsonmsg)
         {
             // logging
@@ -482,7 +498,12 @@ namespace MjServer
             return JsonConvert.SerializeObject(obj);
         }
 
-
+        public void StartScene(MJsonMessageSetScene msgobj)
+        {
+            gameModel.SetScene(msgobj);
+            SendMJsonObject(msgobj);
+            gameContext.ChangeState(msgobj);
+        }
 
     }
 

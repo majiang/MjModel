@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using MjNetworkProtocolLibrary;
-using Newtonsoft.Json;
 
 namespace MjServer
 {
-    public class ClientHolderForTest : IClientHolder
+    public class ClientHolderForLocalPlay : IClientHolder
     {
         public event ConnectionBroken ConnectionBrokenHandler;
         public event GetMessageFromClient OnGetMessageFromClient;
 
-        public List<MJsonMessageAll> ReceivedMessageList = new List<MJsonMessageAll>();
-        
+        public IServerHolder ClientSideServerHolder;
+
+        List<string> getMessageList = new List<string>();
 
         public void Disconnect()
         {
-            Debug.WriteLine("Disconnect");    
+            
         }
 
         public void ResetResponceTimeCount()
         {
-
+            throw new NotImplementedException();
         }
 
         public void ResetWaitingTimeCountForStartGame()
@@ -32,9 +31,15 @@ namespace MjServer
             throw new NotImplementedException();
         }
 
-        public void SendMessageToClient(string message)
+        public void GetMessageFromClient(string message)
         {
-            ReceivedMessageList.Add(JsonConvert.DeserializeObject<MJsonMessageAll>(message));
+            getMessageList.Add(message);
+        }
+
+        public void ProcessMessage()
+        {
+            getMessageList.ForEach(e => OnGetMessageFromClient(e,this));
+            getMessageList.Clear();
         }
 
         public Task StartWaiting()
@@ -42,11 +47,14 @@ namespace MjServer
             throw new NotImplementedException();
         }
 
-        public void GetMessageFromClient(string message)
+        public void SendMessageToClient(string message)
         {
-            OnGetMessageFromClient(message, this);
+            ClientSideServerHolder.GetMessageFromServer(message);
         }
 
-
+        public void Reset()
+        {
+            getMessageList.Clear();
+        }
     }
 }

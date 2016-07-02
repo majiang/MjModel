@@ -9,12 +9,15 @@ using MjClient.Logger;
 
 namespace MjClient
 {
+
+
     public class ClientFacade
     {
+        
         ClientRouter clientRouter;
         ClientMjModel clientMjModel;
         //MessageValidater
-        ClientIO clientIO;
+        IServerHolder serverHolder;
         ClientLogger clientLogger = ClientLogger.GetInstance();
 
 
@@ -25,18 +28,18 @@ namespace MjClient
 
 
         public bool IsEndGame;
-        string playerName;
-        string roomName;
+        public string PlayerName;
+        public string RoomName;
 
         public ClientFacade(string playerName, string roomName = "default")
         {
-            this.playerName = playerName;
-            this.roomName = roomName;
+            this.PlayerName = playerName;
+            this.RoomName = roomName;
 
             // Initialize follows
             // io
-            clientIO = new ClientIO();
-            clientIO.OnGetMessage += MessageFromServerHandler;
+            serverHolder = new TCPServerHolder();
+            serverHolder.OnGetMessageFromServer += MessageFromServerHandler;
 
             // logger
             // router
@@ -59,32 +62,36 @@ namespace MjClient
             clientRouter.OnRyukyoku += OnRyukyoku;
             clientRouter.OnStartGame += OnStartGame;
             clientRouter.OnStartKyoku += OnStartKyoku;
-            
+            clientRouter.OnSetScene += OnSetScene;
 
 
             //Mjmodel
             clientMjModel = new ClientMjModel();
 
+            SetServerHolderToAI(serverHolder);
 
-            //ai
-            ai = new MinShantenAI();
-            ai.SendPon += clientIO.SendMJsonObject;
-            ai.SendChi += clientIO.SendMJsonObject;
-            ai.SendDaiminkan += clientIO.SendMJsonObject;
-            ai.SendNone += clientIO.SendMJsonObject;
-            ai.SendHora += clientIO.SendMJsonObject;
-            ai.SendDahai += clientIO.SendMJsonObject;
-            ai.SendAnkan += clientIO.SendMJsonObject;
-            ai.SendKakan += clientIO.SendMJsonObject;
-            ai.SendReach += clientIO.SendMJsonObject;
         }
 
+        void SetServerHolderToAI(IServerHolder serverHolder)
+        {
+            //ai
+            ai = new MinShantenAI();
+            ai.SendPon += serverHolder.SendMJsonObject;
+            ai.SendChi += serverHolder.SendMJsonObject;
+            ai.SendDaiminkan += serverHolder.SendMJsonObject;
+            ai.SendNone += serverHolder.SendMJsonObject;
+            ai.SendHora += serverHolder.SendMJsonObject;
+            ai.SendDahai += serverHolder.SendMJsonObject;
+            ai.SendAnkan += serverHolder.SendMJsonObject;
+            ai.SendKakan += serverHolder.SendMJsonObject;
+            ai.SendReach += serverHolder.SendMJsonObject;
+        }
 
         public void StartClient()
         {
             try
             {
-                clientIO.MakeConnection();
+                serverHolder.MakeConnection();
             }
             catch (Exception e)
             {
@@ -106,13 +113,13 @@ namespace MjClient
         }
 
         /// <summary>
-        /// callback for Hello message which is sent when client connects server.
+        /// callback for Hello message which is sent from server when client connects server.
         /// clients must send none(no action) message in this function.
         /// </summary>
         void OnHello()
         {
-            var startMessage = new MJsonMessageJoin(playerName, roomName);
-            clientIO.SendMJsonObject(startMessage);
+            var startMessage = new MJsonMessageJoin(PlayerName, RoomName);
+            serverHolder.SendMJsonObject(startMessage);
         }
 
         /// <summary>
@@ -126,7 +133,7 @@ namespace MjClient
             myPositionId = id;
             playerNames = names;
             clientMjModel.StartGame(id);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         /// <summary>
@@ -143,7 +150,7 @@ namespace MjClient
         void OnStartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             clientMjModel.StartKyoku(bakaze, kyoku, honba, kyotaku, oya, doraMarker, tehais);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         
@@ -160,12 +167,12 @@ namespace MjClient
             if (actor == myPositionId)
             {
                 
-                ai.ThinkOnMyTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
+                ai.ThinkOnMyTsumo(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResultList, clientMjModel.yama);
 
             }
             else
             {
-                clientIO.SendMJsonObject(new MJsonMessageNone());
+                serverHolder.SendMJsonObject(new MJsonMessageNone());
             }
 
 
@@ -184,8 +191,14 @@ namespace MjClient
             clientMjModel.Dahai(actor, pai, tsumogiri);
 
             // ai think action 
-            ai.ThinkOnOtherPlayerDoroped(myPositionId,actor,pai,clientMjModel.tehais,clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
-
+            if (actor != myPositionId)
+            {
+                ai.ThinkOnOtherPlayerDoroped(myPositionId, actor, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResultList, clientMjModel.yama);
+            }
+            else
+            {
+                serverHolder.SendMJsonObject(new MJsonMessageNone());
+            }
         }
 
         /// <summary>
@@ -201,11 +214,11 @@ namespace MjClient
             clientMjModel.Pon(actor, target, pai, consumed);
             if (actor == myPositionId)
             {
-                ai.ThinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
+                ai.ThinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResultList, clientMjModel.yama);
             }
             else
             {
-                clientIO.SendMJsonObject(new MJsonMessageNone());
+                serverHolder.SendMJsonObject(new MJsonMessageNone());
             }
         }
 
@@ -222,11 +235,11 @@ namespace MjClient
             clientMjModel.Chi(actor, target, pai, consumed);
             if (actor == myPositionId)
             {
-                ai.ThinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResults, clientMjModel.yama);
+                ai.ThinkOnFuroDahai(myPositionId, pai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResultList, clientMjModel.yama);
             }
             else
             {
-                clientIO.SendMJsonObject(new MJsonMessageNone());
+                serverHolder.SendMJsonObject(new MJsonMessageNone());
             }
         }
 
@@ -234,25 +247,25 @@ namespace MjClient
         void OnKakan(int actor, string pai, List<string> consumed)
         {
             clientMjModel.Kakan(actor, pai, consumed);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnAnkan(int actor, List<string> consumed)
         {
             clientMjModel.Ankan(actor, consumed);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnDaiminkan(int actor, int target, string pai, List<string> consumed)
         {
             clientMjModel.Daiminkan(actor, target, pai, consumed);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnDora(string doraMarker)
         {
             clientMjModel.Dora(doraMarker);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
 
@@ -261,34 +274,34 @@ namespace MjClient
         {
             if (actor == myPositionId)
             {
-                clientIO.SendMJsonObject(ai.GetMessageBufferForRiachDahai());
+                serverHolder.SendMJsonObject(ai.GetMessageBufferForRiachDahai());
             }
             else
             {
-                clientIO.SendMJsonObject(new MJsonMessageNone());
+                serverHolder.SendMJsonObject(new MJsonMessageNone());
             }
         }
 
         void OnReachAccepted(int actor, List<int> deltas, List<int> scores)
         {
             clientMjModel.ReachAccept(actor,deltas, scores);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnHora(int actor, int target, string pai, List<string> uradoraMarkers, List<string> horaTehais, List<List<object>> yakus, int fu, int fan, int horaPoints, List<int> deltas, List<int> scores)
         {
             clientMjModel.Hora(actor, target, pai, uradoraMarkers, horaTehais, yakus, fu, fan, horaPoints, deltas, scores);
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnRyukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
         {
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnEndKyoku()
         {
-            clientIO.SendMJsonObject(new MJsonMessageNone());
+            serverHolder.SendMJsonObject(new MJsonMessageNone());
         }
 
         void OnEndGame()
@@ -296,9 +309,39 @@ namespace MjClient
             IsEndGame = true;
         }
 
+        void OnSetScene(int rest_tsumo_num, List<string> dora_markers, List<List<string>> kawas, List<List<bool>> is_reached_kawapai, List<int> scores, int kyoku, int honba, int kyotaku, string bakaze, int oya, List<List<string>> tehais, List<List<List<string>>> furos, int actor, int mypositionid)
+        {
+            myPositionId = mypositionid;
+
+            clientMjModel.SetScene(rest_tsumo_num, dora_markers, kawas, is_reached_kawapai, scores, kyoku, honba, kyotaku, bakaze, oya, tehais, furos, actor, mypositionid);
+
+            if (mypositionid == actor)
+            {
+                var dapai = kawas[mypositionid].Last();
+                ai.ThinkOnOtherPlayerDoroped(myPositionId, actor, dapai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResultList, clientMjModel.yama);
+            }
+            else
+            {
+                serverHolder.SendMJsonObject(new MJsonMessageNone());
+            }
+
+
+        }
+
         public void SetLoggable(bool flg)
         {
             clientLogger.EnableLog = flg;
+        }
+
+
+        public void SetServerHolder(IServerHolder serverHolder)
+        {
+            this.serverHolder = serverHolder;
+            serverHolder.OnGetMessageFromServer += MessageFromServerHandler;
+
+
+            //ai
+            SetServerHolderToAI(serverHolder);
         }
     }
 }

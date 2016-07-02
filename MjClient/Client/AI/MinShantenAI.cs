@@ -23,10 +23,19 @@ namespace MjClient.AI
         public void ThinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
                                               List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama)
         {
-            if((ifrs[mypositionId].IsReach || ifrs[mypositionId].IsDoubleReach) && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1)
+            if ((ifrs[mypositionId].IsReach || ifrs[mypositionId].IsDoubleReach)
+                && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1
+                )
             {
-                SendHora(new MJsonMessageHora(mypositionId,dapaiActor, pai));
-                return;
+                var tempSave = ifrs[mypositionId].LastAddedPai;
+                ifrs[mypositionId].LastAddedPai = new Pai(pai);
+                if (ResultCalclator.CalcHoraResult(tehais[mypositionId], ifrs[mypositionId], field, pai).yakuResult.HasYakuExcludeDora)
+                {
+                    SendHora(new MJsonMessageHora(mypositionId, dapaiActor, pai));
+                    return;
+                }
+                ifrs[mypositionId].LastAddedPai = tempSave;
+
             }
 
             SendNone(new MJsonMessageNone());
@@ -43,29 +52,34 @@ namespace MjClient.AI
         public event SendKakanHandler SendKakan;
         public event SendReachHandler SendReach;
         public MJsonMessageDahai MessagebufferForReach;
-        public void ThinkOnMyTsumo(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas,
+        public void ThinkOnMyTsumo(int mypositionId, string tsumopai, List<Tehai> tehais, List<Kawa> kawas,
                                  Field field, List<InfoForResult> ifrs, Yama yama)
         {
             var myTehai = tehais[mypositionId];
         
-            if (myTehai.IsHora())
+            if (myTehai.IsHora()
+                )
             {
-                SendHora(new MJsonMessageHora(mypositionId, mypositionId, pai));
-                return;
+                if (ResultCalclator.CalcHoraResult(tehais[mypositionId], ifrs[mypositionId], field, tsumopai).yakuResult.HasYakuExcludeDora )
+                {
+                    SendHora(new MJsonMessageHora(mypositionId, mypositionId, tsumopai));
+                    return;
+                }
+
             }
 
 
-            var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
+            var dahaiPaiString = CalcMinShantenPai(mypositionId, tehais, kawas, field);
             
             if (CanReach(tehais[mypositionId],ifrs[mypositionId],yama))
             {
                 
-                MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString, dahaiPaiString == pai);
+                MessagebufferForReach = new MJsonMessageDahai(mypositionId,dahaiPaiString, dahaiPaiString == tsumopai);
                 SendReach(new MJsonMessageReach(mypositionId));
                 return;
             }
 
-            SendDahai(new MJsonMessageDahai(mypositionId, dahaiPaiString, dahaiPaiString == pai));
+            SendDahai(new MJsonMessageDahai(mypositionId, dahaiPaiString, dahaiPaiString == tsumopai));
 
         }
 
@@ -76,14 +90,14 @@ namespace MjClient.AI
         {
             var myTehai = tehais[mypositionId];
 
-            var dahaiPaiString = CalcMinShantenPai(mypositionId, pai, tehais, kawas, field);
+            var dahaiPaiString = CalcMinShantenPai(mypositionId, tehais, kawas, field);
 
             SendDahai(new MJsonMessageDahai(mypositionId, dahaiPaiString, dahaiPaiString == pai));
 
         }
 
 
-        private string CalcMinShantenPai(int mypositionId, string pai, List<Tehai> tehais, List<Kawa> kawas, Field field)
+        private string CalcMinShantenPai(int mypositionId, List<Tehai> tehais, List<Kawa> kawas, Field field)
         {
             
             var syu = new int[MJUtil.LENGTH_SYU_ALL];

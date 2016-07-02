@@ -53,7 +53,7 @@
     <Compile Include="Client\ClientFacade.cs" />
     <Compile Include="Client\ClientMjModel.cs" />
     <Compile Include="Client\ClientRouter.cs" />
-    <Compile Include="Client\IO\ClientIO.cs" />
+    <Compile Include="Client\ServerHolder\TCPServerHolder.cs" />
     <Compile Include="Client\Logger\Clientlogger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

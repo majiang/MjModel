@@ -17,7 +17,7 @@ namespace MjServer.Tests
     public class GameRoomTests
     {
         GameRoom room;
-        Dictionary<ClientHolderInterface, string> clientDict;
+        Dictionary<IClientHolder, string> clientDict;
         List<ClientHolderForTest> clients;
 
 
@@ -32,7 +32,7 @@ namespace MjServer.Tests
                 new ClientHolderForTest(),
                 new ClientHolderForTest()
             };
-            clientDict = new Dictionary<ClientHolderInterface, string>()
+            clientDict = new Dictionary<IClientHolder, string>()
             {
                 { clients[0], "player0"},
                 { clients[1], "player1"},
@@ -211,7 +211,7 @@ namespace MjServer.Tests
             for(int i=0; i<room.clients.Count; i++)
             {
                 var sendMessage = i == actor ? message : noneMessage;
-                clients[i].SendMessageToServer(sendMessage);
+                clients[i].GetMessageFromClient(sendMessage);
             }
         }
 

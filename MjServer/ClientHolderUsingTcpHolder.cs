@@ -12,10 +12,10 @@ using System.Diagnostics;
 namespace MjServer
 {
 
-    class ClientHolderUsingTcpHolder : ClientHolderInterface
+    class ClientHolderUsingTcpHolder : IClientHolder
     {
         TcpClient tcpClient;
-        public event GetMessageFromClient GetMessageFromClientHandler;
+        public event GetMessageFromClient OnGetMessageFromClient;
         public event ConnectionBroken ConnectionBrokenHandler;
         //public event OverResponceTimeLimit OnOverResponceTimeLimit;
         //public event OverWaitingStartGameTimeLimit OnOverWaitingStartGameTimeLimit;
@@ -47,7 +47,7 @@ namespace MjServer
                 {
                     string line = await reader.ReadLineAsync() + NetworkConstants.NewLineString;
                     //Debug.WriteLine("get:"+ line);
-                    GetMessageFromClientHandler(line, this);
+                    GetMessageFromClient(line);
                 }
             }
             catch (IOException e)
@@ -58,7 +58,12 @@ namespace MjServer
             }
 
         }
-        
+
+        public void GetMessageFromClient(string message)
+        {
+            OnGetMessageFromClient(message, this);
+        }
+
         public void Disconnect()
         {
            tcpClient.Close();

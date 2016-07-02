@@ -1026,12 +1026,12 @@ namespace MjModelLibrary.Result
 
         private static bool IsTenho(InfoForResult ifr)
         {
-            return ifr.UseYamaPaiNum == 1;
+            return ifr.UseYamaPaiNum == 1 && ifr.IsTsumo && ifr.IsMenzen;
         }
 
         private static bool IsChiho(InfoForResult ifr)
         {
-            return ifr.IsFirstTurn() && ifr.IsOya == false; 
+            return ifr.IsFirstTurn() && ifr.IsOya == false && ifr.IsTsumo && ifr.IsMenzen; 
         }
 
 

@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IClientHolder.cs" />
+    <Compile Include="IServerHolder.cs" />
     <Compile Include="NetworkConstants.cs" />
     <Compile Include="NetworkProtocol\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

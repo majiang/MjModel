@@ -15,19 +15,20 @@ namespace MjServer
     public class GameModel
     {
 
-        public Yama yama;
-        public List<Kawa> kawas;
-        public List<Tehai> tehais;
-        public Field field;
+        public Yama yama = new Yama();
+        public List<Kawa> kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
+        public List<Tehai> tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
+        public Field field = new Field();
         
         public int CurrentActor { get; private set; }
         public List<InfoForResult> infoForResultList { get; set; }
 
-        public List<int> scores { get; set; }
+        public List<int> scores = new List<int> { 25000, 25000, 25000, 25000 };
         MjLogger logger;
         public GameModel(MjLogger logger)
         {
             this.logger = logger;
+
         }
 
         private void Init()
@@ -458,6 +459,7 @@ namespace MjServer
             return deltas;
         }
 
+
         public bool CanReach(int actor)
         {
             var isTenpai = (tehais[actor].IsTenpai() || tehais[actor].IsHora());
@@ -664,5 +666,33 @@ namespace MjServer
             infoForResultList.ForEach(e => e.IsIppatsu = false);
         }
 
+
+
+
+        public void SetScene(MJsonMessageSetScene msg)
+        {
+            yama.SetScene(msg.rest_tsumo_num, msg.dora_markers,msg.tehais,msg.furos, msg.kawas);
+            for (int i = 0; i < Constants.PLAYER_NUM; i++) {
+                kawas[i].SetScene(msg.kawas[i], msg.is_reached_kawapai[i]);
+            }
+
+            for (int i = 0; i < Constants.PLAYER_NUM; i++)
+            {
+                tehais[i].SetScene(msg.tehais[i], msg.furos[i]);
+            }
+
+            field = new Field(msg.kyoku, msg.honba, msg.kyotaku, msg.oya, msg.bakaze);
+            scores = msg.scores;
+
+            SetCurrentActor(msg.actor);
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, field.OyaPlayerId), new InfoForResult(field.KyokuId, 1, field.OyaPlayerId), new InfoForResult(field.KyokuId, 2, field.OyaPlayerId), new InfoForResult(field.KyokuId, 3, field.OyaPlayerId) };
+            infoForResultList[CurrentActor].SetLastAddedPai(tehais[CurrentActor].tehai.Last());
+
+            foreach (var doraMarker in msg.dora_markers)
+            {
+                infoForResultList.ForEach(e => e.RegisterDoraMarker(doraMarker));
+            }
+            
+        }
     }
 }

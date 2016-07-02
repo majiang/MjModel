@@ -59,9 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotClientManager.cs" />
+    <Compile Include="ClientHolderForLocalPlay.cs" />
     <Compile Include="ClientHolderForTest.cs" />
     <Compile Include="ClientHolderUsingTcpHolder.cs" />
-    <Compile Include="ClientHolderInterface.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="GameRoom.cs" />

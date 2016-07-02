@@ -16,10 +16,10 @@ namespace MjClient
         public List<Tehai> tehais { get; set; }
         public Field field { get; set; }
 
-        public int currentActor;
-        public List<InfoForResult> infoForResults { get; set; }
+        public int CurrentActor;
+        public List<InfoForResult> infoForResultList { get; set; }
 
-        public List<int> points { get; set; }
+        public List<int> scores { get; set; }
         private int myPositionId;
         ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
 
@@ -31,10 +31,13 @@ namespace MjClient
             kawas = new List<Kawa> { new Kawa(), new Kawa(), new Kawa(), new Kawa() };
             tehais = new List<Tehai> { new Tehai(), new Tehai(), new Tehai(), new Tehai() };
             field = new Field();
-            infoForResults = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
-            points = new List<int> { 25000, 25000, 25000, 25000 };
-            currentActor = 0;
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(), new InfoForResult(), new InfoForResult(), new InfoForResult() };
+            scores = new List<int> { 25000, 25000, 25000, 25000 };
+            CurrentActor = 0;
         }
+
+
+        public void Replace() { }
 
         public void StartGame(int id)
         {
@@ -47,8 +50,8 @@ namespace MjClient
         public void StartKyoku(string bakaze, int kyoku, int honba, int kyotaku, int oya, string doraMarker, List<List<string>> tehais)
         {
             field = new Field(kyoku, honba, kyotaku, oya, bakaze);
-            currentActor = oya;
-            infoForResults = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, oya, bakaze), new InfoForResult(field.KyokuId, 1, oya, bakaze), new InfoForResult(field.KyokuId, 2, oya,bakaze), new InfoForResult(field.KyokuId, 3, oya, bakaze) };
+            CurrentActor = oya;
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, oya, bakaze), new InfoForResult(field.KyokuId, 1, oya, bakaze), new InfoForResult(field.KyokuId, 2, oya,bakaze), new InfoForResult(field.KyokuId, 3, oya, bakaze) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
 
@@ -63,7 +66,8 @@ namespace MjClient
         {
             if (actor == myPositionId)
             {
-                tehais[actor].Tsumo(pai);   
+                tehais[actor].Tsumo(pai);
+                infoForResultList[CurrentActor].SetLastAddedPai(pai);
             }
             // Don't use this tsumo and this operation is for restYamaNum count
             yama.DoTsumo();
@@ -84,6 +88,11 @@ namespace MjClient
             {
                 tehais[actor].Pon(actor, target, pai, consumed);
             }
+            else
+            {
+                tehais[actor].PonOnlyMakeFuro(actor, target, pai, consumed);
+            }
+
             kawas[target].discards.Last().isFuroTargeted = true;
 
         }
@@ -94,52 +103,82 @@ namespace MjClient
             {
                 tehais[actor].Chi(actor, target, pai, consumed);
             }
+            else
+            {
+                tehais[actor].ChiOnlyMakeFuro(actor, target, pai, consumed);
+            }
+
             kawas[target].discards.Last().isFuroTargeted = true;
         }
 
         public void Kakan(int actor, string pai, List<string> consumed)
         {
-            //TODO
+            if (actor == myPositionId)
+            {
+                tehais[actor].Kakan(actor,  pai, consumed);
+            }
+            else
+            {
+                tehais[actor].kakanOnlyMakeFuro(actor, pai, consumed);
+            }
             
         }
 
         public void Ankan(int actor, List<string> consumed)
         {
-            //TODO
+            if (actor == myPositionId)
+            {
+                tehais[actor].Ankan(actor, consumed);
+            }
+            else
+            {
+                tehais[actor].AnkanOnlyMakeFuro(actor, consumed);
+            }
         }
 
         public void Daiminkan(int actor, int target, string pai, List<string> consumed)
         {
-            //TODO 
+            if (actor == myPositionId)
+            {
+                tehais[actor].Daiminkan(actor, target, pai, consumed);
+            }
+            else
+            {
+                tehais[actor].DaiminkanOnlyMakeFuro(actor, target, pai, consumed);
+            }
+
+            kawas[target].discards.Last().isFuroTargeted = true;
         }
 
         public void Reach(int actor)
         {
-            //TODO
+            // Do anything
         }
         public void ReachAccept(int actor, List<int> delta, List<int> scores)
         {
             SetReach(actor);
-            this.points = points;
+            this.scores = this.scores;
         }
 
         public void Dora(string newDoraMarker)
         {
-            infoForResults.ForEach(e => e.RegisterDoraMarker(newDoraMarker));
+            infoForResultList.ForEach(e => e.RegisterDoraMarker(newDoraMarker));
         }
 
         public void Hora(int actor, int target, string pai, List<string> uradora_markers, List<string> hora_tehais, List<List<object>> yakus, int fu, int fan, int hora_points, List<int> deltas, List<int> scores)
         {
-            //TODO
+            // Do anything
         }
 
         public void None()
         {
+            // Do anything
+
         }
 
         public void Ryuukyoku(string reason, List<List<string>> tehais, List<bool> tenpais, List<int> deltas, List<int> scores)
         {
-            this.points = scores;
+            this.scores = scores;
         }
 
 
@@ -150,7 +189,7 @@ namespace MjClient
         {
             return (tehais[playerId].IsTenpai() || tehais[playerId].IsHora() )
                 && tehais[playerId].IsMenzen()
-                && (infoForResults[playerId].IsReach == false && infoForResults[playerId].IsDoubleReach == false)
+                && (infoForResultList[playerId].IsReach == false && infoForResultList[playerId].IsDoubleReach == false)
                 && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
 
@@ -173,16 +212,40 @@ namespace MjClient
 
         public void SetReach(int actor)
         {
-            if (yama.GetTsumoedYamaNum() > Constants.PLAYER_NUM && infoForResults.Count(e => e.IsFured) == 0)
+            if (yama.GetTsumoedYamaNum() > Constants.PLAYER_NUM && infoForResultList.Count(e => e.IsFured) == 0)
             {
-                infoForResults[actor].IsDoubleReach = true;
+                infoForResultList[actor].IsDoubleReach = true;
             }
             else
             {
-                infoForResults[actor].IsReach = true;
+                infoForResultList[actor].IsReach = true;
             }
             field.AddKyotaku();
         }
 
+        public void SetScene(int rest_tsumo_num, List<string> dora_markers, List<List<string>> kawas, List<List<bool>> is_reached_kawapai, List<int> scores, int kyoku, int honba, int kyotaku, string bakaze, int oya, List<List<string>> tehais, List<List<List<string>>> furos, int actor, int mypositionid)
+        {
+            Init();
+            yama.SetScene(rest_tsumo_num, dora_markers, tehais, furos, kawas);
+            for (int i = 0; i < Constants.PLAYER_NUM; i++)
+            {
+                this.kawas[i].SetScene(kawas[i], is_reached_kawapai[i]);
+            }
+
+            for (int i = 0; i < Constants.PLAYER_NUM; i++)
+            {
+                this.tehais[i].SetScene(tehais[i], furos[i]);
+            }
+
+            field = new Field(kyoku, honba, kyotaku, oya, bakaze);
+            this.scores = scores;
+            myPositionId = mypositionid;
+            CurrentActor= actor;
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, field.OyaPlayerId), new InfoForResult(field.KyokuId, 1, field.OyaPlayerId), new InfoForResult(field.KyokuId, 2, field.OyaPlayerId), new InfoForResult(field.KyokuId, 3, field.OyaPlayerId) };
+            foreach (var doraMarker in dora_markers)
+            {
+                infoForResultList.ForEach(e => e.RegisterDoraMarker(doraMarker));
+            }
+        }
     }
 }
