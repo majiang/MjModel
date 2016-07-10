@@ -41,7 +41,7 @@ namespace MjModelLibrary.Tests
             testTehai.Chi(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.MINSYUN);
+            Assert.AreEqual(testTehai.furos[0].furoType, MJUtil.TartsuType.MINSYUN);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
@@ -72,7 +72,7 @@ namespace MjModelLibrary.Tests
             testTehai.Pon(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.MINKO);
+            Assert.AreEqual(testTehai.furos[0].furoType, MJUtil.TartsuType.MINKO);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
@@ -101,7 +101,7 @@ namespace MjModelLibrary.Tests
             testTehai.Daiminkan(actor, target, furopai, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.MINKANTSU);
+            Assert.AreEqual(testTehai.furos[0].furoType, MJUtil.TartsuType.MINKANTSU);
             Assert.AreEqual(testTehai.furos[0].furopai, furopai);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
@@ -126,7 +126,7 @@ namespace MjModelLibrary.Tests
             testTehai.Ankan(actor, consumed);
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(testTehai.furos[0].ftype, MJUtil.TartsuType.ANKANTSU);
+            Assert.AreEqual(testTehai.furos[0].furoType, MJUtil.TartsuType.ANKANTSU);
             CollectionAssert.AreEqual(testTehai.furos[0].consumed, consumed);
 
             //晒した牌が手配に残っていないか
@@ -166,7 +166,7 @@ namespace MjModelLibrary.Tests
 
 
             //フーロオブジェクトの構成が正しいか
-            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, testTehai.furos.LastOrDefault().ftype);
+            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, testTehai.furos.LastOrDefault().furoType);
             Assert.AreEqual(kakanFuropai, testTehai.furos.LastOrDefault().furopai);
             CollectionAssert.AreEqual(kakanConsumed, testTehai.furos.LastOrDefault().consumed);
 

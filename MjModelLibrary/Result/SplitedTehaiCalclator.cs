@@ -57,7 +57,7 @@ namespace MjModelLibrary.Result
 
             foreach (var furo in tehai.furos)
             {
-                switch (furo.ftype)
+                switch (furo.furoType)
                 {
                     case MJUtil.TartsuType.MINSYUN:
                         splited.SyuNum[furo.minPaiSyu]++;
@@ -68,6 +68,9 @@ namespace MjModelLibrary.Result
                         splited.SyuNum[furo.minPaiSyu] += 3;
                         break;
                     case MJUtil.TartsuType.MINKANTSU:
+                        splited.SyuNum[furo.minPaiSyu] += 4;
+                        break;
+                    case MJUtil.TartsuType.ANKANTSU:
                         splited.SyuNum[furo.minPaiSyu] += 4;
                         break;
                 }
@@ -281,7 +284,7 @@ namespace MjModelLibrary.Result
             List<Tartsu> furoTartsu = new List<Tartsu>();
             foreach (var furo in furos)
             {
-                furoTartsu.Add(new Tartsu(furo.ftype, furo.minPaiSyu));
+                furoTartsu.Add(new Tartsu(furo.furoType, furo.minPaiSyu));
             }
             //Add Furo
             foreach (var horaMentsu in horaMentsuList)

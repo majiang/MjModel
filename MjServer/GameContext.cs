@@ -29,6 +29,8 @@ namespace MjServer
             gameState = AfterInitialiseState.GetInstance();
 
         }     
+
+
         
         public bool ValidateMessage(MJsonMessageAll msg)
         {
@@ -161,7 +163,11 @@ namespace MjServer
             SetLastActor(sentMessage.actor);
             messageList.Clear();
         }
-        
+
+        public void PrintState()
+        {
+            System.Diagnostics.Debug.WriteLine(gameState.GetType().ToString());
+        }
 
         public event StartKyokuHandler StartKyoku;
         public event TsumoHandler Tsumo;

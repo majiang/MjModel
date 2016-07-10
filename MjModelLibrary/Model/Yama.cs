@@ -161,7 +161,7 @@ namespace MjModelLibrary
 
         private List<Pai> GenerateYamaUseRestPai(List<string> dora_markers, List<List<string>> tehais, List<List<List<string>>> furos, List<List<string>> kawas)
         {
-            var restPais = Enumerable.Range(0, (34 * 4)-1).Select(e => e >> 2).Select(e => new Pai(e)).ToList();
+            var restPais = Enumerable.Range(0, (34 * 4)).Select(e => e >> 2).Select(e => new Pai(e)).ToList();
             var usedPais = new List<string>() { };
             usedPais.AddRange(dora_markers);
             tehais.ForEach(e => usedPais.AddRange(e));
@@ -169,18 +169,19 @@ namespace MjModelLibrary
             {
                 foreach(var furo in onePlayerFuros)
                 {
-                    var type = furo[0];
-                    var actor = Int32.Parse(furo[1]);
-                    var target = Int32.Parse(furo[2]);
-                    var furopai = furo[3];
-
-                    if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[type] != MJUtil.TartsuType.ANKANTSU)
+                    if(furo[0] == MJUtil.ENUM_TARTSU_TYPE_STRING_MAP[MJUtil.TartsuType.ANKANTSU])
                     {
-                        usedPais.Add(furopai);
+                        usedPais.Add(furo[3]);
                     }
-                    usedPais.AddRange(furo.GetRange(3, furo.Count - 3));
+                    usedPais.AddRange(furo.GetRange(4, furo.Count - 4));
                 }
             }
+
+            foreach(var kawa in kawas)
+            {
+                usedPais.AddRange(kawa);
+            }
+            usedPais.Sort();
 
             foreach(var usedPai in usedPais)
             {

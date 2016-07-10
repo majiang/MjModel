@@ -88,7 +88,7 @@ namespace MjServer.Tests
 
             Assert.AreEqual(1, model.tehais[actor].furos.Count);
 
-            Assert.AreEqual(MJUtil.TartsuType.MINKO, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(MJUtil.TartsuType.MINKO, model.tehais[actor].furos[0].furoType);
             Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
         
         }
@@ -115,7 +115,7 @@ namespace MjServer.Tests
             model.Chi(actor, target, furopai, furoConsumed);
 
             Assert.AreEqual(1, model.tehais[actor].furos.Count);
-            Assert.AreEqual(MJUtil.TartsuType.MINSYUN, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(MJUtil.TartsuType.MINSYUN, model.tehais[actor].furos[0].furoType);
             Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
         }
 
@@ -167,7 +167,7 @@ namespace MjServer.Tests
 
 
             Assert.AreEqual(1, model.tehais[actor].furos.Count);
-            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, model.tehais[actor].furos[0].furoType);
             Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
             
         }
@@ -191,7 +191,7 @@ namespace MjServer.Tests
             model.Ankan(actor, beforeAnjkanTehai);
 
             Assert.AreEqual(1, model.tehais[actor].furos.Count);
-            Assert.AreEqual(MJUtil.TartsuType.ANKANTSU, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(MJUtil.TartsuType.ANKANTSU, model.tehais[actor].furos[0].furoType);
             Assert.AreEqual(furopai, model.tehais[actor].furos[0].consumed[0].PaiString);
             
 
@@ -219,7 +219,7 @@ namespace MjServer.Tests
 
             Assert.AreEqual(1, model.tehais[actor].furos.Count);
 
-            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, model.tehais[actor].furos[0].ftype);
+            Assert.AreEqual(MJUtil.TartsuType.MINKANTSU, model.tehais[actor].furos[0].furoType);
             Assert.AreEqual(furopai, model.tehais[actor].furos[0].furopai.PaiString);
 
         }

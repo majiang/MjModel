@@ -170,6 +170,7 @@ namespace MjServer
                 }
 
                 // if server gets messages from all clients, fire event and send message.
+                //gameContext.PrintState();
                 var isSuccesseded = gameContext.ExecuteAction();
 
                 if ( isSuccesseded == false)

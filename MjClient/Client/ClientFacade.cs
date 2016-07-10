@@ -85,6 +85,8 @@ namespace MjClient
             ai.SendAnkan += serverHolder.SendMJsonObject;
             ai.SendKakan += serverHolder.SendMJsonObject;
             ai.SendReach += serverHolder.SendMJsonObject;
+
+            ai.CalcHora += clientMjModel.CalcHora;
         }
 
         public void StartClient()

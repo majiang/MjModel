@@ -13,5 +13,8 @@ namespace MjModelLibrary
         public static readonly int KYOKU_NUM = 5;
 
         public static readonly int REACH_POINT = 1000;
+
+
+
     }
 }

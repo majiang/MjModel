@@ -20,6 +20,7 @@ namespace MjClient.AI
     public delegate void SendKakanHandler(MJsonMessageKakan msgobj);
     public delegate void SendReachHandler(MJsonMessageReach msgobj);
 
+    public delegate HoraResult CalcHoraHandler(int target, string pai);
 
     interface AIInterface {
         event SendPonHandler SendPon;
@@ -63,5 +64,7 @@ namespace MjClient.AI
                          Field field, List<InfoForResult> ifrs, Yama yama);
 
         MJsonMessageDahai GetMessageBufferForRiachDahai();
+
+        event CalcHoraHandler CalcHora;
     }
 }

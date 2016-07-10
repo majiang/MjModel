@@ -200,9 +200,9 @@ namespace MjModelLibrary
             //change pon to kakan
             foreach (var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
+                if (furo.furoType == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
                 {
-                    furo.ftype = MJUtil.TartsuType.MINKANTSU;
+                    furo.furoType = MJUtil.TartsuType.MINKANTSU;
                     furo.consumed.Add(pai);
                     furo.consumed.Sort();
                     break;
@@ -218,9 +218,9 @@ namespace MjModelLibrary
             var paiObj = new Pai(pai);
             foreach (var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == paiObj.PaiNumber)
+                if (furo.furoType == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == paiObj.PaiNumber)
                 {
-                    furo.ftype = MJUtil.TartsuType.MINKANTSU;
+                    furo.furoType = MJUtil.TartsuType.MINKANTSU;
                     furo.consumed.Add(paiObj);
                     furo.consumed.Sort();
                     break;
@@ -240,7 +240,7 @@ namespace MjModelLibrary
 
             foreach(var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
+                if (furo.furoType == MJUtil.TartsuType.MINKO && furo.furopai.PaiNumber == pai.PaiNumber)
                 {
                    return true;
                 }
@@ -329,7 +329,7 @@ namespace MjModelLibrary
 
             foreach (var furo in furos)
             {
-                if (furo.ftype == MJUtil.TartsuType.MINKO && (furo.consumed[0].PaiNumber == PaiConverter.STRING_TO_ID[consumed[0]]) )
+                if (furo.furoType == MJUtil.TartsuType.MINKO && (furo.consumed[0].PaiNumber == PaiConverter.STRING_TO_ID[consumed[0]]) )
                 {
                     return true;
                 }
@@ -428,7 +428,7 @@ namespace MjModelLibrary
             foreach (var furo in furos)
             {
                 // ankan don't has furo.furopai
-                if (furo.ftype != MJUtil.TartsuType.ANKANTSU)
+                if (furo.furoType != MJUtil.TartsuType.ANKANTSU)
                 {
                     syu[furo.furopai.PaiNumber]++;
                 }
@@ -454,7 +454,7 @@ namespace MjModelLibrary
 
         public bool IsMenzen()
         {
-            return furos.Count - furos.Count(e => e.ftype == MJUtil.TartsuType.ANKANTSU) == 0;
+            return furos.Count - furos.Count(e => e.furoType == MJUtil.TartsuType.ANKANTSU) == 0;
         }
 
         public void SetScene(List<string> tehai, List<List<string>> furos)
@@ -475,7 +475,7 @@ namespace MjModelLibrary
 
                 if (MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[type] == MJUtil.TartsuType.ANKANTSU)
                 {
-                    this.furos.Add(new Furo(type, target, Pai.UNKNOWN_PAI_STRING , furo.GetRange(consumedStart, furo.Count - consumedStart)));
+                    this.furos.Add(new Furo(type, target, Pai.UNKNOWN_PAI_STRING , furo.GetRange(consumedStart-1, furo.Count - (consumedStart-1))));
                 }
                 else
                 {
@@ -485,12 +485,34 @@ namespace MjModelLibrary
             }
 
         }
+
+        override public string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append("tehai : ");
+            GetTehaiStringList().ForEach(e=> sb.Append(e+","));
+            sb.AppendLine();
+            sb.Append("furo  : ");
+            foreach (var furo in furos)
+            {
+                if (furo.furoType != MJUtil.TartsuType.ANKANTSU)
+                {
+                    sb.Append(furo.furopai.PaiString + ",");
+                }
+                furo.consumed.ForEach(e => sb.Append(e.PaiString + ","));
+                sb.Append(" ");
+            }
+
+            return sb.ToString();
+        }
+
     }
 
     public class Furo
     {
 
-        public MJUtil.TartsuType ftype;
+        public MJUtil.TartsuType furoType;
         public int target;
         public List<Pai> consumed;
         public Pai furopai;
@@ -498,7 +520,7 @@ namespace MjModelLibrary
 
         public Furo(MJUtil.TartsuType type, int target, Pai furopai, List<Pai> consumed)
         {
-            this.ftype = type;
+            this.furoType = type;
             this.target = target;
             this.furopai = furopai;
             this.consumed = new List<Pai>(consumed);
@@ -514,7 +536,7 @@ namespace MjModelLibrary
                 Debug.WriteLine("invalid Furo Type string !");
                 Debug.Assert(false);
             }
-            this.ftype = MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[typeString];
+            this.furoType = MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[typeString];
             this.furopai = new Pai(pai);
             this.consumed = consumed.Select(e => new Pai(e)).ToList();
             this.minPaiSyu = GetMin(this.furopai, this.consumed);
@@ -526,7 +548,7 @@ namespace MjModelLibrary
                 Debug.WriteLine("invalid Furo Type string !");
                 Debug.Assert(false);
             }
-            this.ftype = MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[typeString];
+            this.furoType = MJUtil.TARTSU_TYPE_STRING_ENUM_MAP[typeString];
             this.target = target;
             this.furopai = new Pai(pai);
             this.consumed = consumed.Select(e => new Pai(e)).ToList();
@@ -551,8 +573,8 @@ namespace MjModelLibrary
 
         public bool IsKantsu()
         {
-            return this.ftype == MJUtil.TartsuType.ANKANTSU
-                || this.ftype == MJUtil.TartsuType.MINKANTSU;
+            return this.furoType == MJUtil.TartsuType.ANKANTSU
+                || this.furoType == MJUtil.TartsuType.MINKANTSU;
         }
 
     }

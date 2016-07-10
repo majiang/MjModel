@@ -4,14 +4,16 @@ using System.Linq;
 using MjNetworkProtocolLibrary;
 using MjModelLibrary.Result;
 using MjModelLibrary;
-
+using System.Diagnostics;
 
 namespace MjClient.AI
 {
     class MinShantenAI : AIInterface
     {
+        public event CalcHoraHandler CalcHora;
 
         ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
+        
 
         public event SendPonHandler SendPon;
         public event SendChiHandler SendChi;
@@ -57,12 +59,20 @@ namespace MjClient.AI
         {
             var myTehai = tehais[mypositionId];
         
-            if (myTehai.IsHora()
-                )
+            if (myTehai.IsHora())
             {
-                if (ResultCalclator.CalcHoraResult(tehais[mypositionId], ifrs[mypositionId], field, tsumopai).yakuResult.HasYakuExcludeDora )
+                var result = CalcHora(mypositionId, tsumopai);
+
+                if (result.yakuResult.HasYakuExcludeDora)
                 {
+
+                    Debug.WriteLine(myTehai.ToString());
+                    result.yakuResult.yakus.ForEach(e => Debug.Write(e[0]+","));
+                    Debug.WriteLine("");
+                    Debug.WriteLine("--------------------------------------------------------------------------------");
                     SendHora(new MJsonMessageHora(mypositionId, mypositionId, tsumopai));
+                    CalcHora(mypositionId, tsumopai);
+                    
                     return;
                 }
 
@@ -117,8 +127,9 @@ namespace MjClient.AI
                 resultDict.Add(paiId.index, shantenCalclator.CalcShantenWithFuro(syu, tehais[mypositionId].furos.Count));
                 syu[paiId.index]++;
             }
-            var bestPaiIndex = resultDict.OrderBy(e => e.Value).First().Key;
-            var paiString = tehais[mypositionId].tehai.Where(e => e.PaiNumber == bestPaiIndex).First().PaiString;
+            var bestShanten = resultDict.OrderBy(e => e.Value).First().Value;
+            var bestNumber = resultDict.Where(e => e.Value == bestShanten).OrderBy( e => Guid.NewGuid() ).First().Key;
+            var paiString = tehais[mypositionId].tehai.Where(e => e.PaiNumber == bestNumber).First().PaiString;
 
 
             return paiString;
@@ -136,6 +147,7 @@ namespace MjClient.AI
         {
             return MessagebufferForReach;
         }
+
 
     }
 }

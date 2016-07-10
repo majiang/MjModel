@@ -44,10 +44,11 @@ namespace MjModelLibrary.Result
             //飜数の辞書選択
             var yakuHanNum = ifr.IsMenzen ? MJUtil.YAKU_HAN_MENZEN : MJUtil.YAKU_HAN_FUROED;
 
-            //七対子をあらかじめセット
-            //国士無双の場合はSelectYakumanで七対子が消えるため初期段階でセットして問題ない
-            result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHITOITSU], yakuHanNum[(int)MJUtil.Yaku.CHITOITSU] });
 
+            if (IsChitoitsu(horaSyu))
+            {
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHITOITSU], yakuHanNum[(int)MJUtil.Yaku.CHITOITSU] });
+            }
 
 
 
@@ -119,7 +120,10 @@ namespace MjModelLibrary.Result
             {
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.TSUISO], yakuHanNum[(int)MJUtil.Yaku.TSUISO] });
             }
-
+            if (IsKokushi(horaSyu))
+            {
+                result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.KOKUSHIMUSO], yakuHanNum[(int)MJUtil.Yaku.KOKUSHIMUSO] });
+            }
 
             if (HasYakuman(result.yakus))
             {
@@ -133,6 +137,7 @@ namespace MjModelLibrary.Result
 
             return result;
         }
+
 
 
         public static YakuResult CalcNormalYaku(HoraPattern horaMentsu, InfoForResult ifr, Field field,int[] horaSyu, int[] realPaiNum, int redDoraNum)
@@ -480,6 +485,19 @@ namespace MjModelLibrary.Result
                 }
             }
             return false;
+        }
+
+        static bool IsChitoitsu(int[] horaSyu)
+        {
+            var toitsuCount = 0;
+            foreach(var syu in horaSyu)
+            {
+                if (syu == 2)
+                {
+                    toitsuCount++;
+                }
+            }
+            return toitsuCount == 7;
         }
 
         private static bool IsTannyao(HoraPattern hp)
@@ -1032,6 +1050,17 @@ namespace MjModelLibrary.Result
         private static bool IsChiho(InfoForResult ifr)
         {
             return ifr.IsFirstTurn() && ifr.IsOya == false && ifr.IsTsumo && ifr.IsMenzen; 
+        }
+        private static bool IsKokushi(int[] horaSyu)
+        {
+            foreach (var syu in horaSyu.Select((val, index) => new { val, index }).Where(e=> MJUtil.IsYaochuPai(e.index)))
+            {
+                if (syu.val == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
 

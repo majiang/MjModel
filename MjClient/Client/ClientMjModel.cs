@@ -23,7 +23,7 @@ namespace MjClient
         private int myPositionId;
         ShantenCalclator shantenCalclator = ShantenCalclator.GetInstance();
 
-        public ClientMjModel(){}
+        public ClientMjModel() { }
 
         public void Init()
         {
@@ -41,7 +41,7 @@ namespace MjClient
 
         public void StartGame(int id)
         {
-            
+
             Init();
             myPositionId = id;
 
@@ -51,7 +51,7 @@ namespace MjClient
         {
             field = new Field(kyoku, honba, kyotaku, oya, bakaze);
             CurrentActor = oya;
-            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, oya, bakaze), new InfoForResult(field.KyokuId, 1, oya, bakaze), new InfoForResult(field.KyokuId, 2, oya,bakaze), new InfoForResult(field.KyokuId, 3, oya, bakaze) };
+            infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, oya, bakaze), new InfoForResult(field.KyokuId, 1, oya, bakaze), new InfoForResult(field.KyokuId, 2, oya, bakaze), new InfoForResult(field.KyokuId, 3, oya, bakaze) };
 
             this.tehais = new List<Tehai> { new Tehai(tehais[0]), new Tehai(tehais[1]), new Tehai(tehais[2]), new Tehai(tehais[3]) };
 
@@ -115,13 +115,13 @@ namespace MjClient
         {
             if (actor == myPositionId)
             {
-                tehais[actor].Kakan(actor,  pai, consumed);
+                tehais[actor].Kakan(actor, pai, consumed);
             }
             else
             {
                 tehais[actor].kakanOnlyMakeFuro(actor, pai, consumed);
             }
-            
+
         }
 
         public void Ankan(int actor, List<string> consumed)
@@ -187,32 +187,44 @@ namespace MjClient
 
         public bool CanReach(int playerId)
         {
-            return (tehais[playerId].IsTenpai() || tehais[playerId].IsHora() )
+            return (tehais[playerId].IsTenpai() || tehais[playerId].IsHora())
                 && tehais[playerId].IsMenzen()
                 && (infoForResultList[playerId].IsReach == false && infoForResultList[playerId].IsDoubleReach == false)
                 && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
 
-        public bool CanTsumoHora()
+        public HoraResult CalcHora(int target, string pai)
         {
+            var ifr = infoForResultList[myPositionId];
+            ifr.UseYamaPaiNum = yama.GetTsumoedYamaNum();
+            ifr.IsMenzen = tehais[myPositionId].IsMenzen();
+            ifr.IsFured = !ifr.IsMenzen;
+            ifr.IsTsumo = target == myPositionId;
+            ifr.RegisterUraDoraMarker(yama.GetUradoraMarkerStrings());
+
+            if (ifr.IsTsumo)
+            {
+                ifr.IsHaitei = yama.GetRestYamaNum() == 0;
+                ifr.IsTsumo = true;
+            }
+            else
+            {
+                infoForResultList[myPositionId].SetLastAddedPai(pai);
+                ifr.IsHoutei = yama.GetRestYamaNum() == 0;
+                ifr.IsTsumo = false;
+            }
+            var horaResult = ResultCalclator.CalcHoraResult(tehais[myPositionId], infoForResultList[myPositionId], field, pai);
+
             //TODO condsider yaku
-            return shantenCalclator.CalcShanten(tehais[myPositionId]) == -1;
+            return horaResult;
         }
 
-        public bool CanRonHora(int target, string pai)
-        {
-            if(target == myPositionId)
-            {
-                return false;
-            }
-            //TODO condsider yaku
-            return shantenCalclator.CalcShanten(tehais[myPositionId], pai) == -1;
-        }
+
 
 
         public void SetReach(int actor)
         {
-            if (yama.GetTsumoedYamaNum() > Constants.PLAYER_NUM && infoForResultList.Count(e => e.IsFured) == 0)
+            if (yama.GetTsumoedYamaNum() <= Constants.PLAYER_NUM && infoForResultList.Count(e => e.IsFured) == 0)
             {
                 infoForResultList[actor].IsDoubleReach = true;
             }
@@ -239,13 +251,21 @@ namespace MjClient
 
             field = new Field(kyoku, honba, kyotaku, oya, bakaze);
             this.scores = scores;
+
             myPositionId = mypositionid;
-            CurrentActor= actor;
+            CurrentActor = actor;
             infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, field.OyaPlayerId), new InfoForResult(field.KyokuId, 1, field.OyaPlayerId), new InfoForResult(field.KyokuId, 2, field.OyaPlayerId), new InfoForResult(field.KyokuId, 3, field.OyaPlayerId) };
             foreach (var doraMarker in dora_markers)
             {
                 infoForResultList.ForEach(e => e.RegisterDoraMarker(doraMarker));
             }
+            for (int i = 0; i < Constants.PLAYER_NUM; i++)
+            {
+                infoForResultList[i].SetLastAddedPai(tehais[i].Last());
+            }
         }
+
+
+
     }
 }

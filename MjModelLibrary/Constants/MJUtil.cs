@@ -34,8 +34,12 @@ namespace MjModelLibrary
         public static readonly int LENGTH_HAIPAI = 13;
         public static readonly int LENGTH_TEHAI = 14;
         public static readonly int LENGTH_WANPAI = 14;
+        public static readonly int LENGTH_TARTSU = 3;
+        public static readonly int LENGTH_HEAD = 2;
 
 
+        public static readonly int SHANTEN_HORA = -1;
+        public static readonly int SHANTEN_TENPAI = 0;
 
 
 
@@ -58,17 +62,38 @@ namespace MjModelLibrary
             ANKANTSU,
             MINKANTSU
         };
-        public static readonly Dictionary<string, TartsuType> TARTSU_TYPE_STRING_ENUM_MAP = new Dictionary<string, TartsuType>()
+        public static readonly  List<string> TartsuTypeString = new List<string>()
         {
-            { "head",    TartsuType.HEAD},
-            { "ansyun",  TartsuType.ANSYUN },
-            {"minsyun",  TartsuType.MINSYUN },
-            {"anko",     TartsuType.ANKO },
-            {"minko",    TartsuType.MINKO },
-            {"ankantsu", TartsuType.ANKANTSU },
-            {"minkantsu",TartsuType.MINKANTSU }
+            "head",
+            "ansyun",
+            "minsyun",
+            "anko",
+            "minko",
+            "ankantsu",
+            "minkantsu"
         };
 
+
+        public static readonly Dictionary<string, TartsuType> TARTSU_TYPE_STRING_ENUM_MAP = new Dictionary<string, TartsuType>()
+        {
+            {TartsuTypeString[0], TartsuType.HEAD},
+            {TartsuTypeString[1], TartsuType.ANSYUN },
+            {TartsuTypeString[2], TartsuType.MINSYUN },
+            {TartsuTypeString[3], TartsuType.ANKO },
+            {TartsuTypeString[4], TartsuType.MINKO },
+            {TartsuTypeString[5], TartsuType.ANKANTSU },
+            {TartsuTypeString[6], TartsuType.MINKANTSU }
+        };
+        public static readonly Dictionary<TartsuType, string> ENUM_TARTSU_TYPE_STRING_MAP = new Dictionary<TartsuType, string>()
+        {
+            {TartsuType.HEAD,     TartsuTypeString[0]},
+            {TartsuType.ANSYUN,   TartsuTypeString[1]},
+            {TartsuType.MINSYUN,  TartsuTypeString[2]},
+            {TartsuType.ANKO,     TartsuTypeString[3]},
+            {TartsuType.MINKO,    TartsuTypeString[4]},
+            {TartsuType.ANKANTSU, TartsuTypeString[5]},
+            {TartsuType.MINKANTSU,TartsuTypeString[6]}
+        };
         public static readonly int YAKUMANSTART = (int)Yaku.SUUANKO;
         public enum Yaku
         {
@@ -130,6 +155,7 @@ namespace MjModelLibrary
             "海底撈月",
             "嶺上開花",
             "搶槓",
+
             "両立直",
             "三色同順",
             "一気通貫",

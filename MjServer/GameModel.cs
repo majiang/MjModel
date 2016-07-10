@@ -692,6 +692,8 @@ namespace MjServer
             {
                 infoForResultList.ForEach(e => e.RegisterDoraMarker(doraMarker));
             }
+
+
             
         }
     }
