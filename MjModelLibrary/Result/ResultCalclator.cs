@@ -18,8 +18,6 @@ namespace MjModelLibrary.Result
     {
         public static HoraResult CalcHoraResult(Tehai tehai, InfoForResult ifr, Field field, string horaPai)
         {
-            
-
             //面子手の取りうる和了形を全て列挙 
             SplitedTehai splited = SplitedTehaiCalclator.CalcSplitedTehai(tehai, horaPai, !ifr.IsTsumo );
             List<YakuResult> yakuResultList = new List<YakuResult>();

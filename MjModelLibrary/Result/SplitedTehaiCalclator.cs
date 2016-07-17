@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace MjModelLibrary.Result
 {
-        public class SplitedTehai
+    public class SplitedTehai
     {
         public List<HoraPattern> AllHoraPatternList =  new List<HoraPattern>();
         public int[] SyuNum =  new int[MJUtil.LENGTH_SYU_ALL];//フーロ牌も含めた牌枚数配列
         public int RedDoraNum = 0;
     }
-
-
 
     public static class SplitedTehaiCalclator
     {
@@ -26,8 +24,7 @@ namespace MjModelLibrary.Result
             int[] inHandSyu = new int[MJUtil.LENGTH_SYU_ALL];
             var redDoraCount = 0;
             var horaPai = new Pai(horaPaiString);
-
-
+            
             foreach (var pai in tehai.tehai)
             {
                 if (pai.IsRedDora)
@@ -36,11 +33,11 @@ namespace MjModelLibrary.Result
                 }
                 inHandSyu[pai.PaiNumber]++;
             }
+
             if (isRon)
             {
                 inHandSyu[PaiConverter.STRING_TO_ID[horaPaiString]]++;
             }
-
             if (horaPai.IsRedDora && isRon)
             {
                 redDoraCount++;
@@ -253,8 +250,6 @@ namespace MjModelLibrary.Result
 
     public class TehaiSpliter
     {
-
-
         public SplitedTehai SplitTehai(int[] syu, List<Furo> furos, string horaPai, bool isRon)
         {
             //全通りの上がり構成を算出

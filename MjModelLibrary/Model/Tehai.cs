@@ -23,6 +23,9 @@ namespace MjModelLibrary
             new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"), new Pai("?"),
             new Pai("?"), new Pai("?"), new Pai("?")
         };
+
+        
+
         public static readonly List<string> UNKNOWN_TEHAI_STRING = new List<string> 
         {
             
@@ -441,7 +444,6 @@ namespace MjModelLibrary
 
             return syu;
         }
-
         public bool IsHora()
         {
             return GetShanten() == -1;

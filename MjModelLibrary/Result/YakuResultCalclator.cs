@@ -156,7 +156,6 @@ namespace MjModelLibrary.Result
 
             if (ifr.IsDoubleReach)
             {
-
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.DOUBLEREACH], yakuHanNum[(int)MJUtil.Yaku.DOUBLEREACH] });
             }
             else if (ifr.IsReach)
@@ -321,7 +320,7 @@ namespace MjModelLibrary.Result
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHINROTO], yakuHanNum[(int)MJUtil.Yaku.CHINROTO] });
             }
 
-            if(IsChurenpoto(ifr,horaSyu))
+            if(IsChurenpoto(ifr, horaMentsu))
             {
                 result.yakus.Add(new List<object>() { yakuString[(int)MJUtil.Yaku.CHURENPOTO], yakuHanNum[(int)MJUtil.Yaku.CHURENPOTO] });
             }
@@ -1008,25 +1007,56 @@ namespace MjModelLibrary.Result
         }
 
 
-        private static bool IsChurenpoto(InfoForResult ifr,int[] horaSyu)
+        private static bool IsChurenpoto(InfoForResult ifr,HoraPattern horaMentsu)
         {
             if (ifr.IsMenzen == false)
             {
                 return false;
             }
 
+            var horaSyuWithoutAnkan = new int[MJUtil.LENGTH_SYU_ALL];
+
+            foreach (var tartsu in horaMentsu.TartsuList)
+            {
+                // count only in Tehai (HEAD, ANSHYN, ANKO)
+                var isNotFuroTartsu = tartsu.TartsuType == MJUtil.TartsuType.HEAD ||
+                                      tartsu.TartsuType == MJUtil.TartsuType.ANSYUN ||
+                                      tartsu.TartsuType == MJUtil.TartsuType.ANKO;
+
+                if (isNotFuroTartsu == false)
+                {
+                    return false;
+                }
+
+                if (tartsu.TartsuType == MJUtil.TartsuType.HEAD)
+                {
+                    horaSyuWithoutAnkan[tartsu.TartsuStartPaiSyu] += 2;
+                }
+                else if (tartsu.TartsuType == MJUtil.TartsuType.ANSYUN)
+                {
+                    horaSyuWithoutAnkan[tartsu.TartsuStartPaiSyu] += 1;
+                    horaSyuWithoutAnkan[tartsu.TartsuStartPaiSyu + 1] += 1;
+                    horaSyuWithoutAnkan[tartsu.TartsuStartPaiSyu + 2] += 1;
+                }
+                else if (tartsu.TartsuType == MJUtil.TartsuType.ANKO)
+                {
+                    horaSyuWithoutAnkan[tartsu.TartsuStartPaiSyu] += 3;
+                }
+
+            }
+
             for (int mps = 0; mps < 3; mps++)
             {
                 if (
-                       (horaSyu[0 + mps * 9] >= 3)
-                    && (horaSyu[1 + mps * 9] >= 1)
-                    && (horaSyu[2 + mps * 9] >= 1)
-                    && (horaSyu[3 + mps * 9] >= 1)
-                    && (horaSyu[4 + mps * 9] >= 1)
-                    && (horaSyu[5 + mps * 9] >= 1)
-                    && (horaSyu[6 + mps * 9] >= 1)
-                    && (horaSyu[7 + mps * 9] >= 1)
-                    && (horaSyu[8 + mps * 9] >= 3)
+                       (horaSyuWithoutAnkan[0 + mps * 9] >= 3)
+                    && (horaSyuWithoutAnkan[1 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[2 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[3 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[4 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[5 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[6 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[7 + mps * 9] >= 1)
+                    && (horaSyuWithoutAnkan[8 + mps * 9] >= 3)
                 )
                 {
                     return true;

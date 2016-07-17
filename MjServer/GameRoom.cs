@@ -227,8 +227,6 @@ namespace MjServer
             return gameModel.CanEndGame();
         }
 
-
-
         // mj action functions called by GameState
         bool StartKyoku()
         {
