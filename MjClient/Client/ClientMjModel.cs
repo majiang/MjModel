@@ -156,7 +156,8 @@ namespace MjClient
         }
         public void ReachAccept(int actor, List<int> delta, List<int> scores)
         {
-            SetReach(actor);
+            SetReachFlag(actor);
+            field.AddKyotaku();
             this.scores = this.scores;
         }
 
@@ -193,6 +194,7 @@ namespace MjClient
                 && (yama.GetRestYamaNum() >= Constants.PLAYER_NUM);
         }
 
+
         public HoraResult CalcHora(int target, string pai)
         {
             var ifr = infoForResultList[myPositionId];
@@ -205,24 +207,19 @@ namespace MjClient
             if (ifr.IsTsumo)
             {
                 ifr.IsHaitei = yama.GetRestYamaNum() == 0;
-                ifr.IsTsumo = true;
             }
             else
             {
                 infoForResultList[myPositionId].SetLastAddedPai(pai);
                 ifr.IsHoutei = yama.GetRestYamaNum() == 0;
-                ifr.IsTsumo = false;
             }
             var horaResult = ResultCalclator.CalcHoraResult(tehais[myPositionId], infoForResultList[myPositionId], field, pai);
 
-            //TODO condsider yaku
             return horaResult;
         }
 
 
-
-
-        public void SetReach(int actor)
+        private void SetReachFlag(int actor)
         {
             if (yama.GetTsumoedYamaNum() <= Constants.PLAYER_NUM && infoForResultList.Count(e => e.IsFured) == 0)
             {
@@ -232,7 +229,6 @@ namespace MjClient
             {
                 infoForResultList[actor].IsReach = true;
             }
-            field.AddKyotaku();
         }
 
         public void SetScene(int rest_tsumo_num, List<string> dora_markers, List<List<string>> kawas, List<List<bool>> is_reached_kawapai, List<int> scores, int kyoku, int honba, int kyotaku, string bakaze, int oya, List<List<string>> tehais, List<List<List<string>>> furos, int actor, int mypositionid)
@@ -262,6 +258,17 @@ namespace MjClient
             for (int i = 0; i < Constants.PLAYER_NUM; i++)
             {
                 infoForResultList[i].SetLastAddedPai(tehais[i].Last());
+            }
+
+            // configure reach flag
+            // SetReachFlag must be configred after configure yama.   
+            var isReach = is_reached_kawapai.Select(e => e.Contains(true)).ToList();
+            for (int i = 0; i < Constants.PLAYER_NUM; i++)
+            {
+                if (isReach[i])
+                {
+                    SetReachFlag(i);
+                }
             }
         }
 

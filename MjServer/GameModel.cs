@@ -347,7 +347,7 @@ namespace MjServer
         public bool CanHora(int actor, int target, string pai)
         {
 
-            // OreCelcHoraResult affects calclatedHoraMessage.
+            // CalcHoraResult affects calclatedHoraMessage.
             var horaResult = CalcHoraResult(actor, target, pai);
             // if hora contains any yaku, return false. 
             if (horaResult.yakuResult.HasYakuExcludeDora == false)
@@ -688,6 +688,19 @@ namespace MjServer
             infoForResultList = new List<InfoForResult>() { new InfoForResult(field.KyokuId, 0, field.OyaPlayerId), new InfoForResult(field.KyokuId, 1, field.OyaPlayerId), new InfoForResult(field.KyokuId, 2, field.OyaPlayerId), new InfoForResult(field.KyokuId, 3, field.OyaPlayerId) };
             infoForResultList[CurrentActor].SetLastAddedPai(tehais[CurrentActor].tehai.Last());
 
+
+            // configure reach flag
+            // SetReachFlag have to configre after configure yama.   
+            var isReach = msg.is_reached_kawapai.Select(e => e.Contains(true)).ToList();
+            for (int i = 0; i < Constants.PLAYER_NUM; i++)
+            {
+                if (isReach[i])
+                {
+                    SetReachFlag(i);
+                }
+            }
+
+            // configure dora marker
             foreach (var doraMarker in msg.dora_markers)
             {
                 infoForResultList.ForEach(e => e.RegisterDoraMarker(doraMarker));

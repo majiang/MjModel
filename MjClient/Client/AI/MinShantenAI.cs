@@ -25,21 +25,32 @@ namespace MjClient.AI
         public void ThinkOnOtherPlayerDoroped(int mypositionId, int dapaiActor, string pai, List<Tehai> tehais,
                                               List<Kawa> kawas, Field field, List<InfoForResult> ifrs, Yama yama)
         {
-            if ((ifrs[mypositionId].IsReach || ifrs[mypositionId].IsDoubleReach)
-                && shantenCalclator.CalcShanten(tehais[mypositionId], pai) == -1
-                )
+            if (shantenCalclator.CalcShanten(tehais[mypositionId], pai) != MJUtil.SHANTEN_HORA)
             {
-                var tempSave = ifrs[mypositionId].LastAddedPai;
-                ifrs[mypositionId].LastAddedPai = new Pai(pai);
-                if (ResultCalclator.CalcHoraResult(tehais[mypositionId], ifrs[mypositionId], field, pai).yakuResult.HasYakuExcludeDora)
-                {
-                    SendHora(new MJsonMessageHora(mypositionId, dapaiActor, pai));
-                    return;
-                }
-                ifrs[mypositionId].LastAddedPai = tempSave;
-
+                SendNone(new MJsonMessageNone());
+                return;
             }
 
+
+            // check yaku
+            var tempSave = ifrs[mypositionId].LastAddedPai;
+            ifrs[mypositionId].LastAddedPai = new Pai(pai);
+
+            var myTehai = tehais[mypositionId];
+            var result = CalcHora(dapaiActor, pai);
+            if (result.yakuResult.HasYakuExcludeDora)
+            {
+                Debug.WriteLine("on other player doroped");
+                Debug.WriteLine(myTehai.ToString());
+                result.yakuResult.yakus.ForEach(e => Debug.Write(e[0] + ","));
+                Debug.WriteLine("");
+                Debug.WriteLine("--------------------------------------------------------------------------------");
+
+                SendHora(new MJsonMessageHora(mypositionId, dapaiActor, pai));
+                return;
+            }
+
+            ifrs[mypositionId].LastAddedPai = tempSave;
             SendNone(new MJsonMessageNone());
         }
 
@@ -65,7 +76,7 @@ namespace MjClient.AI
 
                 if (result.yakuResult.HasYakuExcludeDora)
                 {
-
+                    Debug.WriteLine("on tsumo");
                     Debug.WriteLine(myTehai.ToString());
                     result.yakuResult.yakus.ForEach(e => Debug.Write(e[0]+","));
                     Debug.WriteLine("");

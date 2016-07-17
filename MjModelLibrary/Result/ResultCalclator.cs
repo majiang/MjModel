@@ -22,6 +22,7 @@ namespace MjModelLibrary.Result
             SplitedTehai splited = SplitedTehaiCalclator.CalcSplitedTehai(tehai, horaPai, !ifr.IsTsumo );
             List<YakuResult> yakuResultList = new List<YakuResult>();
 
+            
             int[] realPaiNum = tehai.GetRealPaiNum();
             if (ifr.IsTsumo == false)
             {

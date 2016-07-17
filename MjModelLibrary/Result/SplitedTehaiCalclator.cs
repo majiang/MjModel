@@ -38,6 +38,7 @@ namespace MjModelLibrary.Result
             {
                 inHandSyu[PaiConverter.STRING_TO_ID[horaPaiString]]++;
             }
+
             if (horaPai.IsRedDora && isRon)
             {
                 redDoraCount++;

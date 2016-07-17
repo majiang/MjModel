@@ -317,7 +317,7 @@ namespace MjClient
 
             clientMjModel.SetScene(rest_tsumo_num, dora_markers, kawas, is_reached_kawapai, scores, kyoku, honba, kyotaku, bakaze, oya, tehais, furos, actor, mypositionid);
 
-            if (mypositionid == actor)
+            if (mypositionid != actor)
             {
                 var dapai = kawas[mypositionid].Last();
                 ai.ThinkOnOtherPlayerDoroped(myPositionId, actor, dapai, clientMjModel.tehais, clientMjModel.kawas, clientMjModel.field, clientMjModel.infoForResultList, clientMjModel.yama);
