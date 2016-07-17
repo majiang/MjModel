@@ -137,7 +137,7 @@ namespace MjModelLibrary.Result
             Array.Copy(syu, workSyu, syu.Length);
 
 
-            int minSyantenWithHead = CalcNormalShanten(workSyu, furoNum);
+            int minSyantenWithHead = CalcMentsuteShanten(workSyu, furoNum);
 
             int minSyantenWithoutHead = SHANTEN_MAX_NORMAL;
             for (int i = 0; i < workSyu.Length; i++)
@@ -145,7 +145,7 @@ namespace MjModelLibrary.Result
                 if (workSyu[i] >= 2)
                 {
                     workSyu[i] -= 2;
-                    int tempMin = CalcNormalShanten(workSyu, furoNum) - 1;
+                    int tempMin = CalcMentsuteShanten(workSyu, furoNum) - 1;
                     if (minSyantenWithoutHead > tempMin)
                     {
                         minSyantenWithoutHead = tempMin;
@@ -173,7 +173,7 @@ namespace MjModelLibrary.Result
             return Math.Min(syantenNotNormal, syantenNormal);
         }
 
-        private int CalcChitoitsuShanten(int[] syu)
+        public int CalcChitoitsuShanten(int[] syu)
         {
             int shanten = SHANTEN_MAX_CHITOITSU;
             int syuNum = 0;
@@ -198,7 +198,7 @@ namespace MjModelLibrary.Result
             return shanten;
         }
 
-        private int CalcKokushiShanten(int[] syu)
+        public int CalcKokushiShanten(int[] syu)
         {
             int shanten = SHANTEN_MAX_KOKUSHI;
             bool hasHead = false;
@@ -227,7 +227,7 @@ namespace MjModelLibrary.Result
             return shanten;
         }
 
-        private int CalcNormalShanten(int[] syu, int furoNum)
+        public int CalcMentsuteShanten(int[] syu, int furoNum)
         {
             int minSyanten = SHANTEN_MAX_NORMAL;
 

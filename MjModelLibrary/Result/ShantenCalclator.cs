@@ -54,6 +54,18 @@ namespace MjModelLibrary.Result
         {
             sb.UseKokushi(useKokushi);
         }
+        public void CalcMentsuteShanten(int[] syu, int furoNum)
+        {
+            sb.CalcMentsuteShanten(syu, furoNum);
+        }
+        public void CalcChitoitsuShanten(int[] syu)
+        {
+            sb.CalcChitoitsuShanten(syu);
+        }
+        public void CalcKokushiShanten(int[] syu)
+        {
+            sb.CalcKokushiShanten(syu);
+        }
 
     }
 }

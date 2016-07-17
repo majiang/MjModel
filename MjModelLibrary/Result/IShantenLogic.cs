@@ -19,5 +19,8 @@ namespace MjModelLibrary.Result
         void UseChitoitsu(bool useChitoitsu);
         void UseKokushi(bool useKokushi);
 
+        int CalcMentsuteShanten(int[] syu, int furoNum);
+        int CalcChitoitsuShanten(int[] syu);
+        int CalcKokushiShanten(int[] syu);
     }
 }

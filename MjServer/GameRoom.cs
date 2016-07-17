@@ -211,7 +211,10 @@ namespace MjServer
             // disconnect client
             clients.ForEach(e => e.Disconnect());
             clients.Clear();
-            OnAfterError?.Invoke(this);
+            if (OnAfterError != null)
+            {
+                OnAfterError(this);
+            }
         }
 
 
