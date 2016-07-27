@@ -11,8 +11,8 @@ namespace MjServer
         static void Main(string[] args)
         {
             SandBox();
-            var serverFacerde = new ServerFacade();
-            serverFacerde.StartServer();
+            var serverFacade = new ServerFacade();
+            serverFacade.StartServer();
             
             while (true)
             {
